@@ -21,7 +21,7 @@ These can later be reused if a similar situation arises and is the most common r
 The taxonomy of memory systems is visualized in @fig:memory_taxonomy.
 
 #figure(caption: [Taxonomy of memory in cognitive architectures. @prueser2024pycrorm])[
-  #image("images/memory_taxonomy.png")
+  #image("../images/memory_taxonomy.png")
 ]<fig:memory_taxonomy>
 
 == Narrative Enabled Episodic Memories

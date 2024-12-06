@@ -1,0 +1,12 @@
+  - key: ard
+    short: ARD
+    long: Arbeitsgemeinschaft der öffentlich-rechtlichen Rundfunkanstalten der Bundesrepublik Deutschland
+  - key: pdf
+    short: PDF
+    plural: PDFs
+    long: Portable Document Format
+  - key: kb
+    short: KB
+    plural: KBs
+    long: Knowledge Base
+    longplural: Knowledge Bases

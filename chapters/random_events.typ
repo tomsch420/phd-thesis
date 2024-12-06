@@ -1,7 +1,6 @@
 #import "@preview/ctheorems:1.1.2": *
 #show: thmrules
-#import "template.typ": *
-#import "algo.typ": *
+#import "../thesis-imports.typ": *
 #import "@preview/fletcher:0.5.1" as fletcher: diagram, node, edge
 
 
@@ -327,17 +326,17 @@ Consider the 3-dimensional Cartesian space constructed by these three variables 
 A simple event of the product sigma algebra can now be described as a rectangle, for example
 the event $x_([2, 3)) times y_([10, 15))$ is visualized as the following rectangle.
 
-#figure(image("images/rectangle_event_2d.png")
+#figure(image("../images/rectangle_event_2d.png")
 ,caption: [Simple rectangle event described by $x_([2, 3]) times y_([10, 15])$.]) <fig:rectangle_event_2d>
 
 It can be observed that the event described by the Cartesian product corresponds to a rectangle in the two-dimensional plane (x-y plane). Notably, for higher dimensions, events constructed through Cartesian products will always manifest as hyper-rectangles. Shapes such as triangles or circles are not expressible in this manner due to their inherent dependence between variable constraints. For instance, a circle with radius r cannot be represented solely by a product of constraints, as exemplified by the equation $x^2 + y^2 <= r^2$, which embodies a non-independent relationship between the variables x and y.
 
 However, it is possible to define more complex simple events. Considers the simple event $x_( [2,3] union [4,5] union [6,7]) times y_([10,15] union [25,27])$. The visualization of said event is depicted in #ref(<fig:complex_rectangle_event_2d>). Furthermore, the three dimensional generalization by expanding the event with $z_([1, 3] union [4, 4.5] union [10, 11.5])$ is depicted in #ref(<fig:complex_rectangle_event_3d>).
 
-#figure(image("images/complex_rectangle_event_2d.png")
+#figure(image("../images/complex_rectangle_event_2d.png")
 ,caption: [Simple rectangle event described by $x_( [2,3] union [4,5] union [6,7]) times y_([10,15] union [25,27])$.]) <fig:complex_rectangle_event_2d>
 
-#figure(image("images/complex_rectangle_event_3d.png")
+#figure(image("../images/complex_rectangle_event_3d.png")
 ,caption: [Simple rectangle event described by $x_( [2,3] union [4,5] union [6,7]) times y_([10,15] union [25,27]) times z_([1, 3] union [4, 4.5] union [10, 11.5])$.]) <fig:complex_rectangle_event_3d>
 
 Visualizing events defined by Cartesian products in dimensions exceeding three becomes increasingly challenging. However, the fundamental properties of these events remain consistent across higher dimensions. The introduction of new constraints simply results in the addition of another axis to the hyper-rectangle representing the event. Furthermore, the patterns observed in constructing events using multiple intervals generalize seamlessly to higher dimensions, analogous to the transition from two to three dimensions.
@@ -348,15 +347,15 @@ $
 $
 Since an infinite event can not be visualized, the complement of the unit rectangle intersected with $x_([-1,2]) times y_([-1,2])$ is depicted in #ref(<fig:complement_2d>).
 
-#figure(image("images/complement_2d.png"),
+#figure(image("../images/complement_2d.png"),
 caption: [Rectangle event described by #linebreak() $(x_([0,1]) times y_([0,1]))^C sect x_([-1,2]) times y_([-1,2]) $.]) <fig:complement_2d>
 
 Consider the complement of the unit cube $x_([0,1]) times y_([0,1]) times z_([0,1])$ intersected with $x_([-1,2]) times y_([-1,2]) times z_([-1,2])$. This event can be visualized as a solid object resembling a cube on the exterior, with the interior corresponding to the removed unit cube. While figures (e.g., #ref(<fig:complement_3d>) and #ref(<fig:cut_complement_3d>)) can aid in visualizing such events in lower dimensions, the mathematical description remains paramount for generalizability to higher dimensions.
 
-#figure(image("images/complement_3d.png"),
+#figure(image("../images/complement_3d.png"),
 caption: [Rectangle event described by #linebreak() $(x_([0,1]) times y_([0,1]) times z_([0, 1]))^C sect x_([-1,2]) times y_([-1,2]) times z_([-1,2]) $.]) <fig:complement_3d>
 
-#figure(image("images/cut_complement_3d.png"),
+#figure(image("../images/cut_complement_3d.png"),
 caption: [Cut open rectangle event described by #linebreak() $(x_([0,1]) times y_([0,1]) times z_([0, 1]))^C sect x_([-1,2]) times y_([-1, 0.75]) times z_([-1,2]) $ (described in #ref(<fig:complement_3d>)).]) <fig:cut_complement_3d>
 
 === Applications
@@ -368,9 +367,9 @@ Consider the laboratory apartment designed for the research of everyday activiti
 #figure([
  #grid(columns: 2,
       gutter: 2mm,
-   image("images/kitchen_bulletworld.png"),
-   image("images/ktichen_top_down_bullet.png"))
-   #figure(image("images/costmap_kitchen.png"))],
+   image("../images/kitchen_bulletworld.png"),
+   image("../images/ktichen_top_down_bullet.png"))
+   #figure(image("../images/costmap_kitchen.png"))],
  caption: [
 The kitchen of the apartment lab from a frontal (left) and top down (right) perspective. The bottom picture shows the space for the PR2 robot to fit in the kitchen as a composite event of the product algebra.]
 )<fig:costmap_kitchen>
@@ -389,23 +388,23 @@ For the outer box, a minimal bounding box is fitted that contains the entire pol
 In an applied context these approximations are suitable for getting points that are definitely inside a polytope or definitely not.
 Consider a hexagonal table that as not placed in an axis aligned manner. Usually, PyCRAM creates a bounding box for it by a single outer box approximation. This creates a relevant mismatch between the real table and the representation of it. If the robot now approaches the table to a position that is not inside the table, it frequently appears that the robot is too far away from the table to reach a position that is on the table. With the improved approach of an inner/outer box approximation the robot is now able to have a better belief about the collision. 
 
-#figure([#image("images/hexagon_table.png")], 
+#figure([#image("../images/hexagon_table.png")], 
 caption: [The surface of a not axis aligned hexagon shaped table.])<fig:hexagon_table>
 
 #figure([
   #grid(columns: 2, rows: 2,
-  image("images/outer_box_approximation/4.0.png"),
-  image("images/outer_box_approximation/0.5.png"),
-  image("images/outer_box_approximation/0.1.png"),
-  image("images/outer_box_approximation/0.01.png")
+  image("../images/outer_box_approximation/4.0.png"),
+  image("../images/outer_box_approximation/0.5.png"),
+  image("../images/outer_box_approximation/0.1.png"),
+  image("../images/outer_box_approximation/0.01.png")
 )
 ], caption: [Outer box approximation of a hexagon for different tolerances of volume errors.])<fig:outer_box_approximation>
 #figure([
   #grid(columns: 2, rows: 2,
-  image("images/inner_box_approximation/2.0.png"),
-  image("images/inner_box_approximation/0.1.png"),
-  image("images/inner_box_approximation/0.01.png"),
-  image("images/inner_box_approximation/0.001.png")
+  image("../images/inner_box_approximation/2.0.png"),
+  image("../images/inner_box_approximation/0.1.png"),
+  image("../images/inner_box_approximation/0.01.png"),
+  image("../images/inner_box_approximation/0.001.png")
 )
 ], caption: [Inner box approximation of a hexagon for different tolerances of volume errors.])<fig:inner_box_approximation>
 

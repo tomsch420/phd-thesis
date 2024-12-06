@@ -1,8 +1,4 @@
-#import "@preview/ctheorems:1.1.2": *
-#show: thmrules
-#import "algo.typ": *
-#import "template.typ": *
-#set quote(block: true)
+#import "../thesis-imports.typ": *
 #import "@preview/fletcher:0.5.1" as fletcher: diagram, node, edge
 
 
@@ -562,7 +558,7 @@ The algorithm can then be roughly described as
 An example of the result of the splitting is shown in figure @fig:jpt_example
 
 #figure(caption: [Example of a JPT fitted on a mixture of multivariate Gaussian distributions with two components. The points represent the input data and the lines the decision criteria chosen by the learning algorithm. ])[
- #image("images/jpt_example.png")
+ #image("../images/jpt_example.png")
 ]<fig:jpt_example>
 
 ==== Properties

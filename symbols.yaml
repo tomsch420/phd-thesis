@@ -1,0 +1,77 @@
+- key: epsilon
+  short: $epsilon$
+  description: "this is epsilon"
+- key: lambda
+  short: $lambda$
+  description: "this is lambda"
+- key: lambdaup
+  short: $Lambda$
+  description: "this is capital lambda"
+- key: omega 
+  short: $omega$
+  description: "_call me omega_ -- omega is ...."
+- key: omegaup 
+  short: $Omega$
+  description: "capital omega"
+- key: phi
+  short: $phi$
+  description: "_a phi_ -- this is the set of things"
+- key: phiup
+  short: $Phi$
+  description: "the set of all profiles"
+- key: pi
+  short: $pi$
+  description: "_a process step_ -- a function transforming one thing into another"
+- key: psi
+  short: $psi$
+  description: "a function mapping a A to a B"
+- key: rho
+  short: $rho.alt$
+  description: "_a good profile_ -- a description of a profile"
+- key: rhoup
+  short: $Rho$
+  description: "the set of all ..."
+- key: sigma 
+  short: $sigma$
+  description: "_a state_ -- an ..."   
+- key: sigmaup 
+  short: $Sigma$
+  description: "the set of ???"
+- key: thetaalt
+  short: $theta.alt$
+  description: "a confidence level"
+- key: zeta
+  short: $zeta$
+  description: "_a process chain_ -- a composition of process steps"
+- key: cala
+  short: $cal(A)$
+  description: "a set of displays for arguments of process steps"
+- key: caldjpt
+  short: $cal(D)$
+  description: "_a dataset_ -- in the context of ONETOPIC"
+- key: caldmacro
+  short: $cal(D)_m$
+  description: "a set of macro things"
+- key: caldmicro
+  short: $cal(D)_mu$
+  description: "a set of $mu$ things"
+- key: caldtilde
+  short: $tilde(cal(D))$
+  description: "_a subset of a dataset that serves as training data_ -- in the context of ONETOPIC"
+- key: calf
+  short: $cal(F)$
+  description: "a set of displays"
+  descr: "the union of the sets of this and that, i.e. 
+  $cal(P) union cal(D)$"
+- key: caln 
+  short: $cal(N)$
+  description: "_the normal distribution $cal(N)(mu,Xi)$_ -- determined by a mean vector $mu$ and a covariance matrix $Xi$"
+- key: calp
+  short: $cal(P)$
+  description: "a set of displays for properties"
+- key: calu
+  short: $cal(U)$
+  description: "_the uniform distribution $cal(U)(X)$_ -- over a random variable $X$"
+- key: calx
+  short: $cal(X)$
+  description: "_the set of all possible worlds_ -- all possible complete variable assignments"

@@ -1,0 +1,26 @@
+document:
+    title: "Enhancing Cognitive Robotics by Tractable Joint Probability Distributions"
+    subtitle: "A PhD Thesis"
+    author:
+        name: "Tom Schierenbeck"
+        email: "tom_sch@uni-bremen.de"
+        affiliation: "Institute for Artificial Intelligence"
+committee:
+    supervisor1:
+        name: "Prof. Dr. Michael Beetz"
+        affiliation: "Universität Bremen"
+        role: "1. Prüfer"
+    supervisor2:
+        name: "Prof. Dr. Second Advisor"
+        affiliation: "Universität Bremen"
+        role: "2. Prüfer"
+submission:
+    date:
+        year: 2025
+        month: 3
+        day: 1
+defense:
+    date:
+        year: 2025
+        month: 5
+        day: 7

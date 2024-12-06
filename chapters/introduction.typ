@@ -1,6 +1,5 @@
 #import "@preview/ctheorems:1.1.2": *
 #show: thmrules
-#import "template.typ": *
 #set quote(block: true)
 
 = Introduction

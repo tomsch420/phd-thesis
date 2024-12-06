@@ -1,0 +1,15 @@
+- key: api
+  short: API
+  long: Application Programming Interfaces
+  description: This is a long description what that is
+- key: owl
+  short: OWL
+  long: W3C Web Ontology Language
+  description: OWL forms the standard for a Semantic Web language which can be used to represent complex knowledge about things and relations between things #link(\https://www.w3.org/OWL/\) #text(9pt,[ (Accessed: Aug 1st, 2022)])
+- key: crc
+  short: CRC
+  long: Collaborative Research Center
+  description: CRCs are long-term university-based research institutions, established for up to 12 years, in which researchers work together within a multidisciplinary research programme. #link(\https://www.dfg.de/en/research_funding/programmes/coordinated_\nprogrammes/collaborative_research_centres/index.html\) #text(9pt,[ (Jan 20th, 2023)])
+- key: thing
+  short: thing
+  description: this is some text to contentibe the thing.

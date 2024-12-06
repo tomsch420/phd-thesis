@@ -1,7 +1,0 @@
-[package]
-name = "algorithms"
-version = "0.0.1"
-authors = ["mareikep <https://github.com/mareikep>"]
-license = "MIT"
-description = "Create algorithms e.g. for pseudo-code representation."
-entrypoint = "algo.typ"

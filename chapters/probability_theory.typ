@@ -1,8 +1,7 @@
 #import "@preview/ctheorems:1.1.2": *
 #show: thmrules
-#import "template.typ": *
-#set quote(block: true)
-#import "algo.typ": *
+#import "../thesis-imports.typ": *
+
 
 = Probability Theory
 <sec:probability_theory>
@@ -79,7 +78,8 @@ Note that for a fixed $A,$ the triple $(E, Im, P)$ is a probability space as wel
 Instead of explaining this concept in my own words, I refer to Todd Kemps phrasing since there is nothing I could explain any better about it.
 
 #quote(attribution: [Todd Kemp @kemp2021youtube])[
-  We often think of conditional probability intuitively in terms of a two-stage experiment. In the first stage of the experiment, we see whether one particular event $A$ has occurred or not. If it has it may influence whether a second event $B$, which we’re going to measure in a second stage, will occur or not. Therefore, we may want to update our information on probabilities of the later events given information about whether the earlier event has occurred or not. In this language we’ll refer to the original probability measure $P(B)$ as the prior probability of an event $B$ and after we observe that event $A$ has occurred we refer to the new updated conditional probability as the posterior probability of that same event $B$. In more practical applications $A$ is referenced as the evidence since it is an event that evidently happened and $B$ is the query, since it is the event of interest. There are two very elementary but extraordinarily important results that come from that line of thinking the so-called law of total probability and most critically, Bayes theorem.]
+  We often think of conditional probability intuitively in terms of a two-stage experiment. In the first stage of the experiment, we see whether one particular event $A$ has occurred or not. If it has it may influence whether a second event $B$, which we’re going to measure in a second stage, will occur or not. Therefore, we may want to update our information on probabilities of the later events given information about whether the earlier event has occurred or not. In this language we’ll refer to the original probability measure $P(B)$ as the prior probability of an event $B$ and after we observe that event $A$ has occurred we refer to the new updated conditional probability as the posterior probability of that same event $B$. In more practical applications $A$ is referenced as the evidence since it is an event that evidently happened and $B$ is the query, since it is the event of interest. There are two very elementary but extraordinarily important results that come from that line of thinking the so-called law of total probability and most critically, Bayes theorem.
+]
 
 #theorem([Law of Total Probability])[
 Let $A_1 + A_2 + ... + A_n = E$ and $A_i sect A_j = emptyset $ if $i != j$ , i. e. be a partioning of the elementary events. Then for any $X in Im$,
@@ -296,7 +296,7 @@ $
 
 // TODO update figure with CDF
 #figure(
-  image("images/standard_uniform_pdf.svg"),
+  image("../images/standard_uniform_pdf.svg"),
   caption: [Probability density function of the standard uniform distribution.])
   <fig:uniform_pdf>
 
@@ -337,7 +337,7 @@ In common machine learning applications it is often argued that the Gaussian dis
 
 // TODO include CDF
 #figure(
-  image("images/standard_gaussian_pdf.svg"),
+  image("../images/standard_gaussian_pdf.svg"),
   caption: [Probability density function of the standard Gaussian distribution.])
   <fig:gaussian_pdf>
 
@@ -361,7 +361,7 @@ In #ref(<sec:conditional-distributions>) we see the importance of the delta func
 
 // TODO update plot
 #figure(
-  image("images/dirac_delta_pdf.svg"),
+  image("../images/dirac_delta_pdf.svg"),
   caption: [Probability density function of the dirac delta distribution.])
   <fig:dirac_delta_pdf>
 
@@ -615,7 +615,7 @@ $
 Unlike the definition offered by #cite(<choi2020probabilistic>), the concept of the mode in this work adopts a more general perspective. #cite(<choi2020probabilistic>) define the mode as the vector that maximizes the PDF of a distribution. However, this definition overlooks a crucial aspect: the maximum of the PDF may not always correspond to a single point, but rather a set of points. To address this limitation, the concept of the mode employed here focuses on identifying the random event that maximizes the PDF point-wise. It's important to clarify that this doesn't equate to finding the event with the highest overall probability. Instead, the goal is to identify the random event where every elementary event within that set possesses an equally and maximally high likelihood. 
 
 #figure(
-  image("images/truncated_gaussian_mode.svg"),
+  image("../images/truncated_gaussian_mode.svg"),
   caption: [Mode of the standard Gaussian distribution after it is truncated on the interval $(-infinity, -0.3] union [0.3, -infinity)$. The mode of this truncated distribution is $[-0.3, -0.3] union [0.3, 0.3]$.])
   <fig:truncated_gaussian_mode>
 

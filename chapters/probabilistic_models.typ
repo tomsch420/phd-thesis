@@ -353,6 +353,44 @@ Consider the PC in figure TODO COOL EXAMPLE.
 
 This section describes the detailed calculation of the quantities in @sec:queries. While the theory behind the tractability of the queries is provided by @choi2020probabilistic, this section contributes detailed algorithms that apply the theory in a practical manner.
 
+The algorithms to perform inference are similar between the different query types. Many algorithms require at some point the calculation of the layers of a circuit. The layers of a circuit are defined by all nodes that are at a certain distance from the root of the circuit. The distance is measured by the number of edges that have to be traversed to reach the root. The layers of a circuit are calculated by the bread-first search algorithm. @SciPyProceedings_11
+
+Figure TODO illustrates the layers of a circuit.
+
+The inference algorithms introduced in this chapter use a special field called _result_of_current_query_ that stores the result of the current query for every node of the circuit.
+
+Every non-input unit of the circuit is equipped with the forward method which is shown in @alg:pc_forward.
+
+
+#figure(
+    algo(
+            title: "Forward Pass of a unit.",
+            parameters: ($n$, ),
+            init: (
+                (
+                    key: [Input],
+                    val: (
+
+                        [$n$, a non-leaf unit in a PC.],
+                    )
+                ),
+                (
+                    key: [Output],
+                    val: ([The likelihood of the event ($p(x)$).],)
+                )
+            ))[
+ *If* unit.is_sum: #i \ 
+ unit.result_of_current_query = $sum_(c in "in"(n)) theta_(n,c) c."result_of_current_query" $ #d  \
+*If* unit.is_product: #i
+    \   unit.result_of_current_query = $product_(c in "in"(n)) c."result_of_current_query" $ #d
+    ],
+    caption: [
+        #smallcaps([Forward]): The forward pass for sum and product units in probabilistic circuits.
+    ],
+    kind: "algorithm",
+    supplement: [Algorithm]
+)<alg:pc_forward>
+
 === Likelihood
 
 The calculation of the likelihood of a fully instantiated world is straight forward in PCs. At every leaf node, the distribution contained by the leaf is evaluated for it's density at the variable described by it. At the sum units, the convex sum of the input units is evaluated. At the product units the results of the children are multiplied. Since the definition of a PC omits any kind of complex transformations of probabilities, such as the change of variables, it is not required to take into account any more complex calculations. 
@@ -378,20 +416,93 @@ Z = sum_(c in "in"(n)) exp(theta_(n,c))
 $
 which ensures non-negativity due to the properties of the exponential transformation. Algorithm TODO shows the pseudo-code to solve the likelihood query.
 
+#figure(
+    algo(
+            title: "Likelihood Query in a PC",
+            parameters: ($p, X$, ),
+            init: (
+                (
+                    key: [Input],
+                    val: (
+
+                        [$p$, a probabilistic circuit],
+                        [$X$, A full evidence state.],
+                    )
+                ),
+                (
+                    key: [Output],
+                    val: ([The likelihood of the event ($p(x)$).],)
+                )
+            ))[
+*For* layer in pc.layers: #i
+    \ *For* unit in layer: #i
+    \  *If* unit.is_leaf: #i 
+    \ unit.likelihood(event) #d 
+    \ *Else*: #i
+    \  unit.forward() #d#d#d\
+  *Return* p.root.result_of_current_query
+    ],
+    caption: [
+        #smallcaps([Likelihood]): The algorithm to calculate the likelihood of a full evidence query in a PC.
+    ],
+    kind: "algorithm",
+    supplement: [Algorithm]
+)<alg:pc_likelihood>
+
+
 === Marginalization
 
 The next query class is the class of marginal queries. In the scope of this thesis, marginal queries are all queries that require integration over a simple event of the product algebra (recall from @def:marginal-query).
 
 Solving multivariate integrals is proven to be P-space hard, and hence it is no wonder that most probabilistic models are unable to answer such queries exactly, if even at all. @dyer1988integration
 PCs are able to calculate integrals over boxes by ensuring a structural constrained called decomposability. 
-TODO DEFINITION
-While decomposability is nice for marginal inference, it comes at the prices of expressiveness. There are relationships between variables that cannot be captured but only approximated by circuits, such as linear dependence ($X = a Y + b$). (TODO CITE?)
-In this, on of the objectives is to do probabilistic reasoning over the behavior of robots. Since PyCRAM formalizes the thinking process in a computer program, the information that is available to the robot at execution is already transformed into a usable form. Hence, it is unlikely that relationships are needed that cannot be sufficiently approximated by a decently sized circuit.
 
-Calculating the marginal probability of an event in a PC is then very similar to algorithm TODO. The only difference is that the input units have to be able to calculate the probability of the event they are assigned to. Luckily, most univariate distributions are tractable for integration.
-Furthermore note that this discussion is only about a simple event of the product algebra. For a composite event the cost of marginal inference is linear in the number of simple events enclosed by the composite event.
+#definition([Decomposability @choi2020probabilistic])[
+  A product node $n$ is decomposable if the scopes of its input units do not share variables: 
+  $
+    phi(c_i) sect phi(c_j) = emptyset, forall c_i, c_j in "in"(n), i != j.
+  $
+
+A PC is decomposable if all of its product units are decomposable.
+]
+
+While decomposability is nice for marginal inference, it comes at the prices of expressiveness. There are relationships between variables that cannot be captured but only approximated by circuits, such as linear dependence ($X = a Y + b$). (TODO CITE?)
+In this, one of the objectives is to do probabilistic reasoning over the behavior of robots. Since PyCRAM formalizes the thinking process in a computer program, the information that is available to the robot at execution is already transformed into a usable form. Hence, it is unlikely that relationships are needed that cannot be sufficiently approximated by a decently sized circuit.
+
+The second requirement for marginal inference is smoothness of sum units.
+
+#definition([Smoothness @choi2020probabilistic])[
+A sum node $n$ is smooth if its inputs all have identical scopes: 
+$
+phi(c_i) = phi(c_j), forall c_i, c_j in "in"(n).
+$
+A circuit is smooth if all of its sum units are smooth.
+]
+
+Smoothness is not as limiting as decomposability. Every decomposable, but non-smooth circuit can be converted to a smooth circuit in polynomial time.  @choi2020probabilistic
+
+@choi2020probabilistic introdcues the following construction to convert a decomposable non-smooth PC to a smooth and decomposable PC.
+Suppose $C_2$ is a decomposable non-smooth PC over variables $X$. 
+Then a smooth and decomposable PC $C_1$ can be constructed from $C_2$ as the following. 
+For every non-smooth sum unit $n$, we replace each of its inputs $c$ with a product unit $c′$  that takes as input $c$ and newly introduced input distribution units $"IU"(X)$ for every variable $X in phi(n)$ that is not in the scope of $c$. @choi2020probabilistic
+
+$
+  c′ = c dot product_(X in phi(n) without phi(c)) "IU"(X)
+$
+
+@choi2020probabilistic argues that for finite domains this distribution is the uniform distribution over the domain of $X$. 
+While this is correct and completely sufficient for practical uses, it does not cover the case of infinite domains which are often found in continuous variables. In such cases one would have to introduce an uninformative, improper prior which is out of scope for this thesis. However, this construction remains meaningful, especially if one takes into account the parameterization of actions with different variables in a robot's cognitive architecture.
+
+
+Finally, calculating the marginal probability of an event in a smooth and decomposable PC is then very similar to algorithm TODO. The only difference is that the input units have to be able to calculate the probability of the event they are assigned to. Fortunately, most univariate distributions are tractable for integration.
+Furthermore note that this discussion is only about a simple event of the product algebra. For a composite event the cost of marginal inference is linear in the number of simple events enclosed by the composite event. Recall that decomposability does not state anything for the calculation of the marginal probability of an event that is not part of the product algebra.
 
 === Conditioning
+
+The main calculation in conditioning is the integration over sets of the product algebra. This is exactly equal to the calculation of marginal queries in general and hence also requires smoothness and decomposability. 
+However, the calculation of the probability if the condition is only part of the answer. The other part is provided by the entire distribution of the evidence. In PCs, this requires a restructuring of the circuit which is additional effort.
+The algorithm to calculate the conditional probability is shown in algorithm TODO.
+The restructuring of non-leaf nodes is a subject of checking the reachability from the (new) root of the circuit. 
 
 
 === Mode

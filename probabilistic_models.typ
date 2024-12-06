@@ -1,0 +1,644 @@
+#import "@preview/ctheorems:1.1.2": *
+#show: thmrules
+#import "algo.typ": *
+#import "template.typ": *
+#set quote(block: true)
+#import "@preview/fletcher:0.5.1" as fletcher: diagram, node, edge
+
+
+= Probabilistic Models
+<sec:probabilistic_models>
+
+Understanding the relationships between multiple random variables lies at the heart of many scientific endeavors and especially machine learning. Joint probability distributions serve as a valuable tool for expressing these connections. 
+However, efficiently representing and manipulating joint distributions, especially for high-dimensional scenarios, is a significant challenge.
+
+While the previous section (@sec:probability_theory) focussed on the probability function as a whole, this section delves into the actual representations of joint probability distribution. 
+The focus in the context of this thesis is on tractable distributions.
+Tractable distributions are distributions where answering a query takes at most polynomial many time steps with respect to the size of a distribution. As @sec:probability-query discussed, there are multiple, structurally different types of queries. It follows, that tractability is a spectrum where a model can be characterized for tractability of a query type. Furthermore, it is required that a model gives an *exact* answer for a query and not an approximate answer, like the MC estimate of an integral. 
+
+#definition(title: [Tractable Probabilistic Inference @choi2020probabilistic])[
+  A class of queries *Q* is tractable on a family of probabilistic models $M$ iff any query $q in bold(Q)$ on a model $m in M$ can be computed in time $O("poly"(|m|))$. We also say that $M$ is a tractable model for *Q*.
+]
+
+For long lived agents, such as cognitive robots, exact inference is highly important. If a model of the world is correct, but answers from the model are only random, such as in the MC method, it can be concluded that there is a non-zero probability that the model produces an answer that leads to a catastrophic failure. While this probability is often very low, it is increased with the total number of times the model is queried.
+Such a behavior of a random variable is quantified in the geometric distribution.
+
+This section discusses tractability of probabilistic graphical models (PGMs) and probabilistic circuit (PCs). Intractable models, such as generative neural networks (GANs) or normalizing flows (NFs) are only touched on. 
+// TODO adjust with how this chapter evovles
+
+== Graphical Models
+
+Probabilistic Graphical Models (PGMs) offer a graphical representation of joint probability distributions, leveraging a visual language to encode the dependencies between random variables. These models depict variables as nodes in a graph, and the relationships between them are captured by edges connecting the nodes. The specific connections and the absence of edges encode the conditional independence relationships that simplify the joint distribution.
+
+PGMs are a valuable tool for understanding and manipulating joint probability distributions since:
+
+- *Visualizing Dependencies:*  Unlike traditional algebraic representations of joint distributions, PGMs provide a clear and high-level visual depiction of the relationships between variables. This intuitive approach allows researchers to readily identify the variables that directly influence each other and those that are conditionally independent.
+
+- *Efficient Representation:* For high-dimensional problems, representing a joint distribution with a complex mathematical formula is impracticable. PGMs offer a more compact and scalable representation, particularly when conditional independence relationships exist between variables. This efficiency translates to improved computational performance and easier analysis.
+
+- *Diverse Applications:*  The versatility of PGMs extends across various scientific disciplines. From modeling gene regulatory networks in biology to analyzing relationships between financial assets, PGMs offer a powerful tool for understanding complex systems characterized by interconnected variables.
+
+In essence, PGMs bridge the gap between complex joint probability distributions and intuitive visual representations. By leveraging the power of graphs, PGMs empower researchers to effectively analyze, reason about, and make predictions in scenarios involving multiple interacting random variables. 
+
+However, this high level abstraction of PGMs makes it hard to analyze computations on them. 
+
+The fundamental idea behind graphical models revolves around factorization. These models seek to represent a joint probability distribution, which can be quite intricate, as a product of more manageable conditional distributions. This factorization process not only simplifies the representation but also opens doors to efficient algorithms for reasoning about the dependencies between the involved random variables.
+
+In @tab:combinatoric_explosion it was shown that representing a distribution as the joint probability table over all variables is exponentially hard and hence not tractable. PGMs solve this problem by computing the global distribution by small, local factors, leveraging the product rule (@def:conditional_probability) and conditional independence (@def:conditional_independence).
+
+=== Bayesian Networks
+
+A very prominent PGM is the Bayesian network. A Bayesian Network is a directed acyclic graph (DAG) that models variables as nodes and dependencies as directed edges.
+An example of such a model is shown in @fig:bayesian_network_example.
+The idea is, that a variable that has an outgoing edge to another variable influences that distribution of the child variable. 
+The advantage is clearly, that instead of having to write down the entire distribution only the distributions for each node conditioned on their parent nodes are needed.
+The limitations, however, are severe. First off, the model does not allow for continuous variables in non-leaves of the DAG. Second, in real world scenarios, it is very rare that conditional independence arises when only using the observed variables.
+Third, there may not be an acyclic graph that expresses the dependencies.
+Lastly, inference in Bayesian Networks is not straight forward. While the literature discusses many methods, e. g. belief propagation, the sum product algorithm and many more, they do not directly translate to the queries discussed in @sec:queries. @choi2020probabilistic @darwiche2009modeling 
+It can be observed that a Bayesian Network where all variables but one are parents of that one circumvents most of the problems.
+However, it requires to express $P(bold(Y) | bold(O), bold(R), bold(X)).$ The complexity of representing the distribution of a node is exponential in the number of parent nodes and hence, nothing is gained by such a factorization.
+
+// Example distribution using the example from S4
+// What if no factorization exists like that?
+// Problems with continuous variables
+
+#figure(caption: [A Bayesian Network factorizing the distribution of the scenario in @sec:running_example using the factorization 
+$
+P(bold(O), bold(R), bold(X), bold(Y)) = P(bold(R)) dot.c P(bold(O) | bold(R)) dot.c P(bold(X) | bold(O)) dot.c P(bold(Y) | bold(O)).$ 
+])[
+  #diagram(node-defocus: 0,
+	spacing: (1cm, 2cm),
+	edge-stroke: 1pt,
+	crossing-thickness: 5,
+	mark-scale: 70%,
+	node-fill: luma(97%),
+	node-outset: 3pt,
+	node((0,0), "Robot Type"),
+	node((0,1), "Object Type"),
+	node((1,2), "X"),
+	node((-1,2), "Y"),
+  edge((0, 0), (0, 1), "->"),
+   edge((0, 1), (1, 2), "->"),
+   edge((0, 1), (-1, 2), "->"),
+ )
+]<fig:bayesian_network_example>
+
+#figure(caption: [A Bayesian Network factorizing the distribution of the scenario in @sec:running_example using the factorization 
+$
+P(bold(O), bold(R), bold(X), bold(Y)) = P(bold(R)) dot.c P(bold(O)) dot.c P(bold(X)) dot.c P(bold(Y) | bold(O), bold(R), bold(X)).$ 
+])[
+  #diagram(node-defocus: 0,
+	spacing: (1cm, 2cm),
+	edge-stroke: 1pt,
+	crossing-thickness: 5,
+	mark-scale: 70%,
+	node-fill: luma(97%),
+	node-outset: 3pt,
+	node((-1,0), "Robot Type"),
+	node((0,0), "Object Type"),
+	node((1,0), "X"),
+	node((0,1), "Y"),
+  edge((0, 0), (0, 1), "->"),
+   edge((-1, 0), (0, 1), "->"),
+   edge((1, 0), (0, 1), "->"),
+ )
+]<fig:stupid_bayesian_network_example>
+
+
+#definition([Bayesian Network @gordon2014probabilistic])[
+
+A Bayesian Network is a directed acyclic graph $G = <V, E>$, 
+where every vertex $v in V$ is associated with a random variable $X_v$, 
+and every edge $(u, v)$ in $E$ represents a direct dependence from the random variable $X_u$ to the random variable $X_v$. 
+
+Let $"Deps"(v) = \{u | (u, v) in E \}$ denote the direct dependences of node $v in V$. 
+In a Bayesian Network, each node $v in V$ of the graph is associated with a conditional probability distribution $"CPD"(v)$, 
+which denotes the probability distribution of $X_v$ conditioned over the values of the random variables associated 
+with the direct dependences $D(v)$.
+
+The likelihood function of a Bayesian Network is defined as the product of the conditional probability distributions
+
+$
+P(X_1, dots, X_n) = product_(v in V) P(X_v) | "Deps"(X_(v)).
+$
+
+]<def:bayesian-network>
+
+
+=== Markov Random Fields
+Due to the problematic extraction of conditional independences that characterize a Bayesian Network, Markov Random Fields (MRFs) are introduced.
+
+#definition("Markov Random Field")[
+  A Markov Random Field (MRF), als known as Markov Network is a
+  model of the joint probability distribution for a given set of random variables $X$.
+  An MRF consists of an undirected graph $G = (V, E)$ where every variables is a node in $V$ and every edge represents a direct dependency between the variables.
+  The graph is accompanied by a set of factors ${Phi_1,..., Phi_k}$, also called potential functions, for every maximal clique in $G$. The factors represent a not necessarily normalized  probability distribution.
+
+  The joint probability distribution of the entire MRF is given by the normalized product of the factor potentials
+  
+  $
+  p(x) = 1/Z product_k Phi_k ( x_{k})
+  $
+  where
+  $
+  Z = sum_(x in X) product_k Phi_k ( x_{k}).
+  $
+  Note that the sum and integral are interchangeable. $Z$ is the normalization constant of the model and exponentially hard to compute in the number of variables.
+]
+
+Bayesian Networks can be converted into MRFs by applying moralization. //TODO source 
+The MRFs that represent the same distribution as the Bayesian Networks from @fig:bayesian_network_example and @fig:stupid_bayesian_network_example are shown in @fig:mrf_example and @fig:stupid_mrf_example.
+It can be observed that @fig:stupid_mrf_example contains only one maximal clique and hence the factorization that was naively done by the Bayesian Network is not reducing any complexity.
+
+
+#figure(caption: [An MRF factorizing the distribution of @fig:bayesian_network_example using the same conditional independences.
+])[
+  #diagram(node-defocus: 0,
+	spacing: (1cm, 2cm),
+	edge-stroke: 1pt,
+	crossing-thickness: 5,
+	mark-scale: 70%,
+	node-fill: luma(97%),
+	node-outset: 3pt,
+	node((0,0), "Robot Type"),
+	node((0,1), "Object Type"),
+	node((1,2), "X"),
+	node((-1,2), "Y"),
+  edge((0, 0), (0, 1), "-"),
+   edge((0, 1), (1, 2), "-"),
+   edge((0, 1), (-1, 2), "-"),
+ )
+]<fig:mrf_example>
+
+#figure(caption: [An MRF factorizing the distribution of @fig:stupid_bayesian_network_example using the same conditional independences.
+])[
+  #diagram(node-defocus: 0,
+	spacing: (1cm, 2cm),
+	edge-stroke: 1pt,
+	crossing-thickness: 5,
+	mark-scale: 70%,
+	node-fill: luma(97%),
+	node-outset: 3pt,
+	node((-1,0), "Robot Type"),
+	node((1,0), "Object Type"),
+	node((-1,1), "X"),
+	node((1,1), "Y"),
+  edge((-1, 0), (1, 0), "-"),
+   edge((-1, 0), (-1, 1), "-"),
+   edge((-1,0), (1, 1), "-"),
+   edge((1,0), (-1, 1), "-"),
+   edge((1,0), (1, 1), "-"),
+   edge((1,1), (-1, 1), "-"),
+ )
+]<fig:stupid_mrf_example>
+
+When considering the dependencies that are stated in an MRF, one can easily see that an MRF that is structured like a tree contains This property is partly derived from the fact, that in a tree no node has multiple parents and hence no moralization needs to be done.
+Intuitively, the bounded tree width of a graph measures the closeness to a tree. In conclusion, the complexity of inference in a PGM is exponential in the bounded tree width of the underlying MRF representing it. @bach2001thin
+
+=== Template Models
+While the previous sections highlighted the limitations of PGMs this section focusses on the task where PGMs accelerate in: Visualizing dependencies and dynamically constructing distributions.
+
+Real world processes evolve over time. Modelling a dynamic relation, such as time, is done by applying template models.
+For the scope if this thesis, it is assumed that (time) steps in template models are of discrete nature.
+A template model consists of a distribution that describes the relationship between variables in one step and a transition model that describes the distribution of variables between two or more time steps.
+A very prominent model of this category is a Hidden Markov Model (HMM).
+
+#definition([Hidden Markov Model])[
+  A Hidden Markov Model (HMM) is a dynamic Bayesian Network
+  containing a hidden state variable $X_t$ and an evidence variables $E_t$. Formally, a HMM contains
+  - The initial distribution $P(X_0)$
+  - The emission distribution $P(E_t | X_t)$
+  - The transition distribution $P(X_t | X_(t-1))$
+]<def:hmm>
+
+#figure(caption: [Example of an HMM. The figure depicts a three consecutive time steps within the Bayesian Network structure of an HMM.])[
+  #diagram(node-defocus: 0,
+	spacing: (1cm, 2cm),
+	edge-stroke: 1pt,
+	crossing-thickness: 5,
+	mark-scale: 70%,
+	node-fill: luma(97%),
+	node-outset: 3pt,
+ node((0,0), $X_(t-1)$),
+ node((1,0), $X_t$),
+ node((2, 0), $X_(t+1)$),
+ node((0, 1), $E_(t-1)$),
+ node((1, 1), $E_(t)$),
+ node((2, 1), $E_(t+1)$),
+ edge((0,0), (1,0), "->"),
+ edge((1,0), (2,0), "->"),
+ edge((0,0), (0,1), "->"),
+ edge((1,0), (1,1), "->"),
+  edge((2,0), (2,1), "->"),
+  edge((2, 0), (3, 0), "->"),
+  edge((-1, 0), (0, 0), "->")
+ )
+]<fig:hmm_example>
+
+The concept of template models is not limited to time. For instance, a robot that executes a plan in a cognitive architecture may generate actions to execute on the fly. Consider the task sequence depicted in @fig:template_model_transporting.
+
+#figure(caption: [An action sequence that is generated by a transporting plan.])[
+  #diagram(node-defocus: 0,
+	spacing: (1cm, 2cm),
+	edge-stroke: 1pt,
+	crossing-thickness: 5,
+	mark-scale: 70%,
+	node-fill: luma(97%),
+	node-outset: 3pt,
+ node((0,0), "Navigate"),
+  node((1,0), "Pick Up"),
+  node((2, 0), "Navigate"),
+   edge((0,0), (1,0), "->"),
+ edge((1,0), (2,0), "->"),
+ )
+]<fig:template_model_transporting>
+
+A follow up action may now be to access a location to place the picked up object or to directly place it. As long as both transitions $P("Access" | "Navigate")$ and $P("Place" | "Navigate")$
+are known, one can just dynamically extend the distribution by adding the variable and conditional distribution that is generated by the plan executive.
+This high level dynamically extensions of distributions is a complicated probabilistic operation that is can best described by a PGM displaying this process.
+
+== Probabilistic Circuits
+<sec:probabilistic-circuits>
+
+While PGMs focus on a high level visualization of a distribution, they are not well suited for describing analyzing inference processes. In chapter 12 of the book "Modelling and Reasoning with Bayesian Networks" it was already discussed that BNs, and in general PGMs, are unfit for an actual computation of probabilistic quantities and hence they were converted in arithmetic circuits. @darwiche2009modeling 
+@choi2020probabilistic build an entire framework on this idea by taking these arithmetic circuits and interpreting them directly as probability distributions, called probabilistic circuits (PCs).
+PCs are probabilistic models that are tractable for large classes of queries. @choi2020probabilistic 
+PCs formalize the conditions under wich the queries from @sec:queries are tractable to compute for a model class.
+Furthermore, they are the toolbox that enables this thesis to integrate cognitive architectures and probabilistic reasoning in a tractable and yet expressive way.
+
+This section explains the building blocks that are used throughout this thesis and extends the literature by inference algorithms that are insufficiently discussed. This section is largely based on @choi2020probabilistic.
+
+A PC recursively encodes a joint probability distribution in a directed acyclic graph. In contrast to PGMs, the computational graph of a PC is not only a statement about conditional independence, but also a detailed description of the exact calculations that make up the PDF.
+
+The smallest computational graph consists of only one node. 
+Hence, this node represents the entire distribution. This distribution unit, also refereed to as input unit, can be multivariate. However it is very common to have univariate input units. There are only very few tractable, multivariate distributions that cannot be described by the PC framework and hence offer an alternative to univariate input distributions. One notable choice here is the multivariate Gaussian (normal) distribution.
+Common examples for input units are uniform (example in @fig:uniform_pdf), Gaussian (example in @fig:gaussian_pdf) or Multinomial (example in @tab:combinatoric_explosion) distributions.
+// TODO introduce definition of multinomial distribution?
+Input distributions are the leaves of the computational graph.
+Furthermore, Input distributions are in almost every case not enough to encode a probability distribution that exhibits the desired behavior. Hence, there is a need for more building blocks in the toolbox of PCs. 
+The next computational unit that is addressed is the product unit.
+
+#definition([Factorized Models @choi2020probabilistic])[
+  Consider the probabilistic model $p$ encoding a distribution over variables $bold(X) = union.big_(i=1)^k X_i$ partitioned into disjoint sets $X_A$ and $X_B$ with $X_A sect X_B = emptyset$. The model is factorized iff
+  $
+  p(X) = product_(k=1)^i p_i(bold(X_i)) 
+  $
+  where each $p_i$ is a distribution over the subset of variables  $bold(X_i)$.
+  ]<def:fully_factorized>
+  
+Observe that this again is independence of entire variables, as described in @def:independence. Similar to PGMs, a PC has to have some (conditional) independence assumptions to become a tractable probabilistic model. The simplest class of probabilistic model is the fully factorized distribution, as described in @def:fully_factorized. This corresponds to either only a product unit with only univariate input units as children or a PGM with no edges and only nodes.
+
+// TODO example
+Due to the independence property, fully factorized models are strongly limited in their expressiveness on their own. Another unit has to be introduced to enable complex behavior in the PC framework. The next and last ingredient to represent a factorized, but not fully factorized model is the sum unit.
+
+#definition([Mixture Models @choi2020probabilistic])[
+  Let ${p_i}_(i=1)^k$ be a finite collection of probabilistic models, each defined over the same collection of variables $bold(X)$. A mixture model is the probabilistic model defined as convex combination 
+  
+  $
+  p(bold(X)) = sum_(i=1)^k theta_i p_i (bold(X))
+  $
+
+  for a set of positive weights, called the mixture parameters, $theta_i > 0, i = 1, ... , k$ and \ $sum_(i=1)^k theta_i = 1$.
+]<def:mixture>
+
+Mixture models are shown in @def:mixture  and are a well known tool to enhance the expressiveness of probability distributions. 
+While a mixture model looks is simple, it is a well established fact that sufficiently large mixtures of multivariate Gaussian distributions can approximate any continuous PDF arbitrarily well. @stergiopoulos2017advanced
+This fact underlines the importance and power of weighted sums of distributions in probabilistic modelling. Furthermore, mixtures are always convex combinations of distributions to ensure that the probability of the universal event is unity (fourth axiom in @def:probability_measure)
+
+These three unit types now build up to the definition of a PC. Note that it is important to distinguish between the structure and the parameters of a PC.
+
+
+#definition([Probabilistic Circuit @choi2020probabilistic])[
+A probabilistic circuit (PC) $C$ over variables $X$,
+is a pair $(G, theta)$, where $G$ is a computational graph, also called the circuit structure that is parameterized by $theta$, also called the circuit parameters, as defined in @def:pc_structure. The PC $C$ computes a function that characterizes a (possibly unnormalized) distribution p(X).
+]<def:pc>
+
+#definition([Structure of a PC @choi2020probabilistic])[
+Let $C = (G, theta)$ be a PC over variables $X$. 
+$G$ is a computational graph in the form of rooted DAG, comprising computational units, also called nodes. 
+The standard evaluation ordering of $G$, also called feedforward order, is defined as follows.
+If there is an edge $n -> o$ from unit $n in G$ to unit $o in G$, we say $n$ the input of $o$ and $o$ its output. 
+Let $"in"(n)$ denote the set of all input units for unit $n in G$ and equivalently, $"out"(n)$ denotes the set of its outputs. 
+The input units of $C$ are all units $n in G$ for which $"in"(n) = emptyset$. 
+Analogously, the output unit of $C$, also called its root, is the unit $n in G$ for which $"out"(n) = emptyset$. 
+The structure $G$ comprises three kinds of computational units: input distribution units, product units and sum units, to which a scope is associated as formalized in @def:pc_scope.
+]<def:pc_structure>
+
+#definition([Scope of a PC @choi2020probabilistic])[
+Let $C = (G, theta)$ be a PC over variables $X$. 
+The computational graph $G$ is equipped with a scope function $Phi$ which associates to each unit $n in G$ a subset of X, i.e., $Phi(n) subset.eq X$. 
+For each non-input unit $n in G, Phi(n) = union.big_(c in "in"(n)) Phi(c)$. The scope of the root of $C$ is $X$.
+]<def:pc_scope>
+
+#definition([Computational units of a PC @choi2020probabilistic])[
+Let $C = (G, theta)$ be a PC over variables X. 
+Each unit $n in G$ encodes a non-negative function $C_n$ over its scope: $C_n : "val"(phi(n)) → RR^+$.
+
+An input unit $n in C$ encodes a non-negative function that has a support $"supp"(C_n)$ and is parameterized by $theta_n$.
+
+A product unit n defines the product 
+$
+C_n(X) = product_(c in "in"(n)) C_c (X).
+$
+A sum unit n defines the weighted sum 
+$
+C_n(X) = sum_(c in "in"(n)) theta_(n,c) C_c(X)
+$
+parameterized by weights $theta_(n,c) >= 0$.
+]<def:pc_computational_units>
+
+#definition([Parameters of a PC @choi2020probabilistic])[
+The set of parameters of a PC C is $theta = theta_S union theta_L$ where $theta_S$ is the set of all sum weights $theta_(n,c)$ and $theta_L$ is the set of parameters of all input units in C.
+]<def:pc_parameters>
+
+Consider the PC in figure TODO COOL EXAMPLE.
+
+== Inference
+
+This section describes the detailed calculation of the quantities in @sec:queries. While the theory behind the tractability of the queries is provided by @choi2020probabilistic, this section contributes detailed algorithms that apply the theory in a practical manner.
+
+=== Likelihood
+
+The calculation of the likelihood of a fully instantiated world is straight forward in PCs. At every leaf node, the distribution contained by the leaf is evaluated for it's density at the variable described by it. At the sum units, the convex sum of the input units is evaluated. At the product units the results of the children are multiplied. Since the definition of a PC omits any kind of complex transformations of probabilities, such as the change of variables, it is not required to take into account any more complex calculations. 
+One only has to take care of the normalization of PCs. The theory does not forbid the creation of sum units that do not sum to unity. 
+Fortunately, a circuit is always normalized if all sum units weights sum to one. @choi2020probabilistic
+Hence, correct inference can be assured by extending the calculation of results in sum units to
+$
+C_n(X) = (sum_(c in "in"(n)) theta_(n,c) C_c(X)) / Z,
+$
+where
+$
+Z = sum_(c in "in"(n)) theta_(n,c)
+$
+
+is the local normalization constant of a sum unit. This is especially important when gradient based optimization is applied on a circuit, where the updating of the PCs parameters may destroy the unity-constraint.
+While at it, a very good trick to also ensure non-negativity and numerical stability in gradient based processes is to rephrase the sum units using the logarithmic space. @liu2024scaling In this logarithmic representation the sum unit is expressed as
+$
+C_n(X) = (sum_(c in "in"(n)) exp(theta_(n,c)) C_c(X)) / Z,
+$
+where
+$
+Z = sum_(c in "in"(n)) exp(theta_(n,c))
+$
+which ensures non-negativity due to the properties of the exponential transformation. Algorithm TODO shows the pseudo-code to solve the likelihood query.
+
+=== Marginalization
+
+The next query class is the class of marginal queries. In the scope of this thesis, marginal queries are all queries that require integration over a simple event of the product algebra (recall from @def:marginal-query).
+
+Solving multivariate integrals is proven to be P-space hard, and hence it is no wonder that most probabilistic models are unable to answer such queries exactly, if even at all. @dyer1988integration
+PCs are able to calculate integrals over boxes by ensuring a structural constrained called decomposability. 
+TODO DEFINITION
+While decomposability is nice for marginal inference, it comes at the prices of expressiveness. There are relationships between variables that cannot be captured but only approximated by circuits, such as linear dependence ($X = a Y + b$). (TODO CITE?)
+In this, on of the objectives is to do probabilistic reasoning over the behavior of robots. Since PyCRAM formalizes the thinking process in a computer program, the information that is available to the robot at execution is already transformed into a usable form. Hence, it is unlikely that relationships are needed that cannot be sufficiently approximated by a decently sized circuit.
+
+Calculating the marginal probability of an event in a PC is then very similar to algorithm TODO. The only difference is that the input units have to be able to calculate the probability of the event they are assigned to. Luckily, most univariate distributions are tractable for integration.
+Furthermore note that this discussion is only about a simple event of the product algebra. For a composite event the cost of marginal inference is linear in the number of simple events enclosed by the composite event.
+
+=== Conditioning
+
+
+=== Mode
+
+=== Sampling
+
+Describing sampling in PCs and relating them to PGMs requires a key interpretation of mixture models, the laten variable interpretation.
+
+TODO
+- source for latent variable interpretation
+
+== Structure Transformations
+
+=== Nyga Distribution
+
+In most machine learning scenarios, the distribution of the data is unknown. Learning a distribution is then usually done by assuming a functional form and fitting the parameters of the function to the data as discussed in @sec:maximum_likelihood_principle. This is called parametric learning.
+
+However, coming up with a parameterized equation in the first place is it's own problem. A common approach is to create a randomized equation with an enormous amount of parameters. The parameters are then estimated by maximizing the likelihood using a gradient descent based solution. //TODO SOURCE 
+
+An alternative approach is the non-parametric learning, where a distribution is learned without assuming a functional form. 
+
+This section describes how to learn a model free, univariate distribution called Nyga Distribution. Formally, a Nyga Distribution is just a way to learn a deterministic mixture of uniform distributions. 
+
+Historically, the concept of a similar distribution to the Nyga distribution was first introduced in a paper by Daniel Nyga @nyga2023joint. Daniels’ creation was the so-called quantile distribution. Back in the day, it was not connected to circuits or a maximum likelihood estimation. The idea was to create a distribution that is able to approximate any distribution without any assumptions. Daniel used the mean squared error between the learned quantile function and the empirical CDF. However, this sometimes leads to undesired results, especially with containing jumps in the distribution or completely missing parts of the distribution. 
+
+A further contribution of this thesis is the exact maximum likelihood estimation of the process. The solution is detailed in @sec:nyga_distribution_learning.
+
+==== Learning
+<sec:nyga_distribution_learning>
+
+Nyga distributions are learned by greedily maximizing the weighted log-likelihood (see #ref(<def:mle>)).
+
+When the uniform distribution is assumed for the data, the weighted log likelihood is given by
+
+$
+ln (W L(theta, W))  &= sum_(i=1)^N ln(w_i) + ln(p(D_i | theta)) \
+&=  sum_(i=1)^N ln(w_i) + ln(1/(b-a)) \
+&=  sum_(i=1)^N ln(w_i) -  sum_(i=1)^N  ln(b-a).
+$
+
+Since the density of the uniform distribution is constant, the weighted log likelihood can be restated as
+
+$
+ln (W L(theta, W)) = (sum_(i=1)^N ln(w_i)) -  N ln(b-a).
+$
+which is particularly easy to calculate.
+In case of a mixture of two uniform distributions, the likelihood is given by
+
+$
+p(x_i) = w_"left" dot U_"left" + w_"right" dot U_"right"
+$
+
+where the _left_ and _right_ subscripts are indicators for a mixture component that describes the respective part of the distribution. The Nyga distribution solves the MLE by using a recursive partitioning scheme.
+For this recursive scheme, the induction has to be applied to a sorted and unique datasets.
+
+
+Let $D$ be a sorted and unique dataset of $N$ samples $x_1, ..., x_N$ where $x_i in RR$.
+
+The data is in each induction step partitioned into two disjoint sets
+$
+D_"left" &= d_1, ..., d_k\
+D_"right" &= d_(k+1), ..., d_N.
+$
+
+The data is split along the distance maximizing point 
+$
+d_"split" = (d_k + d_(k+1)) / 2.
+$ 
+
+The likelihood of such a split is given by assuming a uniform distribution on the left and right side of the split.
+This constructs a deterministic mixture of uniform distributions where the weights are given by the relative sum of weights on the left and right side of the split.
+
+$
+w_"total" &= sum_(i=1)^N w_i \
+w_"left" &= (sum_(i=1)^k w_i) / w_"total" \
+w_"right" &= (sum_(i=k+1)^N w_i) / w_"total"
+$
+
+The density of the mixture is hence given by
+// TODO this equation misses an indicator
+$
+p(x) &= w_"left" dot U_"left" + w_"right" dot U_"right" \
+&= w_"left" / (d_"split" - d_1) +  w_"right" / (d_N - d_"split") 
+$
+
+The determinism allows simplifying the likelihood calculation for all samples in the left split to just 
+
+$
+p_"left" (x) &=  w_"left" dot U_"left" + w_"right" dot underbrace( U_"right", = 0)\
+ln(p_"left" (x)) &= ln(w_"left") - ln(d_"split" - d_1).
+$
+Analogously, for the right side it is 
+$
+ln(p_"right" (x)) &= ln(w_"right") - ln(d_N - d_"split").
+$
+
+Furthermore, it can be observed that the density is constant for every sample in the left split and constant for every sample in the right split.
+Plugging it in, the likelihood for the split is given by
+
+$
+ln(L(D|W, d_1, d_"split", d_N)) &= sum_(i=1)^N ln(w_i) + ln(p(x_i))\
+&=  sum_(i=1)^"left" ln(w_i) + ln(p(x_i)) + sum_(i="right")^N ln(w_i) + ln(p(x_i))\
+&=  sum_(i=1)^"left" ln(w_i) + ln(w_"left" dot p_"left" (x_i)) + sum_(i="right")^N ln(w_i) + ln(w_"right" dot p_"right" (x_i))\
+&=  underbrace(sum_(i=1)^"left" ln(w_i) + ln(w_"left") + ln(p_"left" (x_i)), "Left Hand Side (LHS)") + underbrace(sum_(i="right")^N ln(w_i) + ln(w_"right") + ln(p_"right" (x_i)), "Right Hand Side (RHS)")\
+"LHS" &= L dot (ln(w_"left") + ln(U_"left")) + sum_(i=1)^"left" ln(w_i) \ 
+"RHS" &= R dot (ln(w_"right") + ln(U_"right")) + sum_(i="right")^N ln(w_i).
+$
+
+The most likely split is selected, and the process is repeated recursively on the left and right side of the split.
+
+If the likelihood improvement of the best split, compared to no splitting, is smaller than a given threshold, the process is terminated. The likelihood to compare against is given by the weighted log likelihood of a uniform without splitting, i.e.
+
+$
+ln(L(D | W, d_1, d_N)) = sum_(i=1)^N ln(w_i) - N ln(d_N - d_1).
+$
+
+The best threshold is given by selecting the maximum weighted likelihood improvement over all possible splits. The improvement value is given by
+
+$
+max(ln(L(D|W, d_1, d_"split", d_N))) > ln(epsilon) + ln(L(D | W, d_1, d_N)).
+$
+
+In simpler terms, the induction is terminated as soon as the likelihood does not improve by more than $epsilon$ percent anymore if a split is made. This parameter is referenced to as minimum likelihood improvement.
+
+// TODO EXAMPLE
+
+=== Joint Probability Trees
+
+While the previous section described a way to induce a univariate continuous distribution a great challenge still persists. Most real world applications involve multiple variables the question arises on how to generalize such a concept onto multivariate, model-free distributions. 
+
+In 2020, Daniel Nyga started to think about what happens to decision trees when you take away more and more features. @nyga2023joint A decision tree usually solves a discriminating task
+
+$
+arg max_y P(Y|X),
+$
+where $X = <x_1, ..., x_d>$ is some feature vector and $Y$ is a variable which value should be predicted from $X$.
+
+Decision Trees partition the feature-space and assign the mode of Y to each partition. For a full feature vector, this kind of inference will always result in exactly on partition, where the prediction can be made. @fuernkranz2010encyclopedia @wu2008top
+
+As soon as features are missing, multiple partitions are possible. Hence, a mixture like voting is done. The first enhancement to this voting was to weight the votes of the partitions by the marginal probability of being in such a partition. These probabilities can easily be obtained during learning by the frequencies of each partition in the training data. However, not every partition is equally likely under arbitrary values. Hence, the partitions were further enhanced by independent, univariate distributions in for each variable in each partition. For discrete variables, frequencies easily get these distributions again. The final problem was the functional form of the continuous distributions. Due to the infinite support of Gaussian distributions, these were unfeasible for finite partitions. Furthermore, not every variable is normally distributed. The flexible answer to this problem was the Nyga distribution (@sec:nyga_distribution_learning).
+Without knowing it, Daniel had forged a robust, fast and scalable probabilistic circuit.
+
+This section connect JPTs to probabilistic circuits and goes through the properties guaranteed by a them.
+In PC terminology, JPTs are smooth, decomposable and deterministic circuits, enabling them to answer all queries presented in @sec:queries. 
+
+==== Learning
+
+The JPT learning algorithm is an inductive algorithm to create the structure and parameters of a probabilistic circuit that is similar to the C4.5 algorithm. JPTs create a mixture of factorized distributions.
+This is done by recursively dividing the dataset into partitions where either a threshold is met that limits the number of parameters the circuit may have or where the mutual information gain is so weak that the variables can be regarded as independent. 
+The created partitions are all described by axis aligned splits of the underlying space. 
+The information gain given a split of the space is given by the variance for numeric variables and the Gini impurity for symbolic variables. @nyga2023joint
+
+On an abstract level, the termination cases of the algorithm can be described as
+1. If there are not enough samples to justify a split, create a fully factorized product node as a subcircuit of the root (sum unit) with weight equal to the size of this partition relative to the size of the initial dataset an terminate.
+2. If the best information gain given an arbitrary split is below a threshold, create a fully factorized product node as in case 1 and terminate.
+3. If the number of parameters exceeds a total, create a fully factorized product node as in case 1 and terminate.
+
+The algorithm can then be roughly described as 
+1. For each variable $v$, find the normalized information gain for all other variables splitting on $v$.
+2. Let $v^*$ be the attribute with the highest normalized information gain.
+3. Check for the termination cases.
+4. Recurse on the subsets of the data obtained by splitting on $v^*$.
+
+An example of the result of the splitting is shown in figure @fig:jpt_example
+
+#figure(caption: [Example of a JPT fitted on a mixture of multivariate Gaussian distributions with two components. The points represent the input data and the lines the decision criteria chosen by the learning algorithm. ])[
+ #image("images/jpt_example.png")
+]<fig:jpt_example>
+
+==== Properties
+
+Due to the  learning algorithms schema, a JPT always results into a probabilistic circuit that has as a root a sum unit. The root has only product units as children that fully decompose. These product units have either discrete distributions or Nyga distributions as children. 
+It follows, that every JPT learned over a set of variables, is structured decomposable with every other JPT over these variables. Furthermore, the partitioning of the dataset using axis aligned splits ensures determinism and hence enables the efficient calculations of the mode. 
+Nyga Distributions are also deterministic since they also rely on an inductive splitting algorithm and hence the entire circuit is guaranteed to be deterministic.
+Marginal determinism is not guaranteed but can be ensured for a fixed set of variables not allowing splits dependent on the variables one wants to marginalize over. This matter especially for deterministic sequence models using the JPT learning algorithm.
+
+Furthermore, an outstanding property of JPTs and Nyga Distributions is that they are model free. Usually, users have to define some structure to learn the parameters of. The presented distributions omit that altogether.
+
+=== Other models
+
+- RATSPN
+- Other structure learning approaches?
+- Conditional SPN
+
+=== Implementation
+
+Before discussing different implementations it is worth taking some time to discuss the topic of requirements.
+The ecosystem in which the results of this thesis are employed requires an implementation that has a python interface. 
+Furthermore, all query types that are discussed in @sec:queries have to be implemented or at least an implementation of such operations has to be supported by the architecture of the system. 
+Next, Gaussian, truncated Gaussian, uniform, integer and multinomial distributions have to be supported. Also structure learning algorithms such as JPT and Nyga Distributions are required. 
+Finally, the implementation has to be time and space efficient, documented and tested.
+
+In the recent years a couple of implementations appeared on GitHub.
+This thesis only discusses the implementations that have a considerable set of features. While there are many repositories that contain tiny, untested and undocumented fragments of code that, most likely, describe some special forms of inferences, these are not worth noting.
+
+The noteworthy implementations are SPFlow, Juice, PyJuice, SPPL, LibSPN, Einsum Networks, and the newest addition cirkit.
+
+#rotate(270deg, reflow: true)[
+#figure(caption: [Quality of implementation of PCs.])[
+#table(
+  columns: (auto, auto, auto, auto, auto, auto, auto, auto,auto,),
+  inset: 10pt,
+  align: horizon,
+  table.header(
+    [Repository], [Test Coverage], [Documentation Coverage], [Python Interface], [Supported Query Types], [Supported Distributions], [Custom Structure Learning], [Time Efficient], [Space Efficient]), 
+    [SPFlow], [TODO], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO] , [TODO],
+    [Juice], [TODO], [TODO], [No], [TODO], [TODO], [TODO] , [TODO], [TODO],
+    [PyJuice], [TODO], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO], [TODO],
+    [SPPL], [TODO], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO], [TODO],
+    [LibSPN], [TODO], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO], [TODO],
+    [Einsum Networks], [TODO], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO], [TODO],
+    [cirkit], [68%], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO], [TODO],
+)] <table:pc-frameworks>]
+
+The next contribution of this thesis is the implementation of probabilistic models and especially probabilistic circuits in a python implementation. The implementation is open source and hosted on GitHub. It features a documentation coverage of TODO and a test coverage of (90%) TODO. 
+It features an efficient implementation of the Nyga Distribution, JPTs and Conditional SPNs. 
+
+
+==== Networkx torch, jax 
+
+During the development of the pm package all the implementations described in @table:pc-frameworks where considered to build upon. However, as conditioning and marginalization and conversions from graphical models are structure changing algorithms none of the frameworks were feasible. Additionally, the documentation and testing coverage were too low to efficiently extend the frameworks. This does not mean that the existing frameworks are bad. They were build from a perspective of estimating the parameters using the MLE and gradient descent. For this use case the mentioned frameworks heavily rely on PyTorch. LibSPN is an exception since it uses Tensorflow. An modern, accelerating backend like PyTorch and Tensorflow offers great speed ups in calculations using a static computational graph. This does not integrate well with structure changing transformations of circuits. In pm, one way to use PCs is a Networkx representation of the computational graph. NetworkX is a Python package for the creation, manipulation, and study of the structure, dynamics, and functions of complex networks. @SciPyProceedings_11
+The representation that Networkx allows can be directly manipulated without worrying about the structure of a compiled PC. Hence, it is perfectly suited for structure learning and manipulating algorithms. 
+However, it is not a coincidence that all these frameworks decided for an acceleration backed due to speed ups around two to three order of magnitudes. PM is no exception. It offers a way to compile a Networkx PC into a layered PC using JAX as accelerating framework. @jax2018github
+This layering is done by a topological sort of the circuits nodes and then grouping them by scope and operation. Nodes with the same scope and operation can be gathered into a layer and a layer benefits from a static computational graph. 
+
+TODO images that describe this process.
+
+While this conversion from a Networkx circuit to a layered circuit is inspired by the architecture presented in PyJuice. @liu2024scaling.
+The implementation of PyJuice uses PyTorch as a backend with locally dense sum layers. A layer describes two sets of nodes that are connected.
+For non-leaf layers a matrix that describes this connection is created. For product layers, this can be thought of as a boolean matrix where every element $(n, m)$ describes if node $n$ is connected to node $m$.
+For sum layers, the elements describe the weights of the edges and hence it is a float tensor.
+For instance, a layer that connects three sum nodes to two product nodes has an edge matrix with shape $3 times 2$.
+
+PyJuice represented these layers using dense matrices. If sum layers are not fully connected or even only connected using 1% of the edges, it leads to a huge amount of wasted memory and calculation time. 
+PM on the other side bets on sparse matrices for edge tensors and hence does not suffer from this waste. However, sparse matrices have a calculation and storage overhead. The indices and edges of a sparse matrix are stored separately and have to be accessed when calculating anything. It follows, that if around 50% of an edge tensor is empty the sparse implementation should be faster.
+
+The reasoning behind PyJuices choice to always use dense tensors remains subject to speculation. A possibility however could be that PyTorch sparse tensors are not compatible with compiling when using operations that are typically required in inference such as accessing the indices and values of a sparse tensor directly.
+The just-in-time (jit) compiler of JAX however is able to accelerated almost all calculations needed for inference in PCs. 
+Hence, PM uses JAX as backend to get up to scale in repeated probabilistic inference. 
+
+TODO detailed numbers.
+
+
+=== Evaluation
+
+The qualitative properties of the models used in the thesis have been discussed above. This section quantitively evaluates the models and compares them to state of the art circuits. 

@@ -48,7 +48,7 @@ A very prominent PGM is the Bayesian network. A Bayesian Network is a directed a
 An example of such a model is shown in @fig:bayesian_network_example.
 The idea is, that a variable that has an outgoing edge to another variable influences that distribution of the child variable. 
 The advantage is clearly, that instead of having to write down the entire distribution only the distributions for each node conditioned on their parent nodes are needed.
-The limitations, however, are severe. First off, the model does not allow for continuous variables in non-leaves of the DAG. Second, in real world scenarios, it is very rare that conditional independence arises when only using the observed variables.
+The limitations, however, are severe. First off, the model does not easily allow for continuous variables in non-leaves of the DAG. Second, in real world scenarios, it is very rare that conditional independence arises when only using the observed variables.
 Third, there may not be an acyclic graph that expresses the dependencies.
 Lastly, inference in Bayesian Networks is not straight forward. While the literature discusses many methods, e. g. belief propagation, the sum product algorithm and many more, they do not directly translate to the queries discussed in @sec:queries. @choi2020probabilistic @darwiche2009modeling 
 It can be observed that a Bayesian Network where all variables but one are parents of that one circumvents most of the problems.
@@ -120,9 +120,29 @@ $
 
 ]<def:bayesian-network>
 
+=== Latent Variable Trees
+
+TODO SOURCES AND EXAMPLES
+
+Latent variable trees are a specialized type of Bayesian Network incorporating latent variables. Latent variables, also known as hidden or unobserved variables, are not directly measured but are hypothesized to influence observed variables. They represent underlying factors, constructs, or states explaining relationships between observed data. Most important, the latent variables are not part of the training data. They are only an aid to model the data in a tractable model.
+
+These models are characterized by a hierarchical, branching structure, where each node (except the root) has exactly one parent. Tree structures offer several advantages. They allow for efficient inference algorithms, such as message-passing algorithms like belief propagation, which can perform inference efficiently in tree-structured graphs. 
+They also provide intuitive interpretation, as the hierarchical structure offers a clear and interpretable representation of relationships between variables. 
+Furthermore, trees can generally be translated to a computational graph of polynomial size, making them computationally tractable, as will be discussed in @sec:probabilistic-circuits.
+Compared to more general graph structures, trees are relatively simple to learn and reason about, making them a popular choice for modeling complex systems.
+
+Latent tree models combine tree-structured models and latent variables. They are tree-structured Bayesian Networks where some or all internal nodes represent latent variables. 
+Several common types of latent tree models exist. Latent Class Trees have each node in the tree representing a latent class or cluster. Observed variables are assumed conditionally independent given their assigned class.
+A very prominent instance of this is the Naive Bayes classifier.
+
+Latent tree models have found applications in a wide range of fields. These include Natural Language Processing, for tasks like topic modeling, sentiment analysis, and document classification; Computer Vision, for tasks like image segmentation, object recognition, and scene understanding; Bioinformatics, for tasks like gene expression analysis, phylogenetic tree reconstruction, and protein function prediction; Social Network Analysis, for tasks like community detection, influence modeling, and social network evolution; and Recommender Systems, for tasks like user preference modeling and personalized recommendations.
+
+Latent variable trees are limited by the tree structure and the conditional independence assumptions that come with the structure. Furthermore, in most cases the latent variables have to be discrete. Up to some rare cases, continuous latent variables are intractable when computing integrals. 
+
+In the context of this thesis, Latent Variable Trees are utilized as a compact representation for complex models where the set of conditional independencies between the (latent) variables is the defining characteristic.
 
 === Markov Random Fields
-Due to the problematic extraction of conditional independences that characterize a Bayesian Network, Markov Random Fields (MRFs) are introduced.
+Due to the problematic extraction of conditional independencies that characterize a Bayesian Network, Markov Random Fields (MRFs) are introduced.
 
 #definition("Markov Random Field")[
   A Markov Random Field (MRF), als known as Markov Network is a
@@ -499,13 +519,33 @@ Furthermore note that this discussion is only about a simple event of the produc
 
 === Conditioning
 
-The main calculation in conditioning is the integration over sets of the product algebra. This is exactly equal to the calculation of marginal queries in general and hence also requires smoothness and decomposability. 
-However, the calculation of the probability if the condition is only part of the answer. The other part is provided by the entire distribution of the evidence. In PCs, this requires a restructuring of the circuit which is additional effort.
+One part of the calculations in conditioning is the integration over sets of the product algebra. This is exactly equal to the calculation of marginal queries in general and hence also requires smoothness and decomposability. 
+However, the calculation of the probability of the condition is only part of the answer. The other part is provided by the entire distribution of the evidence. In PCs, this requires changes to the nodes and structure of the circuit which is additional effort.
 The algorithm to calculate the conditional probability is shown in algorithm TODO.
-The restructuring of non-leaf nodes is a subject of checking the reachability from the (new) root of the circuit. 
-
+The restructuring of non-leaf nodes is a subject of checking the reachability from the (new) root of the circuit.
+The changes to the leaf nodes are done by truncating the input distribution units to the evidence.
 
 === Mode
+
+In 1994 it was already proven that the calculation of the mode in a probabilistic model is generally an NP-Hard problem. @shimony1994map
+Hence, the calculation of the mode in a probabilistic circuits is also only tractable if there are some structural constraints. The constraints are consistency and determinism. @choi2020probabilistic
+
+#definition([Determinism @choi2020probabilistic])[
+A sum node is deterministic if, for any fully-instantiated
+input, the output of at most one of its children is nonzero. A circuit is deterministic if all
+of its sum nodes are deterministic.
+]
+
+Determinism can be considered as a partitioning of the underlying sigma algebra. Note that, in contrast to smoothness and decomposability, this constraint is concerned with the outputs of nodes instead of their scopes. It has been shown that these three properties are sufficient to ensure tractability of the mode query. @chan2012mpe
+
+@choi2020probabilistic showed that while decomposability, smoothness and determinism are sufficient to ensure tractability of the mode query, they are not necessary. They introduced consistency and showed that a circuit that is consistent and deterministic is also tractable for the mode query.
+
+#definition([Consistency @choi2020probabilistic])[
+A product node is consistent if each variable that is shared between multiple children nodes only appears in a single leaf node, in the subcircuit rooted at the product node. A circuit is consistent if all of its product nodes are consistent.]
+
+While this constraint is strictly weaker than decomposability and hence a valuable contribution I have yet to meet a practical example where a consistent but not decomposable circuit is used.
+
+Algorithm TODO shows the pseudo-code to solve the mode query for deterministic circuits.
 
 === Sampling
 

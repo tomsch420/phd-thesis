@@ -549,20 +549,66 @@ Algorithm TODO shows the pseudo-code to solve the mode query for deterministic c
 
 === Sampling
 
-Describing sampling in PCs and relating them to PGMs requires a key interpretation of mixture models, the laten variable interpretation.
+Describing sampling in PCs is best done by relating them to Latent Variable Trees. This requires a key interpretation of sum units, the laten variable interpretation.
+A sum unit can be interpreted as a marginalized latent variable that has as domain the index set of the children of a sum unit. This interpretation was first introduced in the context of Sum Product Networks (SPNs). @poon2012spnda 
+Figure TODO visualizes this transformation.
+As pointed out by @peharz2016latent this interpretation destroys the smoothness of a circuit. The problem was solved by introducing distributions over the latent variables in other sum units. 
+However, for sampling it is sufficient to sample the latent variable of a sum unit without considering it in the scopes of other sum units. Algorithm TODO shows the pseudo-code to sample from a PC. Sampling also requires a smooth and decomposable circuit.
 
-TODO
-- source for latent variable interpretation
+== Sum Product Networks
 
-== Structure Transformations
+Sum Product Networks are an alternative representation of probabilistic circuits. They were introduced in 2012 and are a the spiritual predecessor of probabilistic circuits. @poon2012spnda 
 
-=== Nyga Distribution
+#definition([Sum Product Network @poon2012spnda])[
+Definition 1 A sum-product network (SPN) over variables
+$x_1, ...,x_d$ is a rooted directed acyclic graph whose leaves are the indicators $x_1,..., x_d$ and  $!x_1.,..., !x_d$ and whose internal nodes are sums and products. Each edge $(i, j)$ emanating from a sum node $i$ has a non-negative weight $w_(i j)$.
+The value of a product node is the product of the values of its children. The value of a sum node is 
+$sum_(j in "Ch"(i)) w_(i j) v_j $, where $"Ch"(i)$ are the children of $i$ and $v_j$ is the value of
+node $j$. 
+The value of an SPN is the value of its root.
+]<def:spn>
+
+Comparing the definition of a probabilistic circuit (@def:pc) and a sum product network (@def:spn), one can see that the only difference is in the definition of input units. While PCs have input units that are distributions, SPNs have input units that are indicators. This is a very minor difference and has been relaxed to also allow distributions as input units in SPNs. @paris2020spnsurvey
+
+Due to their similarity they also define similar properties. This thesis keeps the alphabetic soup small by sticking to the circuit notation. However, the algorithms and properties that are introduced in this thesis can be directly applied to SPNs. 
+
+== Learning
 
 In most machine learning scenarios, the distribution of the data is unknown. Learning a distribution is then usually done by assuming a functional form and fitting the parameters of the function to the data as discussed in @sec:maximum_likelihood_principle. This is called parametric learning.
+However, coming up with a parameterized equation in the first place is it's own problem. An alternative approach is the non-parametric learning, where a distribution is learned without assuming a functional form. In terms of probabilistic circuits, this is done by learning the structure of the circuit. 
 
-However, coming up with a parameterized equation in the first place is it's own problem. A common approach is to create a randomized equation with an enormous amount of parameters. The parameters are then estimated by maximizing the likelihood using a gradient descent based solution. //TODO SOURCE 
+There exist many approaches to learning in probabilistic circuits. This section introduces the most common ones and before contributing a univariate learning algorithms in @sec:nyga_distribution and a multivariate in @sec:jpt.
 
-An alternative approach is the non-parametric learning, where a distribution is learned without assuming a functional form. 
+Formally, parameter learning consists in finding the optimal parameters for a circuit given its structure and a dataset. This is further divided in generative and discriminative learning. Generative learning is the done use the MLE principle. Discriminative learning is done by maximizing the conditional likelihood of a target variable. TODO MORE EXACT?
+Parameter learning is often done by some variant of gradient descent where the partial derivative of the parameters of the circuit are calculated with respect to the MLE and then moved towards zero. @paris2020spnsurvey However, probabilistic models are often numerical instable, even in the log domain, since the likelihood of high dimensional data is often very small and the numerical precision of computers only goes so far.
+
+A prominent trick to stabilize the learning process is the application of Log-Sum-Exp trick at sum nodes. The Log-Sum-Exp trick is a numerical trick to calculate the sum of exponentials in the log domain where the logarithmic values are shifted towards a more stable numerical range before they are added. After that they are shifted back to the original range. @liu2024scaling
+
+Parameter estimation developes largely independent of the domain of probabilistic models since it is a general optimization tool.
+
+On a site note, the parameters of every smooth, decomposable and deterministic circuit can be obatined in closed form. They consist of the frequency of the partitions of the sum nodes children and the parameters of the input units.
+
+A notable competitor to the gradient descent based learning is the Expectation Maximization (EM) algorithm. The EM algorithm is a two step algorithm that iteratively maximizes the likelihood of the data. The first step is the expectation step where the expected value of the latent variables is calculated. The second step is the maximization step where the parameters of the circuit are updated. The EM algorithm is especially useful when the data is incomplete. @paris2020spnsurvey
+
+Structure learning can be defined as the task of creating the structure, and possible also the parameters of a circuit, given a dataset.
+
+The first structure learning approach in the context of SPNs, called BuildSPN, was proposed in 2012. @dennis2012buildspn BuildSPN recursively searches for subsets of strongly dependent variables and introduces sum units to resolve those dependencies. This process is repeated with taking the latent variables generated by the sum units into account.
+Since BuildSPN was designed for image processing this local dependency definition is well chosen.
+Limitations of this algorithm are the potential separation of highly dependent variables, the potential exponential time and space complexity of the search and the requirement to learn the parameters of the model separately. @paris2020spnsurvey
+
+The next generation of structure learning was the LearnSPN algorithm. @gens2013learning LearnSPN is again a recursive algorithm that
+
+
+Structure Learning variants as timeline?
+- Region graphs as a reocurring tool?
+
+- Chow Liu Trees
+- Expectation Maximization
+- RAT SPN
+
+
+=== Nyga Distribution
+<sec:nyga_distribution>
 
 This section describes how to learn a model free, univariate distribution called Nyga Distribution. Formally, a Nyga Distribution is just a way to learn a deterministic mixture of uniform distributions. 
 
@@ -670,6 +716,7 @@ In simpler terms, the induction is terminated as soon as the likelihood does not
 // TODO EXAMPLE
 
 === Joint Probability Trees
+<sec:jpt>
 
 While the previous section described a way to induce a univariate continuous distribution a great challenge still persists. Most real world applications involve multiple variables the question arises on how to generalize such a concept onto multivariate, model-free distributions. 
 

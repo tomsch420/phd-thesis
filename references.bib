@@ -499,3 +499,33 @@ abstract = {Given a probabilistic world model, an important problem is to find t
   url = 	 {https://proceedings.mlr.press/v28/gens13.html},
   abstract = 	 {Sum-product networks (SPNs) are a new class of deep probabilistic models. SPNs can have unbounded treewidth but inference in them is always tractable. An SPN is either a univariate distribution, a product of SPNs over disjoint variables, or a weighted sum of SPNs over the same variables. We propose the first algorithm for learning the structure of SPNs that takes full advantage of their expressiveness. At each step, the algorithm attempts to divide the current variables into approximately independent subsets. If successful, it returns the product of recursive calls on the subsets; otherwise it returns the sum of recursive calls on subsets of similar instances from the current training set. A comprehensive empirical study shows that the learned SPNs are typically comparable to graphical models in likelihood but superior in inference speed and accuracy.}
 }
+
+@article{woolf1957log,
+  title={The log likelihood ratio test (the G-test)},
+  author={Woolf, Barnet},
+  journal={Annals of human genetics},
+  volume={21},
+  number={4},
+  pages={397--409},
+  year={1957},
+  publisher={Wiley Online Library}
+}
+
+
+@InProceedings{rooshenas2014idspn,
+  title = 	 {Learning Sum-Product Networks with Direct and Indirect Variable Interactions},
+  author = 	 {Rooshenas, Amirmohammad and Lowd, Daniel},
+  booktitle = 	 {Proceedings of the 31st International Conference on Machine Learning},
+  pages = 	 {710--718},
+  year = 	 {2014},
+  editor = 	 {Xing, Eric P. and Jebara, Tony},
+  volume = 	 {32},
+  number =       {1},
+  series = 	 {Proceedings of Machine Learning Research},
+  address = 	 {Bejing, China},
+  month = 	 {22--24 Jun},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v32/rooshenas14.pdf},
+  url = 	 {https://proceedings.mlr.press/v32/rooshenas14.html},
+  abstract = 	 {Sum-product networks (SPNs) are a deep probabilistic representation that allows for efficient, exact inference.  SPNs generalize many other tractable models, including thin junction trees, latent tree models, and many types of mixtures.  Previous work on learning SPN structure has mainly focused on using top-down or bottom-up clustering to find mixtures, which capture variable interactions indirectly through implicit latent variables.  In contrast, most work on learning graphical models, thin junction trees, and arithmetic circuits has focused on finding direct interactions among variables.  In this paper, we present ID-SPN, a new algorithm for learning SPN structure that unifies the two approaches. In experiments on 20 benchmark datasets, we find that the combination of direct and indirect interactions leads to significantly better accuracy than several state-of-the-art algorithms for learning SPNs and other tractable models.}
+}

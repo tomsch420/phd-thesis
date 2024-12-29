@@ -596,8 +596,60 @@ The first structure learning approach in the context of SPNs, called BuildSPN, w
 Since BuildSPN was designed for image processing this local dependency definition is well chosen.
 Limitations of this algorithm are the potential separation of highly dependent variables, the potential exponential time and space complexity of the search and the requirement to learn the parameters of the model separately. @paris2020spnsurvey
 
-The next generation of structure learning was the LearnSPN algorithm. @gens2013learning LearnSPN is again a recursive algorithm that
+The next generation of structure learning was the LearnSPN algorithm. @gens2013learning 
+In contrast to BuildSPN, LearnSPN is an algorithm template which is depicted in @alg:learnspn.
+LearnSPN depends on the way a univariate distribution is estimated, how the independent subsets are generated and how the instances are clustered into similar subsets.
+@gens2013learning realized the algorithm using a Hard-EM approach for clustering instances. The univeriate distributions where all discrete ones since the dataset has been discretized for all experiments. Variable splits are done via the G-tes for pairwise independence as defined in @def:gtest.
 
+#definition([G-Test for Pairwise Independence @woolf1957log])[
+The G-Test for pairwise independence is given by 
+$
+  G(X_1, X_2) = 2 sum_(x_1 in "dom"(X_1)) sum_(x_2 in "dom"(X_2)) c(x_1, x_2) 
+  ln ((c(x_1, x_2) dot |T|) / (c(x_1)c(x_2))),
+$
+where $c(·)$ counts the occurrences of a setting
+of a variable pair or singleton.
+
+TODO READ ORIGINAL PAPER
+]<def:gtest>
+
+#figure(
+
+    algo(
+            title: [LearnSPN],
+            parameters: ($T, V$, ),
+            init: (
+                (
+                    key: [Input],
+                    val: (
+                        [$T$, A set of instances],
+                        [$V$, A set of variables],
+                    )
+                ),
+                (
+                    key: [Output],
+                    val: ([A PC representing a distribution over V learned from T],)
+                )
+            )
+        )[
+*if* $|V|$ = 1: #i\ 
+*return* univariate distribution estimated from the variable's values in $T$ #d \
+*else*: #i \
+partition $V$ into approximately independent subsets $V_j$ \
+*if* success: #i \
+*return* $product_j "LearnSPN"(T, V_j)$  #d \
+*else* #i \
+partition $T$ into subsets of similar instances $T_i$\
+*return* $sum_i = (|T_i|) / (|T|) "LearnSPN"(V, T_i)$ #d #d 
+    ],
+    caption: [
+        #smallcaps([LearnSPN]): A template algorithm to learn the structure of a probabilistic circuit. This algorithm is adopted from @gens2013learning to match the nomenclature of circuits.
+    ],
+    kind: "algorithm",
+    supplement: [Algorithm]
+)<alg:learnspn>
+
+In 2014 @rooshenas2014idspn proposed a structure learner called ID-SPN that combines direct and indirect variables interactions. The authors argue that ID-SPN achieves better accuracy than state of the art algorithms for learning SPNs and other tractable models. ID-SPN 
 
 Structure Learning variants as timeline?
 - Region graphs as a reocurring tool?

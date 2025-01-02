@@ -661,13 +661,21 @@ partition $T$ into subsets of similar instances $T_i$\
 In 2014 @rooshenas2014idspn proposed a structure learner called ID-SPN that combines direct and indirect variables interactions. The authors argue that ID-SPN achieves better accuracy than state of the art algorithms for learning SPNs and other tractable models. ID-SPN is similar to the LearnSPN algorithm but it may chose to terminate before reaching a univariate distribution and learn a tractable (tree-shaped) Markov Network without hidden variables instead. 
 
 @peharz2014learning adapted LearnSPN to only produce deterministic circuits and showed that this is still competitive w. r. t. to the likelihood.
-
 @adel2015learning developed a structure learning process that uses (Singular Value Decomposition) to find independent sub-matrices in the data.
+There have been many more alternations to LearnSPN and ID-SPN but most of them add minor improvements to the algorithms. @paris2020spnsurvey
 
-Structure Learning variants as timeline?
-- Chow Liu Trees
-- Expectation Maximization
-- RAT SPN
+Current state of the art in machine learning developes a lot around deep learning. Deep learning is characterized by the use of massively over-parameterized models that are trained with gradient descent.
+It is to no surprise that this direction was then also recently explored for probabilistic circuits. @peharz2020random proposed a method called Random and tensorized SPNs (RAT-SPN).
+RAT-SPN is a deep probabilistic model that creates a random structure for a PC. This random structure is induced by a random decomposition of the variables. This random decomposition is repeated in multiple ways such that the final model is a mixture of random LV-Trees. The discrete latent variables are then parameterized by random distributions with a given arity.
+The resulting PC is a DAG where every inner unit has multiple parents. 
+The parameters of the model are then learned by gradient descent. The authors show that the model is competitive with state of the art deep learning models on a variety of tasks. Surprisingly, it even kept up with intractable probability distributions in terms of likelihood while still being tractable. @peharz2020random
+Another important addition is the concept of tensorization of a PC. Tensorization is a way to represent a PC as a tensor network which is a more compact representation of the DAG underlying a PC. Furthermore, this tensor network is compatible with modern computer architectures and hence speeds up the inference process. Tensorization is discussed in TODO.
+The newest approach to learning PCs is the Probabilistic Integral Circuit (PIC). @gala2024pic learn a PC that imitates an intractable probability distribution. First, a LV-Tree is learned that uses continuous latent variables and hence is intractable for every operation but the calculation of the likelihood. This intractable model is then abstracted by a PC the represents the quadrature integral over the intractable model. This is done by again using a RAT-SPN and parameterize it with values from the intractable model. The authors claim that PICs outperform PCs trained via Expectation-Maximization or gradient descent.  
+
+Recent literature uses high dimensional data to evaluate the performance of probabilistic models. This is due to the fact that high dimensional data is often not well represented by traditional models and the advantage of deep probabilistic models really shows.
+However, the problems in this thesis are rather low dimensional and hence the performance of the models is not the main focus. The main focus is the tractability of the models and the ability to reason about the data using probability theory. 
+
+PC & SPN RESEARCH DIAGRAM.
 
 
 === Nyga Distribution

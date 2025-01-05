@@ -848,21 +848,53 @@ In PC terminology, JPTs are smooth, decomposable and deterministic circuits, ena
 
 ==== Learning
 
-The JPT learning algorithm is an inductive algorithm to create the structure and parameters of a probabilistic circuit that is similar to the C4.5 algorithm. JPTs create a mixture of factorized distributions.
+The JPT learning algorithm is an inductive algorithm to create the structure and parameters of a probabilistic circuit that is similar to the C4.5 algorithm. JPTs create a mixture of fully factorized distributions.
 This is done by recursively dividing the dataset into partitions where either a threshold is met that limits the number of parameters the circuit may have or where the mutual information gain is so weak that the variables can be regarded as independent. 
 The created partitions are all described by axis aligned splits of the underlying space. 
 The information gain given a split of the space is given by the variance for numeric variables and the Gini impurity for symbolic variables. @nyga2023joint
 
-On an abstract level, the termination cases of the algorithm can be described as
-1. If there are not enough samples to justify a split, create a fully factorized product node as a subcircuit of the root (sum unit) with weight equal to the size of this partition relative to the size of the initial dataset an terminate.
-2. If the best information gain given an arbitrary split is below a threshold, create a fully factorized product node as in case 1 and terminate.
-3. If the number of parameters exceeds a total, create a fully factorized product node as in case 1 and terminate.
+The JPT algorithm can be described as a variant of the LearnSPN algorithm and is shown in @alg:jpt. 
+The algorithm is particular efficient due to the way the c4.5 algorthim find the best split. @sani2018computational analyzed the complexity of the c4.5 algorithm and argued that the runtime is dominated by $O(|V| dot |T| dot log_2(|T|))$. Since JPTs only alter the calculations by meauring the impurity on all variables instead of just one, the runtime is still dominated by this term. TODO VERYFY. 
 
-The algorithm can then be roughly described as 
-1. For each variable $v$, find the normalized information gain for all other variables splitting on $v$.
-2. Let $v^*$ be the attribute with the highest normalized information gain.
-3. Check for the termination cases.
-4. Recurse on the subsets of the data obtained by splitting on $v^*$.
+#figure(
+    algo(
+            title: [JPT],
+           parameters: ($T, V$, ),
+            init: (
+                (
+                    key: [Input],
+                    val: (
+                        [$T$, A set of instances],
+                        [$V$, A set of variables],
+                    )
+                ),
+                (
+                    key: [Output],
+                    val: ([A JPT representing a distribution over V learned from T],)
+                )
+            )
+        )[
+
+
+find the best split from the data using C4.5\ 
+
+
+*if* the best split is not reducing impurity by more than the threshold: #i\ 
+*for* $v$ in $V$: #i\
+  *if* $v$ is continuous: #i\
+    *return* Nyga Distribution over $v$ estimated from $T[:, v]$#d \
+  *else*: #i\
+    *return* histogram calculated from $T[:, v]$ #d#d#d\
+*else:* #i\
+recurse on the subsets of the data obtained by splitting on the best split 
+    ],
+    caption: [
+        #smallcaps([JPT]): An inductive learning algorithm to learn a model free deterministic mixture approximating any multivariate distributions.
+    ],
+    kind: "algorithm",
+    supplement: [Algorithm]
+)<alg:jpt>
+
 
 An example of the result of the splitting is shown in figure @fig:jpt_example
 
@@ -873,15 +905,27 @@ An example of the result of the splitting is shown in figure @fig:jpt_example
 ==== Properties
 
 Due to the  learning algorithms schema, a JPT always results into a probabilistic circuit that has as a root a sum unit. The root has only product units as children that fully decompose. These product units have either discrete distributions or Nyga distributions as children. 
-It follows, that every JPT learned over a set of variables, is structured decomposable with every other JPT over these variables. Furthermore, the partitioning of the dataset using axis aligned splits ensures determinism and hence enables the efficient calculations of the mode. 
-Nyga Distributions are also deterministic since they also rely on an inductive splitting algorithm and hence the entire circuit is guaranteed to be deterministic.
+It follows, that every JPT learned over a set of variables, is structured decomposable with every other JPT over these variables. Furthermore, the partitioning of the dataset using axis aligned splits together with Nyga Distributions ensures determinism and hence enables the efficient calculations of the mode. 
+Nyga Distributions are also deterministic since they rely on an inductive splitting algorithm and hence the entire circuit is guaranteed to be deterministic.
 Marginal determinism is not guaranteed but can be ensured for a fixed set of variables not allowing splits dependent on the variables one wants to marginalize over. This matter especially for deterministic sequence models using the JPT learning algorithm.
 
-Furthermore, an outstanding property of JPTs and Nyga Distributions is that they are model free. Usually, users have to define some structure to learn the parameters of. The presented distributions omit that altogether.
+Furthermore, an outstanding property of JPTs and Nyga Distributions is that they are model free abd have a log-linear training time. The way JPTs decompose makes them almost shallow. This is in contrast to deep probabilistic models like RAT-SPNs. For a JPT the shallow transformation takes only TODO time. This furthermore enables an efficient computation of the $L_1$ metric between two JPTs. 
+The fact that JPTs only have one multivariate latent variable  at the root that captures the dependencies enables them to be used in a template models like dynamic bayesian networks.
+TODO LATENT VARIABLE TREE OF A JPT.
+
+JPTs have a finite support even on continous domains. Finite supports on continous domains are, to the best of my knowledge, never used in the literature so far. This is neither a disadvantage nor an advantage but a property that is worth noting. Finite support renders regions of the elementary events impossible. This affects the generality of a model. It especially complicates the comparison of JPTs using a test set. If a test set is not in the support of the JPT, the likelihood is zero and hence the test likelihood of all datapoints according to the MLE is also zero. The advantage of this is the ability to use JPTs in safety critical applications. For instance, the agent could pose a query to the model where he wants to do something dangerous, like driving into a wall and hence damaging itself. The model would then return a zero probability for that action which can be interpreted as "do not ever do that". Noteably, this feature is not unique to JPTs since every tractable model can be truncated to a finite support. However, finding a support that is ensuring the safety constraints is a non-trivial task. JPTs offer the advantage of extracting a support from the data. 
 
 === Layering
 <sec:layering>
-...
+
+Modern computer architectures feature hardware components that are optimized for tensor operations such as Grahpics Processing Units (GPUs), Tensor Processing Units (TPUs) and vectorized instructions on CPUs which can be operated with Single Instruction-Multiple Data (SIMD) instructions. 
+
+The purpose of such instructions is to apply the same operation to multiple data points at once. For instance, two sum units use the same instructions but on possible different weights and inputs. Hence, there has been some research on how to design PCs that benefit from these instructions.
+
+The most prominent approach is the layering of a PC. @liu2024scaling, @peharz2020random
+Layering is a way to group operations into layers that benefit from these SMID instructions. The layers are created by a topological sort of the nodes in the circuit. The nodes are then grouped by their depth, operation and scope. Nodes with the same depth, operation and scope are grouped into a layer. The layers are then connected by edges that describe the operation between the layers. For instance, a product layer is connected to a sum layer by a matrix that describes the connections between the nodes. This matrix is a boolean matrix where every element $(n, m)$ describes if node $n$ is connected to node $m$. For sum layers, the elements describe the weights of the edges and hence it is a float tensor. For instance, a layer that connects three sum nodes to two product nodes has an edge matrix with shape $3 times 2$.
+Both @liu2024scaling and @peharz2020random implement such layers using dense matrices. Dense matrices are matrices where every element is present. This is in contrast to sparse matrices where only the non-zero elements are present. Sparse matrices are especially useful when the number of connections is small compared to the number of possible connections. This can be the case for most PCs.
+Furthermore @liu2024scaling showed that this layering approach is compatible with modern computer architectures. The authers implemented a system that even goes beyond SMID instructions and uses a custom hardware kernel achieving a speed up of one to two orders of magnitude. Unfortunately, the custom hardware kernels
 
 === Implementation
 

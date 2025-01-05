@@ -925,7 +925,7 @@ The purpose of such instructions is to apply the same operation to multiple data
 The most prominent approach is the layering of a PC. @liu2024scaling, @peharz2020random
 Layering is a way to group operations into layers that benefit from these SMID instructions. The layers are created by a topological sort of the nodes in the circuit. The nodes are then grouped by their depth, operation and scope. Nodes with the same depth, operation and scope are grouped into a layer. The layers are then connected by edges that describe the operation between the layers. For instance, a product layer is connected to a sum layer by a matrix that describes the connections between the nodes. This matrix is a boolean matrix where every element $(n, m)$ describes if node $n$ is connected to node $m$. For sum layers, the elements describe the weights of the edges and hence it is a float tensor. For instance, a layer that connects three sum nodes to two product nodes has an edge matrix with shape $3 times 2$.
 Both @liu2024scaling and @peharz2020random implement such layers using dense matrices. Dense matrices are matrices where every element is present. This is in contrast to sparse matrices where only the non-zero elements are present. Sparse matrices are especially useful when the number of connections is small compared to the number of possible connections. This can be the case for most PCs.
-Furthermore @liu2024scaling showed that this layering approach is compatible with modern computer architectures. The authers implemented a system that even goes beyond SMID instructions and uses a custom hardware kernel achieving a speed up of one to two orders of magnitude. Unfortunately, the custom hardware kernels
+Furthermore @liu2024scaling showed that this layering approach is compatible with modern computer architectures. The authers implemented a system that even goes beyond SMID instructions and uses a custom hardware kernel achieving a speed up of one to two orders of magnitude. Unfortunately, the custom hardware kernels are only applicable to a very limited set of computers, namely those which are Ubuntu 18.04 and have a Nvidia GPU with the correct version of Cuda.
 
 === Implementation
 
@@ -933,12 +933,12 @@ Before discussing different implementations it is worth taking some time to disc
 The ecosystem in which the results of this thesis are employed requires an implementation that has a python interface. 
 Furthermore, all query types that are discussed in @sec:queries have to be implemented or at least an implementation of such operations has to be supported by the architecture of the system. 
 Next, Gaussian, truncated Gaussian, uniform, integer and multinomial distributions have to be supported. Also structure learning algorithms such as JPT and Nyga Distributions are required. 
-Finally, the implementation has to be time and space efficient, documented and tested.
+Finally, the implementation needs to be accessible, documented and tested and has to be time and space efficient.
 
-In the recent years a couple of implementations appeared on GitHub.
-This thesis only discusses the implementations that have a considerable set of features. While there are many repositories that contain tiny, untested and undocumented fragments of code that, most likely, describe some special forms of inferences, these are not worth noting.
+In the recent years a couple of implementations appeared on GitHub with varying quality.
+This thesis only discusses the implementations that have a considerable set of features. While there are many repositories that contain minor, untested and undocumented fragments of code that, most likely, describe some special forms of inferences, this chapter focusses on the major implementations.
 
-The noteworthy implementations are SPFlow, Juice, PyJuice, SPPL, LibSPN, Einsum Networks, and the newest addition cirkit.
+The implementations discussed in this thesis are SPFlow, Juice, PyJuice, SPPL, LibSPN, Einsum Networks, and the newest addition cirkit.
 
 #rotate(270deg, reflow: true)[
 #figure(caption: [Quality of implementation of PCs.])[
@@ -957,34 +957,36 @@ The noteworthy implementations are SPFlow, Juice, PyJuice, SPPL, LibSPN, Einsum 
     [cirkit], [68%], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO], [TODO],
 )] <table:pc-frameworks>]
 
-The next contribution of this thesis is the implementation of probabilistic models and especially probabilistic circuits in a python implementation. The implementation is open source and hosted on GitHub. It features a documentation coverage of TODO and a test coverage of (90%) TODO. 
-It features an efficient implementation of the Nyga Distribution, JPTs and Conditional SPNs. 
-
+The next contribution of this thesis is the implementation of probabilistic models and especially probabilistic circuits in a python implementation. The python package is called   "probabilistic_model" (PM). The implementation is open source and hosted on GitHub. It features a documentation coverage of TODO and a test coverage of (90%) TODO. 
+The package supports all query types discussed in @sec:queries and can automatically check if the calculation of a query is tractable. 
+Furthermore, it supports all the distributions from the requirements and is easily extensible to new distributions.
+PM features an efficient implementation of the Nyga Distribution, JPTs, RAT-SPN and CSPNs TODO DESCRIBE.
+It features interfaces for both deep learning compatible (layered) descriptions of circuits and circuits as DAG. Finally, it also is time and space efficient.
 
 ==== Networkx torch, jax 
 
-During the development of the pm package all the implementations described in @table:pc-frameworks where considered to build upon. However, as conditioning and marginalization and conversions from graphical models are structure changing algorithms none of the frameworks were feasible. Additionally, the documentation and testing coverage were too low to efficiently extend the frameworks. This does not mean that the existing frameworks are bad. They were build from a perspective of estimating the parameters using the MLE and gradient descent. For this use case the mentioned frameworks heavily rely on PyTorch. LibSPN is an exception since it uses Tensorflow. An modern, accelerating backend like PyTorch and Tensorflow offers great speed ups in calculations using a static computational graph. This does not integrate well with structure changing transformations of circuits. In pm, one way to use PCs is a Networkx representation of the computational graph. NetworkX is a Python package for the creation, manipulation, and study of the structure, dynamics, and functions of complex networks. @SciPyProceedings_11
-The representation that Networkx allows can be directly manipulated without worrying about the structure of a compiled PC. Hence, it is perfectly suited for structure learning and manipulating algorithms. 
+During the development of the PM package all the implementations described in @table:pc-frameworks but PyJuice and cirkit where considered to build upon. 
+The first version of PyJuice and cirkit were released after the development of PM was almost finished.
+As soon as these packages provide an extensive documentation an interface will be created. The approach to this interface is subject to a current discussion on the GitHub page of the cirkit package.  
+
+Recall that conditioning and marginalization and conversions from graphical models are structure changing algorithms. None of the frameworks are feasible to perform dynamic changes of the structure of a PC. Additionally, the documentation and testing coverage were too low to efficiently extend the frameworks. This does not mean that the existing frameworks are bad. They were build from a perspective of estimating the parameters using the MLE and gradient descent or EM. 
+For this use case the mentioned frameworks heavily rely on PyTorch. LibSPN is an exception since it uses Tensorflow. An modern, accelerating backend like PyTorch and Tensorflow offers great speed ups in calculations using a static computational graph. This does not integrate well with structure changing transformations of circuits. 
+In PM, one way to use PCs is a Networkx representation of the computational graph. NetworkX is a Python package for the creation, manipulation, and study of the structure, dynamics, and functions of complex networks. @SciPyProceedings_11
+The representation that Networkx allows can be directly manipulated without worrying about the structure of a layered PC. Hence, it is perfectly suited for structure learning and manipulating algorithms. 
 However, it is not a coincidence that all these frameworks decided for an acceleration backed due to speed ups around two to three order of magnitudes. PM is no exception. It offers a way to compile a Networkx PC into a layered PC using JAX as accelerating framework. @jax2018github
-This layering is done by a topological sort of the circuits nodes and then grouping them by scope and operation. Nodes with the same scope and operation can be gathered into a layer and a layer benefits from a static computational graph. 
+The JAX backend supports both sparse and dense representations of the connections between layers, which is a unique feature of the PM package.
 
-TODO images that describe this process.
-
-While this conversion from a Networkx circuit to a layered circuit is inspired by the architecture presented in PyJuice. @liu2024scaling.
-The implementation of PyJuice uses PyTorch as a backend with locally dense sum layers. A layer describes two sets of nodes that are connected.
-For non-leaf layers a matrix that describes this connection is created. For product layers, this can be thought of as a boolean matrix where every element $(n, m)$ describes if node $n$ is connected to node $m$.
-For sum layers, the elements describe the weights of the edges and hence it is a float tensor.
-For instance, a layer that connects three sum nodes to two product nodes has an edge matrix with shape $3 times 2$.
+This conversion from a Networkx circuit to a layered circuit is inspired by the architecture presented in PyJuice. @liu2024scaling.
 
 PyJuice represented these layers using dense matrices. If sum layers are not fully connected or even only connected using 1% of the edges, it leads to a huge amount of wasted memory and calculation time. 
-PM on the other side bets on sparse matrices for edge tensors and hence does not suffer from this waste. However, sparse matrices have a calculation and storage overhead. The indices and edges of a sparse matrix are stored separately and have to be accessed when calculating anything. It follows, that if around 50% of an edge tensor is empty the sparse implementation should be faster.
+PM on the other side bets on sparse matrices for edge tensors and hence does not suffer from this waste. However, sparse matrices have a calculation and storage overhead. The indices and edges of a sparse matrix are stored separately and have to be accessed when calculating anything. In practice, if around 50% of an edge tensor is empty the sparse implementation is faster.
 
 The reasoning behind PyJuices choice to always use dense tensors remains subject to speculation. A possibility however could be that PyTorch sparse tensors are not compatible with compiling when using operations that are typically required in inference such as accessing the indices and values of a sparse tensor directly.
-The just-in-time (jit) compiler of JAX however is able to accelerated almost all calculations needed for inference in PCs. 
+This incomplete implementation of sparsity in PyTorch is the reason why PM uses JAX as backend.
+The just-in-time (jit) compiler of JAX is able to accelerated almost all calculations needed for inference in PCs and supports the nescessary operations for sparse matrices. 
 Hence, PM uses JAX as backend to get up to scale in repeated probabilistic inference. 
 
 TODO detailed numbers.
-
 
 === Evaluation
 

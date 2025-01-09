@@ -6,7 +6,7 @@
 <sec:probabilistic_models>
 
 Understanding the relationships between multiple random variables lies at the heart of many scientific endeavors and especially machine learning. Joint probability distributions serve as a valuable tool for expressing these connections. 
-However, efficiently representing and manipulating joint distributions, especially for high-dimensional scenarios, is a significant challenge.
+However, efficiently representing and manipulating joint distributions, especially for complex scenarios, is a significant challenge.
 
 While the previous section (@sec:probability_theory) focussed on the probability function as a whole, this section delves into the actual representations of joint probability distribution. 
 The focus in the context of this thesis is on tractable distributions.
@@ -287,7 +287,7 @@ This section explains the building blocks that are used throughout this thesis a
 A PC recursively encodes a joint probability distribution in a directed acyclic graph. In contrast to PGMs, the computational graph of a PC is not only a statement about conditional independence, but also a detailed description of the exact calculations that make up the PDF.
 
 The smallest computational graph consists of only one node. 
-Hence, this node represents the entire distribution. This distribution unit, also refereed to as input unit, can be multivariate. However it is very common to have univariate input units. There are only very few tractable, multivariate distributions that cannot be described by the PC framework and hence offer an alternative to univariate input distributions. One notable choice here is the multivariate Gaussian (normal) distribution.
+Hence, this node represents the entire distribution. This distribution unit, also referred to as input unit, can be multivariate. However it is very common to have univariate input units. There are only very few tractable, multivariate distributions that cannot be described by the PC framework and hence offer an alternative to univariate input distributions. One notable choice here is the multivariate Gaussian (normal) distribution.
 Common examples for input units are uniform (example in @fig:uniform_pdf), Gaussian (example in @fig:gaussian_pdf) or Multinomial (example in @tab:combinatoric_explosion) distributions.
 // TODO introduce definition of multinomial distribution?
 Input distributions are the leaves of the computational graph.
@@ -319,7 +319,7 @@ Due to the independence property, fully factorized models are strongly limited i
 
 Mixture models are shown in @def:mixture  and are a well known tool to enhance the expressiveness of probability distributions. 
 While a mixture model looks is simple, it is a well established fact that sufficiently large mixtures of multivariate Gaussian distributions can approximate any continuous PDF arbitrarily well. @stergiopoulos2017advanced
-This fact underlines the importance and power of weighted sums of distributions in probabilistic modelling. Furthermore, mixtures are always convex combinations of distributions to ensure that the probability of the universal event is unity (fourth axiom in @def:probability_measure)
+This fact underlines the importance and power of weighted sums of distributions in probabilistic modelling. Furthermore, mixtures are always convex combinations of distributions to ensure that the probability of the universal event is unity (fourth axiom in @def:probability_measure).
 
 These three unit types now build up to the definition of a PC. Note that it is important to distinguish between the structure and the parameters of a PC.
 

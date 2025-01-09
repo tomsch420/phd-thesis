@@ -127,7 +127,6 @@ Dies ist meine Zusammenfassung...
 	printversion: false 
 )
 
-
 // ---------------------------------------------------------------------
 
 #include "chapters/introduction.typ"

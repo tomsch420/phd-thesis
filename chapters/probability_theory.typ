@@ -373,7 +373,7 @@ A common machine learning workflow consists of defining a model and then estimat
 The parameter estimation is usually done from data.
 
 $
-underbrace(f(x), "Model of x") = underbrace(m, "Parameter") x + underbrace(b, "Parameter")
+underbrace(f(x), "Model of x") = underbrace(m, "Parameter") dot  underbrace(x, "Variable") + underbrace(b, "Parameter")
 $
 
 The *maximum likelihood estimation* (MLE) refers to the mathematical process of determining the parameters of a probabilistic model. 

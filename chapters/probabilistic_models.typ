@@ -288,7 +288,16 @@ A PC recursively encodes a joint probability distribution in a directed acyclic 
 
 The smallest computational graph consists of only one node. 
 Hence, this node represents the entire distribution. This distribution unit, also referred to as input unit, can be multivariate. However it is very common to have univariate input units. There are only very few tractable, multivariate distributions that cannot be described by the PC framework and hence offer an alternative to univariate input distributions. One notable choice here is the multivariate Gaussian (normal) distribution.
-Common examples for input units are uniform (example in @fig:uniform_pdf), Gaussian (example in @fig:gaussian_pdf) or Multinomial (example in @tab:combinatoric_explosion) distributions.
+Common examples for input units are uniform (example in @fig:uniform_pdf), Gaussian (example in @fig:gaussian_pdf) or Multinomial (example in @tab:combinatoric_explosion) distributions. An example of a computational graph of an input unit is shown in @fig:input_unit.
+
+#figure(grid(columns: 2, row-gutter: 2mm, column-gutter: 1mm,
+
+  image("../images/input_unit.png"), image("../images/input_unit_distribution.png")),
+
+  caption: "The computational graph of an input unit on the left and the distribution it represents on the right.",
+
+)<fig:input_unit>
+
 // TODO introduce definition of multinomial distribution?
 Input distributions are the leaves of the computational graph.
 Furthermore, Input distributions are in almost every case not enough to encode a probability distribution that exhibits the desired behavior. Hence, there is a need for more building blocks in the toolbox of PCs. 
@@ -303,6 +312,17 @@ The next computational unit that is addressed is the product unit.
   ]<def:fully_factorized>
   
 Observe that this again is independence of entire variables, as described in @def:independence. Similar to PGMs, a PC has to have some (conditional) independence assumptions to become a tractable probabilistic model. The simplest class of probabilistic model is the fully factorized distribution, as described in @def:fully_factorized. This corresponds to either only a product unit with only univariate input units as children or a PGM with no edges and only nodes.
+An example of a product unit is shown in @fig:product_unit.
+
+#figure(grid(columns: 2, row-gutter: 2mm, column-gutter: 1mm,
+
+  image("../images/product_unit.png"), image("../images/product_unit_distribution.png")),
+
+  caption: [The computational graph of a product unit on the left. The PC encodes the distribution obtained by 
+  $p(x, y) = N(x, 0, 1) dot N(y, 0, 1)$.
+  The PDF of this distribution is visualized on the right.],
+
+)<fig:product_unit>
 
 // TODO example
 Due to the independence property, fully factorized models are strongly limited in their expressiveness on their own. Another unit has to be introduced to enable complex behavior in the PC framework. The next and last ingredient to represent a factorized, but not fully factorized model is the sum unit.
@@ -320,6 +340,16 @@ Due to the independence property, fully factorized models are strongly limited i
 Mixture models are shown in @def:mixture  and are a well known tool to enhance the expressiveness of probability distributions. 
 While a mixture model looks is simple, it is a well established fact that sufficiently large mixtures of multivariate Gaussian distributions can approximate any continuous PDF arbitrarily well. @stergiopoulos2017advanced
 This fact underlines the importance and power of weighted sums of distributions in probabilistic modelling. Furthermore, mixtures are always convex combinations of distributions to ensure that the probability of the universal event is unity (fourth axiom in @def:probability_measure).
+
+#figure(grid(columns: 2, row-gutter: 2mm, column-gutter: 1mm,
+
+  image("../images/sum_unit.png"), image("../images/sum_unit_distribution.png")),
+
+  caption: [The computational graph of a sum unit on the left. The PC encodes the distribution obtained by 
+  $p(x) = 0.4 dot N(x, 0, 1) + 0.6 dot N(x, 0.75, 1)$.
+  The PDF of this distribution is visualized on the right. TODO CHECK PARAMETERS],
+
+)<fig:sum_unit>
 
 These three unit types now build up to the definition of a PC. Note that it is important to distinguish between the structure and the parameters of a PC.
 
@@ -367,7 +397,18 @@ parameterized by weights $theta_(n,c) >= 0$.
 The set of parameters of a PC C is $theta = theta_S union theta_L$ where $theta_S$ is the set of all sum weights $theta_(n,c)$ and $theta_L$ is the set of parameters of all input units in C.
 ]<def:pc_parameters>
 
-Consider the PC in figure TODO COOL EXAMPLE.
+Consider the example PC in @fig:example_pc. This circuit contains four uniform input distributions. These input distribution are combined by four sum units using eight edges.
+The sum units are used by two product units which partition the joint distribution over $X$ and $Y$ into the product of the marginal distributions $P(X)$ and $P(Y)$.
+The two product units are then combined by a sum unit to form the joint distribution $P(X, Y)$. 
+
+#figure(grid(columns: 2, row-gutter: 2mm, column-gutter: 1mm,
+
+  image("../images/probabilistic_circuit.png"), image("../images/probabilistic_circuit_distribution.png")),
+
+  caption: [The computational graph of a probabilistic circuit representing $P(X, Y)$ on the left. The PDF of this distribution is visualized on the right.],
+
+)<fig:example_pc>
+
 
 == Inference
 
@@ -390,19 +431,17 @@ Every non-input unit of the circuit is equipped with the forward method which is
                 (
                     key: [Input],
                     val: (
-
-                        [$n$, a non-leaf unit in a PC.],
-                    )
-                ),
-                (
+                        [$n$, a non-leaf unit],
+                    )),
+                  (
                     key: [Output],
-                    val: ([The likelihood of the event ($p(x)$).],)
+                    val: ([The result of the unit.],)
                 )
             ))[
  *If* unit.is_sum: #i \ 
- unit.result_of_current_query = $sum_(c in "in"(n)) theta_(n,c) c."result_of_current_query" $ #d  \
+ unit.result = $sum_(c in "in"(n)) theta_(n,c) c."result" $ #d  \
 *If* unit.is_product: #i
-    \   unit.result_of_current_query = $product_(c in "in"(n)) c."result_of_current_query" $ #d
+    \   unit.result = $product_(c in "in"(n)) c."result" $ #d
     ],
     caption: [
         #smallcaps([Forward]): The forward pass for sum and product units in probabilistic circuits.
@@ -674,6 +713,13 @@ The newest approach to learning PCs is the Probabilistic Integral Circuit (PIC).
 
 Recent literature uses high dimensional data to evaluate the performance of probabilistic models. This is due to the fact that high dimensional data is often not well represented by traditional models and the advantage of deep probabilistic models really shows.
 However, the problems in this thesis are rather low dimensional and hence the performance of the models is not the main focus. The main focus is the tractability of the models and the ability to reason about the data using probability theory. 
+
+
+The final architecture for probabilistic models that is relevant to this thesis is the ConditionalSPN. @shao2020conditional ConditionalSPN is a combination of modern machine learning methods like deep neural networks and probabilistic circuits. 
+In conditional SPNs the variables are split into two disjoint sets, the features $X$ and the targets $Y$.
+The ConditionalSPN predicts then predicts $P(Y | X)$ by using a deep neural network to predict the parameters of the PC. The PC is then used to calculate the likelihood of the target variables given the features. The parameters of the PC are then learned by gradient descent. The authors show that ConditionalSPNs are competitive with state of the art deep learning models on a variety of tasks. @shao2020conditional
+Note that the condition that is passed to the ConditionalSPN can only be a vector and not a general element of the product sigma algebra. Hence, this architecture can only be used if a full evidence state for $X$ is always given. Many machine learning algorithms work under the same constraint and hence this is not a far stretch limitation. Since the output of the ConditionalSPN is a valid probabilistic circuit, $Y$ can be reasoned about using all methods discussed in this thesis so far. Note that @shao2020conditional limited their approach to a model that only predicts the parameters of the sum units. In this thesis this limitation is not present and all parameters that can be optimized with gradient descent are predicted by the function. 
+
 
 PC & SPN RESEARCH DIAGRAM.
 
@@ -988,6 +1034,6 @@ Hence, PM uses JAX as backend to get up to scale in repeated probabilistic infer
 
 TODO detailed numbers.
 
-=== Evaluation
+// === Evaluation
 
-The qualitative properties of the models used in the thesis have been discussed above. This section quantitively evaluates the models and compares them to state of the art circuits. 
+// The qualitative properties of the models used in the thesis have been discussed above. This section quantitively evaluates the models and compares them to state of the art circuits. 

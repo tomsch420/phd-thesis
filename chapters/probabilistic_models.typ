@@ -19,6 +19,8 @@ Tractable distributions are distributions where answering a query takes at most 
 For long lived agents, such as cognitive robots, exact inference is highly important. If a model of the world is correct, but answers from the model are only random, such as in the MC method, it can be concluded that there is a non-zero probability that the model produces an answer that leads to a catastrophic failure. While this probability is often very low, it is increased with the total number of times the model is queried.
 Such a behavior of a random variable is quantified in the geometric distribution.
 
+// TODO plot of geometric distribution here
+
 This section discusses tractability of probabilistic graphical models (PGMs) and probabilistic circuit (PCs). Intractable models, such as generative neural networks (GANs) or normalizing flows (NFs) are only touched on. 
 // TODO adjust with how this chapter evovles
 
@@ -26,19 +28,9 @@ This section discusses tractability of probabilistic graphical models (PGMs) and
 
 Probabilistic Graphical Models (PGMs) offer a graphical representation of joint probability distributions, leveraging a visual language to encode the dependencies between random variables. These models depict variables as nodes in a graph, and the relationships between them are captured by edges connecting the nodes. The specific connections and the absence of edges encode the conditional independence relationships that simplify the joint distribution.
 
-PGMs are a valuable tool for understanding and manipulating joint probability distributions since:
-
-- *Visualizing Dependencies:*  Unlike traditional algebraic representations of joint distributions, PGMs provide a clear and high-level visual depiction of the relationships between variables. This intuitive approach allows researchers to readily identify the variables that directly influence each other and those that are conditionally independent.
-
-- *Efficient Representation:* For high-dimensional problems, representing a joint distribution with a complex mathematical formula is impracticable. PGMs offer a more compact and scalable representation, particularly when conditional independence relationships exist between variables. This efficiency translates to improved computational performance and easier analysis.
-
-- *Diverse Applications:*  The versatility of PGMs extends across various scientific disciplines. From modeling gene regulatory networks in biology to analyzing relationships between financial assets, PGMs offer a powerful tool for understanding complex systems characterized by interconnected variables.
-
-In essence, PGMs bridge the gap between complex joint probability distributions and intuitive visual representations. By leveraging the power of graphs, PGMs empower researchers to effectively analyze, reason about, and make predictions in scenarios involving multiple interacting random variables. 
-
-However, this high level abstraction of PGMs makes it hard to analyze computations on them. 
-
 The fundamental idea behind graphical models revolves around factorization. These models seek to represent a joint probability distribution, which can be quite intricate, as a product of more manageable conditional distributions. This factorization process not only simplifies the representation but also opens doors to efficient algorithms for reasoning about the dependencies between the involved random variables.
+
+PGMs are the very beginning of probabilistic modelling. The strength of PGMs lies in their ability to visualize high level dependencies between variables. However, PGMs are limited by the lack of tractable inference algorithms.
 
 In @tab:combinatoric_explosion it was shown that representing a distribution as the joint probability table over all variables is exponentially hard and hence not tractable. PGMs solve this problem by computing the global distribution by small, local factors, leveraging the product rule (@def:conditional_probability) and conditional independence (@def:conditional_independence).
 

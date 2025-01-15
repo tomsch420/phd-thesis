@@ -996,8 +996,15 @@ SPFlow has tests but due to cyclic imports these cannot be run with a test cover
 The authors provide a workaround for this. Unfortunately, I was unable to get the tests running using the described workaround. Hence, a test coverage cannot be obtained.
 
 SPFlow is written using a functional programming paradigm.@martin2023functional  states that functional programming is programming without assignment statements and that functional programming and object oriented programming are compatible and mutually beneficial styles.
-The problem that SPFlow introduces is in the misuse of the python class system. In @Molina2019SPFlow an example is shown on how to extend the package which is repeated below.
 
+#quote(block:true, attribution: [@martin2023functional])[First of all, functional programs and OO programs are different. Functional programs tend to be constructions of plumbing that regulate data flow transformations, while mutable OO programs tend to iterate step by step over objects. However, from an architectural point of view, the two styles are quite compatible. It turns out that we can partition the functions of a functional program into the same kinds of architecturally significant elements as an OO program. From an architectural point of view, there’s very little difference.
+
+Functional programs may not be composed of syntactically enforced classes that enclose methods and define objects. Yet, objects still exist in functional programs. Those objects are less tightly bound to the functions that operate upon them than they would be in an OO language.]
+
+The problem that SPFlow introduces is in the unintended use of the python class system. In @Molina2019SPFlow an example is shown on how to extend the package which is repeated below.
+While the likelihood may be a functional method, it is advised to implement method belonging to a class as a method of the class.
+
+#figure()[
 ```
 class Pareto(Leaf):
   def __init__(self, a, scope=None):
@@ -1011,7 +1018,13 @@ def pareto_likelihood(node, data, dtype=np.float64):
   return probs
 
 add_node_likelihood(Pareto, pareto_likelihood)
-```
+```],
+<code:spflow_extension>,
+caption: [Example for extending SPFlow to also contain a Pareto distribution. @Molina2019SPFlow],
+short: [SPFLow Extension],
+kind: "code",
+supplement: [Code]
+)
 
 Apart from the many other included smells in this example I want to point out an architectural problem and its solution.
 Line 6 introduces a function to a class that needs to be known by the user since it will not be discovered by linting tools. Line 12 then adds this function to the class *in-memory* but not statically. 

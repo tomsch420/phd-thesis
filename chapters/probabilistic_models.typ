@@ -965,18 +965,78 @@ Layering is a way to group operations into layers that benefit from these SMID i
 Both @liu2024scaling and @peharz2020random implement such layers using dense matrices. Dense matrices are matrices where every element is present. This is in contrast to sparse matrices where only the non-zero elements are present. Sparse matrices are especially useful when the number of connections is small compared to the number of possible connections. This can be the case for most PCs.
 Furthermore @liu2024scaling showed that this layering approach is compatible with modern computer architectures. The authers implemented a system that even goes beyond SMID instructions and uses a custom hardware kernel achieving a speed up of one to two orders of magnitude. Unfortunately, the custom hardware kernels are only applicable to a very limited set of computers, namely those which are Ubuntu 18.04 and have a Nvidia GPU with the correct version of Cuda.
 
-=== Implementation
+== Implementation
 
 Before discussing different implementations it is worth taking some time to discuss the topic of requirements.
 The ecosystem in which the results of this thesis are employed requires an implementation that has a python interface. 
 Furthermore, all query types that are discussed in @sec:queries have to be implemented or at least an implementation of such operations has to be supported by the architecture of the system. 
-Next, Gaussian, truncated Gaussian, uniform, integer and multinomial distributions have to be supported. Also structure learning algorithms such as JPT and Nyga Distributions are required. 
-Finally, the implementation needs to be accessible, documented and tested and has to be time and space efficient.
+Next, Gaussian, truncated Gaussian, uniform, integer and multinomial distributions have to be supported. Also structure learning algorithms such as JPT and Nyga Distributions are required or at least an implementation of this algortihms has to be supported by the architecture. 
+Finally, the implementation needs to be documented, tested, accessible, scalable, reliable and maintainable. 
 
 In the recent years a couple of implementations appeared on GitHub with varying quality.
-This thesis only discusses the implementations that have a considerable set of features. While there are many repositories that contain minor, untested and undocumented fragments of code that, most likely, describe some special forms of inferences, this chapter focusses on the major implementations.
+This section only discusses the implementations that have a considerable set of features. While there are many repositories that contain minor, untested and undocumented fragments of code that, most likely, describe some special forms of inferences, this chapter focusses on the major implementations. 
 
 The implementations discussed in this thesis are SPFlow, Juice, PyJuice, SPPL, LibSPN, Einsum Networks, and the newest addition cirkit.
+
+
+*SPFlow* @Molina2019SPFlow:
+
+SPFlow is an open-source Python library which aims to provide a simple interface to inference, learning and manipulation of SPNs. 
+
+#figure(caption: [The commits over time on the SPFlow package extracted from their GitHub page. The first commit is in March of 2018 and the most recent commit is in August of 2023 with a total of 647 commits. 21 people contributed to the development of SPFlow.])[
+#image("../images/spflow_cot.png")
+]<fig:spflow_cot>
+
+
+SPFlow features a domain specific language for the construction and parametrization of probabilistic circuits. Structure Learning can either be done using random structures or using an implementation of LearnSPN that is lacking the detailled description.
+Supported queries are likelihood and marginalization. Furhtermore, it appears that there is some form of conditioning on partial vectors. It is certain that calculations involving general random events of the product algebra are not supported. SPFlow also features an algorithm for conditional sampling and approximate modes. Utility-wise, SPFLow seems to have nice functionality such as plotting and serialization.
+Unfortunately, SPFLow has a docstring coverage of $23.3%$ making it very hard to get an idea of what the functionalities are. 
+SPFLow features a long Readme which gives some idea on the capabilities of the package. With the lack of an API documentation however it is not possible to access the details of the capabilities. SPFLow has both a tensorflow and PyTorch backend which seems to feature some form of layering algorithm.
+SPFlow has tests but due to cyclic imports these cannot be run with a test coverage tool.
+The authors provide a workaround for this. Unfortunately, I was unable to get the tests running using the described workaround. Hence, a test coverage cannot be obtained.
+
+SPFlow is written using a functional programming paradigm.@martin2023functional  states that functional programming is programming without assignment statements and that functional programming and object oriented programming are compatible and mutually beneficial styles.
+The problem that SPFlow introduces is in the misuse of the python class system. In @Molina2019SPFlow an example is shown on how to extend the package which is repeated below.
+
+```
+class Pareto(Leaf):
+  def __init__(self, a, scope=None):
+    Leaf.__init__(self, scope=scope)
+    self.a = a
+
+def pareto_likelihood(node, data, dtype=np.float64):
+  probs = np.ones((data.shape[0], 1), dtype=dtype)
+  from scipy.stats import pareto
+  probs[:] = pareto.pdf(data[:, node.scope], noda.a)
+  return probs
+
+add_node_likelihood(Pareto, pareto_likelihood)
+```
+
+Apart from the many other included smells in this example I want to point out an architectural problem and its solution.
+Line 6 introduces a function to a class that needs to be known by the user since it will not be discovered by linting tools. Line 12 then adds this function to the class *in-memory* but not statically. 
+
+Instead, one could achieve the same effect by doing the following:
+
+```
+from scipy.stats import pareto
+
+class Pareto(Leaf):
+  def __init__(self, a, scope=None):
+    Leaf.__init__(self, scope=scope)
+    self.a = a
+
+  def likelihood(self, data, dtype=np.float64):
+    probs = np.ones((data.shape[0], 1), dtype=dtype)
+    probs[:] = pareto.pdf(data[:, self.scope], self.a)
+    return probs
+```
+
+These two listings solve the same problem. The second approach however, excludes a static linking that is dynamically done at program execution by doing it statically in the first place. Furthermore the second style is still functional because it does not mutate the Pareto instance and the likelihood can be seen as function of the pareto distribution at development time and not only during runtime. Among others, this is the reason why the PM package contains an abstract class defining the methods for probabilistic reaosning.
+Generally speaking, the functional paradigm is fine on its own when designing a system. However, Python is an Object Oriented Programming language and hence is designed to be used with classes, objects and inheritance (interfaces). The absence of an abstract description of what a distribution needs limits the extensibility.
+
+SPFlow also features the compilation into a layered circuit that is compatiible with PyTorch and tensorflow.
+
 
 #rotate(270deg, reflow: true)[
 #figure(caption: [Quality of implementation of PCs.])[
@@ -985,8 +1045,8 @@ The implementations discussed in this thesis are SPFlow, Juice, PyJuice, SPPL, L
   inset: 10pt,
   align: horizon,
   table.header(
-    [Repository], [Test Coverage], [Documentation Coverage], [Python Interface], [Supported Query Types], [Supported Distributions], [Custom Structure Learning], [Time Efficient], [Space Efficient]), 
-    [SPFlow], [TODO], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO] , [TODO],
+    [Project], [Test Coverage], [Documentation Coverage], [Python Interface], [Supported Query Types], [Supported Distributions], [Custom Structure Learning], [Time Efficient], [Space Efficient]), 
+    [SPFlow], [TODO], [TODO], [Yes], [TODO], [TODO], [TODO] , [Yes] , [Yes],
     [Juice], [TODO], [TODO], [No], [TODO], [TODO], [TODO] , [TODO], [TODO],
     [PyJuice], [TODO], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO], [TODO],
     [SPPL], [TODO], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO], [TODO],
@@ -1001,7 +1061,7 @@ Furthermore, it supports all the distributions from the requirements and is easi
 PM features an efficient implementation of the Nyga Distribution, JPTs, RAT-SPN and CSPNs TODO DESCRIBE.
 It features interfaces for both deep learning compatible (layered) descriptions of circuits and circuits as DAG. Finally, it also is time and space efficient.
 
-==== Networkx torch, jax 
+=== Networkx, torch, jax 
 
 During the development of the PM package all the implementations described in @table:pc-frameworks but PyJuice and cirkit where considered to build upon. 
 The first version of PyJuice and cirkit were released after the development of PM was almost finished.

@@ -1004,7 +1004,7 @@ Functional programs may not be composed of syntactically enforced classes that e
 The problem that SPFlow introduces is in the unintended use of the python class system. In @Molina2019SPFlow an example is shown on how to extend the package which is repeated below.
 While the likelihood may be a functional method, it is advised to implement method belonging to a class as a method of the class.
 
-#figure()[
+#figure_([
 ```
 class Pareto(Leaf):
   def __init__(self, a, scope=None):
@@ -1031,52 +1031,84 @@ Line 6 introduces a function to a class that needs to be known by the user since
 
 Instead, one could achieve the same effect by doing the following:
 
+#figure_([
 ```
 from scipy.stats import pareto
 
 class Pareto(Leaf):
   def __init__(self, a, scope=None):
-    Leaf.__init__(self, scope=scope)
+    super().__init__(self, scope=scope)
     self.a = a
 
   def likelihood(self, data, dtype=np.float64):
     probs = np.ones((data.shape[0], 1), dtype=dtype)
     probs[:] = pareto.pdf(data[:, self.scope], self.a)
     return probs
-```
+```],
+<code:spflow_extension_fix>,
+caption: [A cleaner way of implementing the extension of leaf distributions.],
+short: [SPFLow Extension],
+kind: "code",
+supplement: [Code]
+)
 
 These two listings solve the same problem. The second approach however, excludes a static linking that is dynamically done at program execution by doing it statically in the first place. Furthermore the second style is still functional because it does not mutate the Pareto instance and the likelihood can be seen as function of the pareto distribution at development time and not only during runtime. Among others, this is the reason why the PM package contains an abstract class defining the methods for probabilistic reaosning.
 Generally speaking, the functional paradigm is fine on its own when designing a system. However, Python is an Object Oriented Programming language and hence is designed to be used with classes, objects and inheritance (interfaces). The absence of an abstract description of what a distribution needs limits the extensibility.
 
 SPFlow also features the compilation into a layered circuit that is compatiible with PyTorch and tensorflow.
 
+*Juice*
+Juice is a Julia implementation of PCs, tools to learn structure and parameters of PCs from data, and tools to do tractable exact inference with them.
 
-#rotate(270deg, reflow: true)[
-#figure(caption: [Quality of implementation of PCs.])[
-#table(
-  columns: (auto, auto, auto, auto, auto, auto, auto, auto,auto,),
-  inset: 10pt,
-  align: horizon,
-  table.header(
-    [Project], [Test Coverage], [Documentation Coverage], [Python Interface], [Supported Query Types], [Supported Distributions], [Custom Structure Learning], [Time Efficient], [Space Efficient]), 
-    [SPFlow], [TODO], [TODO], [Yes], [TODO], [TODO], [TODO] , [Yes] , [Yes],
-    [Juice], [TODO], [TODO], [No], [TODO], [TODO], [TODO] , [TODO], [TODO],
-    [PyJuice], [TODO], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO], [TODO],
-    [SPPL], [TODO], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO], [TODO],
-    [LibSPN], [TODO], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO], [TODO],
-    [Einsum Networks], [TODO], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO], [TODO],
-    [cirkit], [68%], [TODO], [Yes], [TODO], [TODO], [TODO] , [TODO], [TODO],
-)] <table:pc-frameworks>]
+#figure(caption: [The commits over time on the Juice package extracted from their GitHub page. The first commit is in July of 2019 and the most recent commit is in June of 2024 with a total of 1374 commits. 12 people contributed to the development of Juice.])[
+#image("../images/juice_cot.png")
+]<fig:juice_cot>
+
+Juice not only features PCs but also Logic Circuits which are a tractable representation of logical knowledge bases.
+The documentation features user guides for all supported queries and a rich API documentation for strucutre and parameter learning.
+The supported queries are likelihood, marginal probabilities, modes and sampling. The marginal probabilities can not be computed on the entire product algebra.
+The Juice package is tested. The internal datastructures lack documentation. Due to my lack of knowledge of Julias architecture I am unable to judge if the functional programming paradigm of Juice works well.
+While Juice is a very promising approach the requirements state that the implementation needs to be in python and hence Juice is not a good fit. 
+
+*PyJuice*
+
+PyJuice is a python package for PCs written in PyTorch. 
+It has supports marginal probabilities for partial vectors, just like Juice and is also written using a functional programming paradigm.
+
+#figure(caption: [The commits over time on the PyJuice package extracted from their GitHub page. The first commit is in March of 2023 and the most recent commit is in January of 2025 with a total of 720 commits. Four people contributed to the development of Juice.])[
+#image("../images/pyjuice_cot.png")
+]<fig:pyjuice_cot>
+
+PyJuice supports parameter estimation and structure learning algorithms like RAT-SPN and Chow-Liu trees.
+The biggest advantage of PyJuice is its speed and scalability. PyJuice is benchmarked against prior PC packages like SPFlow, Einsum Networks, and Juice.jl on enourmous PCs containing from millions to billions parameters. PyJuice consitently outpeforms the other frameworks by orders of magnitude in its speed. 
+PyJuice is tested and achieves a docstring coverage of $23.1$. The public interfaces are largly documented. The internal datastructures lack documentation.
+PyJuice is written to accelerate large circuits using a dedicated layering algorithm and custom Cuda kernels. 
+The scope combined with the lack of documentation of internal datastructures makes it hard to extend this framework to the requirements of this thesis.
+
+
+*cirkit* @loconte2024relationshiptensorfactorizationscircuits
+
+The latest promising addition to the implementations of probabilistic circuits is the cirkit package.
+The python framework cirkit is designed for building, learning and reasoning about PCs and tensor networks. It was written by group similar to the Juice developers and also features logic circuits. 
+
+#figure(caption: [The commits over time on the cirkit package extracted from their GitHub page. The first commit is in April of 2023 and the most recent commit is in December of 2024 with a total of 1210 commits. 12 people contributed to the development of Juice.])[
+#image("../images/cirkit_cot.png")
+]<fig:cirkit_cot>
+
+cirkit features a couple of users guides for different structure learning methods like RAT-SPN or Probabilistic Integral circuits. cirkit heavily relies on a PyTorch backend to achieve parameter estimation. Marginal probabilities, moments and sampling are the available queries. cirkit achieves a docstring coverage of $35.1%$. The higher level APIs are mostly documented. The lower level objects, especially the layered circuits are partially documentated. The focus on deep circuits makes the architecture less suitable for structure learning algorithms that are based on LearnSPN.
+However, cirkit features a very strong backend that can be used for parameter estimation in this thesis.
+
+=== PM
 
 The next contribution of this thesis is the implementation of probabilistic models and especially probabilistic circuits in a python implementation. The python package is called   "probabilistic_model" (PM). The implementation is open source and hosted on GitHub. It features a documentation coverage of TODO and a test coverage of (90%) TODO. 
 The package supports all query types discussed in @sec:queries and can automatically check if the calculation of a query is tractable. 
 Furthermore, it supports all the distributions from the requirements and is easily extensible to new distributions.
-PM features an efficient implementation of the Nyga Distribution, JPTs, RAT-SPN and CSPNs TODO DESCRIBE.
+PM features an efficient implementation of the Nyga Distribution, JPTs, RAT-SPN and Conditional SPNs.
 It features interfaces for both deep learning compatible (layered) descriptions of circuits and circuits as DAG. Finally, it also is time and space efficient.
 
 === Networkx, torch, jax 
 
-During the development of the PM package all the implementations described in @table:pc-frameworks but PyJuice and cirkit where considered to build upon. 
+During the development of the PM package all the implementations described abouve but PyJuice and cirkit where considered to build upon. 
 The first version of PyJuice and cirkit were released after the development of PM was almost finished.
 As soon as these packages provide an extensive documentation an interface will be created. The approach to this interface is subject to a current discussion on the GitHub page of the cirkit package.  
 

@@ -1100,7 +1100,13 @@ However, cirkit features a very strong backend that can be used for parameter es
 
 === PM
 
-The next contribution of this thesis is the implementation of probabilistic models and especially probabilistic circuits in a python implementation. The python package is called   "probabilistic_model" (PM). The implementation is open source and hosted on GitHub. It features a documentation coverage of TODO and a test coverage of (90%) TODO. 
+The next contribution of this thesis is the implementation of probabilistic models and especially probabilistic circuits in a python implementation. The python package is called   "probabilistic_model" (PM). 
+
+#figure(caption: [The commits over time on the PM package extracted from their GitHub page. The first commit is in November of 2023 and the most recent commit is in January of 2025 with a total of 540 commits. Four people contributed to the development of PM.])[
+#image("../images/cirkit_cot.png")
+]<fig:cirkit_cot>
+
+The implementation is open source and hosted on GitHub. It features a documentation coverage of TODO and a test coverage of (90%) TODO. 
 The package supports all query types discussed in @sec:queries and can automatically check if the calculation of a query is tractable. 
 Furthermore, it supports all the distributions from the requirements and is easily extensible to new distributions.
 PM features an efficient implementation of the Nyga Distribution, JPTs, RAT-SPN and Conditional SPNs.

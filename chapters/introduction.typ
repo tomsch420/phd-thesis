@@ -62,3 +62,6 @@ Ironically, as our models get closer to fitting the true distribution with high 
 This thesis addresses the following research question:
 
 “Compared to traditional planning methods, incorporating tractable joint distributions over plan parameters in cognitive robotics will significantly (by X%) increase the success probability of task planning and execution in dynamic environments.”
+
+
+One key insight we share in this book is that software engineering can be thought of as “programming integrated over time.” (Software engineering at google.)

@@ -517,8 +517,9 @@ PCs are able to calculate integrals over boxes by ensuring a structural constrai
 A PC is decomposable if all of its product units are decomposable.
 ]
 
-While decomposability is nice for marginal inference, it comes at the prices of expressiveness. There are relationships between variables that cannot be captured but only approximated by circuits, such as linear dependence ($X = a Y + b$). (TODO CITE?)
-In this, one of the objectives is to do probabilistic reasoning over the behavior of robots. Since PyCRAM formalizes the thinking process in a computer program, the information that is available to the robot at execution is already transformed into a usable form. Hence, it is unlikely that relationships are needed that cannot be sufficiently approximated by a decently sized circuit.
+While decomposability is nice for marginal inference, it comes at the price of expressiveness. There are relationships between variables that cannot be captured but only approximated by circuits, such as linear dependence (e. g. $X = a Y + b$).
+
+In this thesis, one of the objectives is to do probabilistic reasoning over the behavior of robots. Since PyCRAM formalizes the thinking process in a computer program, the information that is available to the robot at execution is already transformed into a usable form. Hence, it is unlikely that relationships are needed that cannot be sufficiently approximated by a decently sized circuit.
 
 The second requirement for marginal inference is smoothness of sum units.
 
@@ -577,6 +578,13 @@ A product node is consistent if each variable that is shared between multiple ch
 While this constraint is strictly weaker than decomposability and hence a valuable contribution I have yet to meet a practical example where a consistent but not decomposable circuit is used.
 
 Algorithm TODO shows the pseudo-code to solve the mode query for deterministic circuits.
+
+A final question concerns the tractability of the mode after marginalization. It is an established fact the the mode of a marginal distribution may be different than the marginal of the mode. @choi2020probabilistic PCs enable the computation of the marginal mode if the circuit is marginally deterministic, meaning that after marginalization the circuit remains deterministic. It is noteworthy, that while marginalization may destroy determinism, conditioning may enable it.
+
+#definition([Marginal Determinism @choi2020probabilistic])[
+Given a subset of variables *$Q subset.eq X$*, a sum node is marginal deterministic w.r.t. *$Q$* if for any partial state $q in $val(*$Q$*), the output of at most one of its input units is nonzero. A circuit is marginal deterministic w.r.t. *$Q$* if all sum nodes containing variables in *$Q$* are marginal deterministic.]
+
+
 
 === Sampling
 

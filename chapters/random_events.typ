@@ -413,6 +413,39 @@ Computational geometry is concerned with efficient representations of geometric 
 Linear programming has the same constraints as convex polytopes and hence more complex set descriptions are not well studied.
 Furthermore, this thesis is mainly concerned about probabilistic reasoning. For probabilistic reasoning algebraic boxes are the events that are computationally feasible. Sets that are more complex are destroying properties in integration and hence allow no exact conclusions. This topic is further discussed in TODO.  
 
+== Graphs of Convex Sets with Applications to Motion Planning
+
+Another application of the product algebra is in motion planning. Motion planning is a fundamental challenge in robotics, aiming to determine a collision-free path for a robot to navigate from a start to a goal configuration.  
+The state of the art in motion planning divides into two approaches. The first one is sampling based motion planning. Instead of meticulously analyzing the entire configuration space (all possible robot positions and orientations), it takes a shortcut by randomly sampling points within that space. These samples are then checked for collisions, and the collision-free ones are used to build a roadmap or a tree that guides the robot towards its goal. Sampling based motion planning has the advantage of being able to handle high-dimensional configuration spaces and complex robot geometries. However, it can be computationally expensive and may not always find a solution. @cohn2023non @marcucci2024graphs
+
+The second approach is trajectory optimization-based motion planning. Trajectory optimization-based motion planning is a sophisticated approach that aims to find the best possible path for a robot, not just any collision-free path. It works by formulating the motion planning problem as an optimization problem, where the goal is to minimize a cost function that takes into account factors like path length, smoothness, energy consumption, and proximity to obstacles. The optimization problem is then solved using numerical optimization techniques like gradient descent or nonlinear programming. Trajectory optimization-based motion planning is computationally intensive but can produce high-quality paths that are smooth, energy-efficient, and safe. However, it is limited to only find solutions in convex sets.@cohn2023non
+@marcucci2024graphs
+
+#definition([Convex Set @boyd2004convex])[
+A set $C$ is convex if the line segment between any two points in $C$, i.e., if for any $x_1, x_2 in C$ and any $theta$ with $0 <= theta <= 1$, we have
+$
+  theta x_1 + (1 - theta) x_2 in C.
+$
+]<def:convex_set>
+
+It is easy to see that every simple set of the product sigma algebra is a convex set iff the cardinality of the intervals is 1. As proven in @theo:proof_complement_product_algebra the complement of a simple element of this product sigma algebra is computable in linear time.
+It follows, that if the collision space of a robot is represented as a general element of the product algebra, the free space (complement of collision space) is a disjoint union of convex sets that is easily computable.
+The union of these convex sets however may not be convex. 
+Hence, optimization based motion planning can be applied inside the convex simple sets.
+@marcucci2024graphs proposed a method to represent the free space as a graph of convex sets. This graph is an undirected graph where the nodes are the convex sets and the edges represent adjacency of the convex sets. 
+This means that connected nodes can be reached from each other.
+The problem of optimization-based motion planning can then be restated as finding a path in this graph and calculating the guarantee collision-free paths inside the convex sets.
+@marcucci2024graphs used polytopes inside the convex sets to represent the free space. However, as the polytopes are generated as an approximation of the complement of other polytopes (meshes), the computational effort involved is enormous.
+
+=== Product Algebra for Motion Control
+
+This section presents examples of the product algebra in motion control. The first example is the representation of the free space of a robot as a product algebra. The second example is the representation of the free space as a graph of convex sets.
+
+TODO Images und so
+
+It is impressive that the presented algorithms can be used to calculate the graph of convex sets of the free space in less then a second for the entire belief state of the robot. 
+Furthermore, it is impressive that this approximation of the belief state of the robot is sufficient to calculate an entire collision-free path using the Giskard tool for optimization-based motion planning.
+
 
 == Implementation
 
@@ -432,5 +465,7 @@ The python package features flexible variable definitions and the following oper
 Since most of the logic is abstracted one can add a new sigma algebra by defining a simple set, its intersection with another simple set and its complement as disjoint union of simple sets.
 
 The package has a test coverage of 91% and a documentation coverage of TODO%. Furthermore, the package features a complete user guide. 
+
+Furthermore, the package features a C++ backend, which improves the speed from a pure python implementation by two orders of magnitude. The C++ backend is connected to the python package via pybind11, enabling high usability and performance.
 
 

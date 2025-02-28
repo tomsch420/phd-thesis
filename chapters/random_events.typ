@@ -11,21 +11,23 @@
 // TODO picture where in math we are?
 
 Cognitive systems often operate with incomplete information.
-This is particularly evident in the core function of a cognitive agent: determining the appropriate action from an abstract description. In essence, this involves selecting an element from a set of possible actions based on the given context.
+This is particularly evident in the core function of a cognitive agent: determining the appropriate action from an abstract and underdetermined description. In essence, this involves selecting an element from a set of possible actions based on the given context.
 These sets of possible actions often exist due to a lack of information.
-Information incompleteness can manifest in various forms. Sets provide a useful framework for representing and manipulating this information. Set operations, such as union, intersection, and complement, define how to combine existing knowledge with new data. 
+Information incompleteness can manifest in various forms. Sets provide a useful framework for representing and manipulating this information. Set operations, such as union, intersection, and complement, define how to combine existing knowledge with new information. 
 
 Furthermore, one of the main objectives of probabilistic models, is to reason about sets. The system of sets that probabilistic models can deal with is formalized in a sigma algebra. A sigma algebra ensures that the probability-measure behaves consistently under operations like unions, intersections, and complements of these measurable sets.
 
-Research has shown that events that are described by independent constraints (rules) are most likely the only events where probability estimation is tractable. @choi2020probabilistic
-Spaces that are constructed by independent constraints are called product spaces. Understanding the shape of such events is a key competence to building (new) tractable probabilistic models.
+Research has shown that events that are described by independent constraints (rules) are the only events where probability estimation is tractable. @choi2020probabilistic
+Spaces that are constructed by independent constraints are called product spaces. Understanding theese events is a key competence to building tractable probabilistic models.
 
 This chapter describes the development and application of a specific sigma algebra, the *product sigma algebra* tailored for the specific needs of probabilistic robot plans. The product sigma algebra is the sigma algebra constructed from investigating the set operations of product spaces.
 
 The chapter begins by formally introducing the sigma algebra.
 Subsequently, the vocabulary and concepts used for this thesis is explained.
 Next, the product algebra is defined. Then, important operations that are, to the best of my knowledge, nowhere found in the literature are developed. After that, examples are explored.
-This chapter concludes with a discussion on the implementation and a discussion on the limitations.
+Then, the product sigma algebra is discussed from a viewpoint of computational geometry and it is shown, that
+the results of the theoretical part of this chapter enable efficient reasoning about the world.
+This chapter concludes with a discussion on the implementation and the limitations.
 
 For those seeking a more practical, hands-on approach to the product sigma algebra, a complementary online resource is available. This resource presents the core concepts and functionalities in a concise and user-friendly format, making it accessible to a broader audience by utilizing Jupyter Books. @schierenbeck2024re
 
@@ -84,13 +86,11 @@ In this thesis I use the taxonomy of variables described in #ref(<fig:variables_
 Variables, in the context of this thesis, consist of a name and a domain. The name is a unique identifier and the domain is the set of elementary events. The measurable space constructed for a variable is always $("domain", 2^"domain")$.
 Variables are either continuous or discrete. Continuous variables have the real line $RR$ as domain. For this thesis, it is sufficient to say that random Events on $RR$ are half open intervals.
 Discrete variables further split up into integer and symbolic variables. Integer variables have the integer numbers $ZZ$ as domain. Symbols have a finite set as domain, as in the example above.
-In probabilistic reasoning quantities of interest are usually concerned with assignments to variables where any random event is allowed. 
-In the context of probabilistic modeling, a fundamental assumption is that the evaluation of the probability of any event defined on a single random variable is tractable. @choi2020probabilistic
 
 == Product Sigma Algebra
 <sec:product-sigma-algebra>
 
-Real-world applications frequently necessitate reasoning about interactions between multiple variables. To address this challenge, I seek to develop computationally efficient representations of events occurring within the joint space formed by the domains of multiple random variables. Here, the key tool is the concept of a product sigma algebra.
+Real-world applications frequently necessitate reasoning about interactions between multiple variables. To address this challenge, I seek to develop computationally efficient representations of events occurring within the joint space formed by the domains of multiple random variables. Here, the key tool is the product sigma algebra.
 
 #definition([Product Sigma Algebra @hunter2011notes])[
 Suppose that $(X, A)$ and $(Y, B)$ are measurable spaces. 
@@ -114,34 +114,63 @@ However, for even a small product set of $3 dot 3 = 9$ elementary events, the po
 
 This is where the concept of independent constraints becomes essential. Independent constraints are random events that are defined per variable, allowing us to define meaningful subsets of the powerset. 
 
-The example above exemplifies the key advantage of representing events using the Cartesian product within a product sigma-algebra. Compared to the exhaustive enumeration of all possible combinations in the powerset, this approach offers a significantly more concise representation.
+The example above exemplifies the key advantage of representing events using the Cartesian product within a product sigma-algebra. Compared to the exhaustive enumeration of all possible combinations in the powerset, this approach offers a significantly more compact representation.
 
 === Operations 
 
-While the Cartesian product provides a concise representation for atomic events involving single variable assignments, it is often necessary to combine these atomic events to describe more complex random events within the product sigma-algebra. To achieve this, we introduce two fundamental operations: union and complement.
+While the Cartesian product provides a compact representation for atomic events involving single variable assignments, it is often necessary to combine these atomic events to describe more complex random events within the product sigma-algebra. To achieve this, I introduce two fundamental operations: union and complement. Before describing these operations, it is necessary to introduce a more compact vocabulary and notation.
 
-*Definitions:*
+*Vocabulary:*
 
-- *Simple Set* A simple set (event) in this context refers to an event described by a single Cartesian product involving assignments for all variables under consideration.
-- *Composite Set:* A composite set is a more general concept encompassing any event within the product sigma-algebra, potentially constructed from a union of simple sets. For computational reasons that I will explain later in this thesis (see #ref(<def:probability_measure>)), a composite set will always be a union of disjoint simple sets. The size of a composite set $|E|$ refers to the number of atomic events involved. 
+- *Simple Set* A simple set refers to a set that can be described by a datastructure that has fields of fixed size.
+- *Composite Set:* A composite set is a union of simple sets.
+
+$
+  overbrace(underbrace(A, "Simple Set") union underbrace(B, "Simple Set"), "Composite Set")
+$
 
 *Notation:*
 
-The assignment of a variable $X$ to an event $E$ is denoted as $X_E$.  For example, $"X"_({1, 3})$ represents the event where the variable $X$ takes on the value one or three, i. e. $X in {1, 3}$.
+The assignment of a variable $X$ to an event $E$ is denoted as $X in E$.  For example, $"X" in {1, 3}$ represents the event where the variable $X$ takes on the value one or three. In the product algebra, multiple variable assignments are written by
+
+$
+  \{&\
+    &X in {A, B}, \
+    &Y in {D, C} \
+  \}&
+$
 
 Forming the union of two simple sets results in a composite sets containing both simple sets. Consider the following variable definitions.
+
 $
 "Utensil" in {"Bowl", "Cup", "Spoon"} \
 "Color" in {"Blue", "Green", "Red"}
 $
 Now the union of the events
-+ $"Utensil"_({"Bowl"}) times "Color"_({"Blue", "Red"})$
-+ $"Utensil"_({"Spoon"}) times "Color"_({"Green"})$
-cannot be expressed as a simple event and hence is simply written as
++ $
+  \{&\
+    &"Color" in \{"Red", "Blue" \} \
+    &"Utensil" in \{"Bowl"\} \
+  \}&
 $
-("Utensil"_({"Bowl"}) times "Color"_({"Blue", "Red"})) union ("Utensil"_({"Spoon"}) times "Color"_({"Green"})),
++ 
 $
-which is a composite set of size two.
+\{& \
+   &"Color" in \{"Green"\},\
+   &"Utensil" in \{ "Spoon" \}\
+\}&
+$
+cannot be expressed as a simple event and hence is written as
+$
+  \{& \
+    &"Color" in \{"Blue", "Red"\}, \
+    &"Utensil" in \{"Bowl"\}\
+\}& union \{ \
+    &"Color" in {"Green"}, \
+    &"Utensil" in {"Spoon"} \
+\}
+$
+which is a composite set containing two simple sets.
 
 #theorem([Intersection of Product Sets @hunter2011notes])[
   
@@ -159,7 +188,7 @@ which is a composite set of size two.
   $
 ]<theo:complement_product_algebra>
 
-Unfortunately, the complement presented in @theo:complement_product_algebra is exponential big in the number of variables. Bluntly speaking, the complement is created by treating the variable assignments in the original complement as boolean variables, constructing the entire truth table about it (with $2 ^ (|"variables"|)$) and removing the column that corresponds to the original event. Obviously, this is exponential hard to do.
+Unfortunately, the complement presented in @theo:complement_product_algebra is exponential big in the number of variables. Bluntly speaking, the complement is created by treating the variable assignments in the original complement as boolean variables, constructing the entire truth table about it (with $2 ^ (|"variables"|)$) and removing the column that corresponds to the original event. This is exponential hard to do.
 
 Hence, a complement of linear size (in the number of variables) is introduced as contribution of this thesis in @theo:proof_complement_product_algebra. This theorem enables a faster reasoning than originally assumed by the literature.
 
@@ -303,7 +332,7 @@ This logical statement, expressed in disjunctive normal form (DNF), represents t
 
 === Continuous Domains
 
-Fully integrated cognitive architectures have to reason about both symbolic and sub-symbolic (continuous) information.
+Hybrid cognitive architectures have to reason about both symbolic and sub-symbolic (continuous) information.
 Describing sets of continuous values is often done via intervals.
 
 #definition([Intervals])[
@@ -319,36 +348,42 @@ The four interval definitions denoted in @def:interval form a sigma algebra, the
 Since @alg:make_disjoint has no assumptions over the simple and composite sets used in it, one can convert any union of intervals to a disjoint union of intervals using the same procedure. 
 
 Consider the 3-dimensional Cartesian space constructed by these three variables for the rest of the chapter.
-+ $x = RR$
-+ $y = RR$
-+ $z = RR$
++ $x in RR$
++ $y in RR$
++ $z in RR$
 
 A simple event of the product sigma algebra can now be described as a rectangle, for example
-the event $x_([2, 3)) times y_([10, 15))$ is visualized as the following rectangle.
+the event $x in [2, 3) times y in [10, 15)$ is visualized as the following rectangle.
 
 #figure(image("../images/rectangle_event_2d.png")
-,caption: [Simple rectangle event described by $x_([2, 3]) times y_([10, 15])$.]) <fig:rectangle_event_2d>
+,caption: [Simple rectangle event described by $x in [2, 3) times y in [10, 15)$.]) <fig:rectangle_event_2d>
 
 It can be observed that the event described by the Cartesian product corresponds to a rectangle in the two-dimensional plane (x-y plane). Notably, for higher dimensions, events constructed through Cartesian products will always manifest as hyper-rectangles. Shapes such as triangles or circles are not expressible in this manner due to their inherent dependence between variable constraints. For instance, a circle with radius r cannot be represented solely by a product of constraints, as exemplified by the equation $x^2 + y^2 <= r^2$, which embodies a non-independent relationship between the variables x and y.
 
-However, it is possible to define more complex simple events. Considers the simple event $x_( [2,3] union [4,5] union [6,7]) times y_([10,15] union [25,27])$. The visualization of said event is depicted in #ref(<fig:complex_rectangle_event_2d>). Furthermore, the three dimensional generalization by expanding the event with $z_([1, 3] union [4, 4.5] union [10, 11.5])$ is depicted in #ref(<fig:complex_rectangle_event_3d>).
+However, it is possible to define more complex simple events. Considers the simple event $x in [2,3] union [4,5] union [6,7] times y in [10,15] union [25,27]$. The visualization of said event is depicted in #ref(<fig:complex_rectangle_event_2d>). Furthermore, the three dimensional generalization by expanding the event with $z in [1, 3] union [4, 4.5] union [10, 11.5]$ is depicted in #ref(<fig:complex_rectangle_event_3d>).
 
 #figure(image("../images/complex_rectangle_event_2d.png")
-,caption: [Simple rectangle event described by $x_( [2,3] union [4,5] union [6,7]) times y_([10,15] union [25,27])$.]) <fig:complex_rectangle_event_2d>
+,caption: [Simple rectangle event described by $x in [2,3] union [4,5] union [6,7] times y in [10,15] union [25,27]$.]) <fig:complex_rectangle_event_2d>
 
 #figure(image("../images/complex_rectangle_event_3d.png")
-,caption: [Simple rectangle event described by $x_( [2,3] union [4,5] union [6,7]) times y_([10,15] union [25,27]) times z_([1, 3] union [4, 4.5] union [10, 11.5])$.]) <fig:complex_rectangle_event_3d>
+,caption: [Simple rectangle event described by $x in [2,3] union [4,5] union [6,7] times y in [10,15] union [25,27] times z in [1, 3] union [4, 4.5] union [10, 11.5]$.]) <fig:complex_rectangle_event_3d>
 
 Visualizing events defined by Cartesian products in dimensions exceeding three becomes increasingly challenging. However, the fundamental properties of these events remain consistent across higher dimensions. The introduction of new constraints simply results in the addition of another axis to the hyper-rectangle representing the event. Furthermore, the patterns observed in constructing events using multiple intervals generalize seamlessly to higher dimensions, analogous to the transition from two to three dimensions.
 
-Next, an intuition on complements of the product sigma algebra is presented. Consider the unit rectangle $x_([0,1]) times y_([0,1])$. The complement of the unit rectangle is a random event with two elements, described by
+Next, an intuition on complements of the product sigma algebra is presented. Consider the unit rectangle $x in [0,1] times y in [0,1]$. The complement of the unit rectangle is a random event with two elements, described by
 $
-(x_((-infinity,0) union (1,infinity)) times y_((-infinity,infinity))) union (x_([0,1]) times y_((-infinity,0) union (1,infinity))).
+\{&\
+    &x in (-inf, 0.0) union (1.0, inf),\
+    &y in (-inf, inf)\
+\}& union \{\
+    &x in [0.0, 1.0],\
+    &y in (-inf, 0.0) union (1.0, inf)\
+\}&
 $
-Since an infinite event can not be visualized, the complement of the unit rectangle intersected with $x_([-1,2]) times y_([-1,2])$ is depicted in #ref(<fig:complement_2d>).
+Since an infinite event can not be visualized, the complement of the unit rectangle intersected with $x in [-1,2] times y in [-1,2]$ is depicted in #ref(<fig:complement_2d>).
 
 #figure(image("../images/complement_2d.png"),
-caption: [Rectangle event described by #linebreak() $(x_([0,1]) times y_([0,1]))^C sect x_([-1,2]) times y_([-1,2]) $.]) <fig:complement_2d>
+caption: [Rectangle event described by #linebreak() $(x in [0,1] times y in [0,1])^C sect (x in [-1,2] times y in [-1,2])$.]) <fig:complement_2d>
 
 Consider the complement of the unit cube $x_([0,1]) times y_([0,1]) times z_([0,1])$ intersected with $x_([-1,2]) times y_([-1,2]) times z_([-1,2])$. This event can be visualized as a solid object resembling a cube on the exterior, with the interior corresponding to the removed unit cube. While figures (e.g., #ref(<fig:complement_3d>) and #ref(<fig:cut_complement_3d>)) can aid in visualizing such events in lower dimensions, the mathematical description remains paramount for generalizability to higher dimensions.
 
@@ -360,7 +395,7 @@ caption: [Cut open rectangle event described by #linebreak() $(x_([0,1]) times y
 
 === Applications
 
-As already indicated above, fully integrated cognitive architectures like PyCRAM have to reason about symbolic and continuous quantities at the same time. This section describes an end to end use case, where the belief of a robot is represented as a composite set of the product sigma algebra.  
+Hybrid cognitive architectures like PyCRAM have to reason about symbolic and continuous quantities at the same time. This section describes an end to end use case, where the belief of a robot is represented as a composite set of the product sigma algebra.  
 
 Consider the laboratory apartment designed for the research of everyday activities in the Institute of Artificial Intelligence at the university of Bremen as shown in @fig:costmap_kitchen (hereinafter referred to as the "apartment lab"). The objective is to define the set of permissible locations within this environment where a robot can safely stand. Naturally, these permissible locations exclude areas occupied by obstacles such as cabinets, tables, and other furniture. By employing product sigma-algebras, one can formally represent the set of possible standing locations as a random event.
 
@@ -408,7 +443,10 @@ caption: [The surface of a not axis aligned hexagon shaped table.])<fig:hexagon_
 )
 ], caption: [Inner box approximation of a hexagon for different tolerances of volume errors.])<fig:inner_box_approximation>
 
-Naturally, the question arises why one should not always represent information as a polytope or even more flexible sets.
+Naturally, the question arises why one should not always represent information as a polytope or even more flexible sets. The answer is that algebraic operations on polytopes, such as complement and difference have an exponential worst-case complexity in the number of faces due to the possible combinatorial nature of the decomposition.
+
+// TODO REWRITE THIS TO A MORE CONSISTENT ARGUMENT FOR BOXES
+
 Computational geometry is concerned with efficient representations of geometric sets and algorithms that can quickly calculate properties of such sets. A popular way to represent those algorithms is linear programming. 
 Linear programming has the same constraints as convex polytopes and hence more complex set descriptions are not well studied.
 Furthermore, this thesis is mainly concerned about probabilistic reasoning. For probabilistic reasoning algebraic boxes are the events that are computationally feasible. Sets that are more complex are destroying properties in integration and hence allow no exact conclusions. This topic is further discussed in TODO.  
@@ -455,7 +493,7 @@ However, plenty of lecture notes and proof assistant files are available.
 As part of the contribution, this thesis provides a python implementation of the product sigma algebra, intervals and sets.
 The implementation is available in the python package *random_events* at https://github.com/tomsch420/random-events. 
 
-The python package features flexible variable definitions and the following operations for  intervals, sets and the product sigma algebra:
+The python package features flexible variable definitions and the following operations for intervals, sets and the product sigma algebra:
 - union
 - intersection
 - complement
@@ -467,5 +505,7 @@ Since most of the logic is abstracted one can add a new sigma algebra by definin
 The package has a test coverage of 91% and a documentation coverage of TODO%. Furthermore, the package features a complete user guide. 
 
 Furthermore, the package features a C++ backend, which improves the speed from a pure python implementation by two orders of magnitude. The C++ backend is connected to the python package via pybind11, enabling high usability and performance.
+
+The architectural diagram of the package is shown in figure TODO.
 
 

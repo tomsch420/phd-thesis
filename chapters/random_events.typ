@@ -511,8 +511,7 @@ Furthermore, the package features a C++ backend, which improves the speed from a
 Since most of the logic is abstracted one can add a new sigma algebra by defining a simple set, its intersection with another simple set and its complement as disjoint union of simple sets.
 
 The inheritance diagram of the package is shown in figure @fig:random_events_architecture.
-
-
+The diagram summarizes the architecture explained throughout this chapter. Note that the classes SubclassJSONSerializer are for automatic (de-)serialization of every subclass without knowing its specific type. The VariableMap is just a utility class to map variables to values in a flexible manner.
 
 #figure([#image("../images/random_events_architecture.png")], 
 caption: [The inheritance diagram of the random events package.])<fig:random_events_architecture>

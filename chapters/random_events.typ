@@ -510,6 +510,9 @@ Furthermore, the package features a C++ backend, which improves the speed from a
 
 Since most of the logic is abstracted one can add a new sigma algebra by defining a simple set, its intersection with another simple set and its complement as disjoint union of simple sets.
 
-The architectural diagram of the package is shown in figure TODO.
+The inheritance diagram of the package is shown in figure @fig:random_events_architecture.
 
 
+
+#figure([#image("../images/random_events_architecture.png")], 
+caption: [The inheritance diagram of the random events package.])<fig:random_events_architecture>

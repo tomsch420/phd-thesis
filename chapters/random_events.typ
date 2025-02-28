@@ -499,12 +499,16 @@ The python package features flexible variable definitions and the following oper
 - complement
 - difference
 - make disjoint
-- inner/outer box approximation of polytopes.
-Since most of the logic is abstracted one can add a new sigma algebra by defining a simple set, its intersection with another simple set and its complement as disjoint union of simple sets.
+- inner/outer box approximation of polytopes,
+- plotting
+- serialization.
 
-The package has a test coverage of 91% and a documentation coverage of TODO%. Furthermore, the package features a complete user guide. 
+
+The package has a test coverage of 91% and a documentation coverage of TODO% and features a complete user guide for both theory and practice. 
 
 Furthermore, the package features a C++ backend, which improves the speed from a pure python implementation by two orders of magnitude. The C++ backend is connected to the python package via pybind11, enabling high usability and performance.
+
+Since most of the logic is abstracted one can add a new sigma algebra by defining a simple set, its intersection with another simple set and its complement as disjoint union of simple sets.
 
 The architectural diagram of the package is shown in figure TODO.
 

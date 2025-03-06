@@ -1,5 +1,4 @@
-#import "@preview/ctheorems:1.1.2": *
-#show: thmrules
+
 #import "../thesis-imports.typ": *
 
 
@@ -77,9 +76,9 @@ $
 Note that for a fixed $A,$ the triple $(E, Im, P)$ is a probability space as well.] <def:conditional_probability>
 Instead of explaining this concept in my own words, I refer to Todd Kemps phrasing since there is nothing I could explain any better about it.
 
-#quote(attribution: [Todd Kemp @kemp2021youtube])[
-  We often think of conditional probability intuitively in terms of a two-stage experiment. In the first stage of the experiment, we see whether one particular event $A$ has occurred or not. If it has it may influence whether a second event $B$, which we’re going to measure in a second stage, will occur or not. Therefore, we may want to update our information on probabilities of the later events given information about whether the earlier event has occurred or not. In this language we’ll refer to the original probability measure $P(B)$ as the prior probability of an event $B$ and after we observe that event $A$ has occurred we refer to the new updated conditional probability as the posterior probability of that same event $B$. In more practical applications $A$ is referenced as the evidence since it is an event that evidently happened and $B$ is the query, since it is the event of interest. There are two very elementary but extraordinarily important results that come from that line of thinking the so-called law of total probability and most critically, Bayes theorem.
-]
+#quote([#cite(<kemp2021youtube>, form: "prose")],[
+	We often think of conditional probability intuitively in terms of a two-stage experiment. In the first stage of the experiment, we see whether one particular event $A$ has occurred or not. If it has it may influence whether a second event $B$, which we’re going to measure in a second stage, will occur or not. Therefore, we may want to update our information on probabilities of the later events given information about whether the earlier event has occurred or not. In this language we’ll refer to the original probability measure $P(B)$ as the prior probability of an event $B$ and after we observe that event $A$ has occurred we refer to the new updated conditional probability as the posterior probability of that same event $B$. In more practical applications $A$ is referenced as the evidence since it is an event that evidently happened and $B$ is the query, since it is the event of interest. There are two very elementary but extraordinarily important results that come from that line of thinking the so-called law of total probability and most critically, Bayes theorem.]
+)
 
 #theorem([Law of Total Probability])[
 Let $A_1 + A_2 + ... + A_n = E$ and $A_i sect A_j = emptyset $ if $i != j$ , i. e. be a partioning of the elementary events. Then for any $X in Im$,
@@ -135,7 +134,8 @@ In that case we have $P(A | B, C) = P(A | C)$, i. e. in the light of information
 Notation: $A tack.t.double B | C$.
 ]<def:conditional_independence>
 
-Conditional independence is the key tool for tractable probabilistic modelling. In @sec:probabilistic_models this thesis discusses different approaches to represent complex probability distributions. In the entire chapter the thesis explains that every model has some form of conditional independence in it. 
+Conditional independence is the key tool for tractable probabilistic modelling. In //@sec:probabilistic_models
+ this thesis discusses different approaches to represent complex probability distributions. In the entire chapter the thesis explains that every model has some form of conditional independence in it. 
 
 == From Probability Measures to Representation
 
@@ -262,7 +262,8 @@ These distributions offer versatile tools for modeling a wide range of real-worl
 
 The uniform distribution is the simplest distribution. It models scenarios where all outcomes within a specified range are equally probable. This simple characteristic enables extremely fast reasoning for this type of distribution. @sec:queries discusses this further.
 
-Furthermore, The uniform distribution can serve as a valuable baseline model when analyzing continuous data.  By comparing the actual data distribution to a uniform distribution, one can identify deviations and assess the presence of non-uniform patterns. This comparison can provide valuable insights into the underlying characteristics of the data. @sec:nyga_distribution_learning delves deeper into the intricacies of this benefit.
+Furthermore, The uniform distribution can serve as a valuable baseline model when analyzing continuous data.  By comparing the actual data distribution to a uniform distribution, one can identify deviations and assess the presence of non-uniform patterns. This comparison can provide valuable insights into the underlying characteristics of the data. //@sec:nyga_distribution_learning 
+delves deeper into the intricacies of this benefit.
 
 The uniform distribution is defined in @def:continuous-uniform-distribution. A graphical illustration of the uniform distribution is provided in @fig:uniform_pdf.
 
@@ -497,7 +498,8 @@ Note: Intervals and sums are interchangeable.
 
 Probability queries not only allow for that calculation of a probability, but also for the calculation of conditional probabilities as in #ref(<def:conditional_probability>). The intersection of two events is an algebraic operation and hence not a challenge of a probabilistic model.
 
-Effectively calculating the exact probability of complex events often necessitates employing techniques from multivariate calculus, particularly the concept of integration. A discussion on this topic is provided in #ref(<sec:probabilistic-circuits>) and the details are found in #cite(<choi2020probabilistic>).
+Effectively calculating the exact probability of complex events often necessitates employing techniques from multivariate calculus, particularly the concept of integration. A discussion on this topic is provided in //#ref(<sec:probabilistic-circuits>) 
+and the details are found in #cite(<choi2020probabilistic>).
 
 // Todo probability of normal uniform and pdf
 === Moments
@@ -671,7 +673,8 @@ The marginal acceptance probability of rejection sampling is given by the ration
 Unfortunately, all sampling algorithms besides inverse CDF sampling require some form of rejection sampling. Fortunately, any uniform distribution can be directly sampled from by using inverse CDF sampling. 
 
 The ability to generate random numbers from a distribution is not only relevant for generating examples. Probabilistic inference often necessitates the computation of integrals, as discussed in #ref(<sec:probability-query>), #ref(<sec:moment-query>), #ref(<sec:conditional-distributions>) and #ref(<sec:marginal-query>). 
-However, analytical integration, while elegant, has its limitations. When encountering complex functions or high-dimensional integrals, achieving closed-form solutions becomes challenging. The limitations of integration for probabilistic inference are discussed in #ref(<sec:probabilistic-circuits>). Fortunately, sampling methods provide robust alternatives, offering reliable approximations for these integrals.
+However, analytical integration, while elegant, has its limitations. When encountering complex functions or high-dimensional integrals, achieving closed-form solutions becomes challenging. The limitations of integration for probabilistic inference are discussed in //#ref(<sec:probabilistic-circuits>). 
+Fortunately, sampling methods provide robust alternatives, offering reliable approximations for these integrals.
 
 #definition([Monte Carlo Estimator])[
 Consider $n$ independent samples $x_1,..., x_n$ from a multidimensional
@@ -723,7 +726,7 @@ A pairwise query that computes such a number is the $L_1$ metric between densiti
    $
 ]<def:lp_metric>
 
-Under my supervision a bachelor thesis investigated this metric in the context of probabilistic circuit (which are introduced later in @sec:probabilistic-circuits). 
+Under my supervision a bachelor thesis investigated this metric in the context of probabilistic circuit (which are introduced later in //@sec:probabilistic-circuits). 
 First off, the $L_1$ metric is restated towards a form that works well with probabilistic semantics in @theo:alternate_l1. 
 
 @theo:mc_probability shows how to calculate the probability of an arbitrary event using the Monte Carlo method. Hence the approximation of the $L_1$ metric can be done with 

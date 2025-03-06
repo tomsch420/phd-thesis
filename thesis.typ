@@ -133,7 +133,7 @@ Dies ist meine Zusammenfassung...
 //#include "chapters/contributions.typ"
 //#include "chapters/cognitive_architectures.typ"
 #include "chapters/random_events.typ"
-// #include "chapters/probability_theory.typ"
+#include "chapters/probability_theory.typ"
 // #include "chapters/probabilistic_models.typ"
 // #include "chapters/memory.typ"
 // #include "chapters/probabilistic_actions.typ"

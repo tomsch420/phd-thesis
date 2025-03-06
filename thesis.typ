@@ -8,14 +8,14 @@
 )
 
 #let listings = preprocess_listings(
-  (
+	(
     Acronyms: yaml("acronyms.yaml"),
     Glossary: yaml("glossary.yaml"),
-    Links: none,
+    Links: (),
     Symbols: yaml("symbols.yaml")
-  )
+	)
 )
-		
+
 // load data from YAML file (also used for compiling cover)
 #let docdata = yaml("document_data.yaml")
 
@@ -47,7 +47,7 @@ This is my abstract...
 #v(6em) 
 Dies ist meine Zusammenfassung...
 #lorem(400)
-
+ 
 ]
 
 // generate titlepage that will be passed to thesis template
@@ -130,15 +130,15 @@ Dies ist meine Zusammenfassung...
 // ---------------------------------------------------------------------
 
 #include "chapters/introduction.typ"
-#include "chapters/contributions.typ"
-#include "chapters/cognitive_architectures.typ"
+//#include "chapters/contributions.typ"
+//#include "chapters/cognitive_architectures.typ"
 #include "chapters/random_events.typ"
-#include "chapters/probability_theory.typ"
-#include "chapters/probabilistic_models.typ"
-#include "chapters/memory.typ"
-#include "chapters/probabilistic_actions.typ"
-#include "chapters/conclusion.typ"
-//
+// #include "chapters/probability_theory.typ"
+// #include "chapters/probabilistic_models.typ"
+// #include "chapters/memory.typ"
+// #include "chapters/probabilistic_actions.typ"
+// #include "chapters/conclusion.typ"
+
 
 
 // ---------------------------------------------------------------------

@@ -1,77 +1,152 @@
 - key: epsilon
+  group: Symbols
   short: $epsilon$
-  description: "this is epsilon"
+  description: '_this is epsilon_ '
 - key: lambda
+  group: Symbols
   short: $lambda$
-  description: "this is lambda"
+  description: '_a leaf of a tree $T$_ '
 - key: lambdaup
+  group: Symbols
   short: $Lambda$
-  description: "this is capital lambda"
-- key: omega 
+  description: '_the set of leaves of a tree $T$_ '
+- key: omega
+  group: Symbols
   short: $omega$
-  description: "_call me omega_ -- omega is ...."
-- key: omegaup 
+  description: _an original state_ -- a material in its Urform
+- key: omegaup
+  group: Symbols
   short: $Omega$
-  description: "capital omega"
+  description: '_the set of all original states_ '
 - key: phi
+  group: Symbols
   short: $phi$
-  description: "_a phi_ -- this is the set of things"
+  description: _a feature profile_ -- an exhaustive assignment of features to ranges of admissible values
 - key: phiup
+  group: Symbols
   short: $Phi$
-  description: "the set of all profiles"
+  description: '_the set of all feature profiles_ '
 - key: pi
+  group: Symbols
   short: $pi$
-  description: "_a process step_ -- a function transforming one thing into another"
+  description: _a process step_ -- a function transforming a material's state into a new colored state (controlled by the process' arguments $a in cal(A)$)
 - key: psi
+  group: Symbols
   short: $psi$
-  description: "a function mapping a A to a B"
+  description: '_a function mapping a descriptor to a property_ '
 - key: rho
+  group: Symbols
   short: $rho.alt$
-  description: "_a good profile_ -- a description of a profile"
+  description: _a requirement profile_ -- a feature profile which postulates effective bounds only for material properties, but allows descriptor variables unconstrained
 - key: rhoup
+  group: Symbols
   short: $Rho$
-  description: "the set of all ..."
-- key: sigma 
+  description: '_the set of all requirement profiles_ '
+- key: sigma
+  group: Symbols
   short: $sigma$
-  description: "_a state_ -- an ..."   
-- key: sigmaup 
+  description: _a colored state_ -- an exhaustive assignment of features to real values
+- key: sigmaup
+  group: Symbols
   short: $Sigma$
-  description: "the set of ???"
+  description: '_the set of all colored states_ '
 - key: thetaalt
+  group: Symbols
   short: $theta.alt$
-  description: "a confidence level"
+  description: '_a confidence level_ '
 - key: zeta
+  group: Symbols
   short: $zeta$
-  description: "_a process chain_ -- a composition of process steps"
+  description: _a process chain_ -- a composition of process steps
 - key: cala
+  group: Symbols
   short: $cal(A)$
-  description: "a set of displays for arguments of process steps"
-- key: caldjpt
+  description: '_a set of symbols for arguments of process steps_ '
+- key: cald
+  group: Symbols
   short: $cal(D)$
-  description: "_a dataset_ -- in the context of ONETOPIC"
+  description: '_a set of symbols for descriptors_ -- in the context of #smallcaps([MatCALO])'
+- key: caldjpt
+  group: Symbols
+  short: $cal(D)$
+  description: _a dataset_ -- in the context of JPTs
 - key: caldmacro
+  group: Symbols
   short: $cal(D)_m$
-  description: "a set of macro things"
+  description: '_a set of macro descriptors_ '
 - key: caldmicro
+  group: Symbols
   short: $cal(D)_mu$
-  description: "a set of $mu$ things"
+  description: '_a set of $mu$ descriptors_ '
 - key: caldtilde
+  group: Symbols
   short: $tilde(cal(D))$
-  description: "_a subset of a dataset that serves as training data_ -- in the context of ONETOPIC"
+  description: _a subset of a dataset that serves as training data_ -- in the context of JPTs
 - key: calf
+  group: Symbols
   short: $cal(F)$
-  description: "a set of displays"
-  descr: "the union of the sets of this and that, i.e. 
-  $cal(P) union cal(D)$"
-- key: caln 
+  description: _a set of feature symbols_ -- the union of the sets of properties and descriptors, i.e. $cal(P) union cal(D)$
+- key: cali
+  group: Symbols
+  short: $cal(I)$
+  description: '_a continuous, real-valued interval_ -- in the context of #smallcaps([MatCALO])'
+- key: caln
+  group: Symbols
   short: $cal(N)$
-  description: "_the normal distribution $cal(N)(mu,Xi)$_ -- determined by a mean vector $mu$ and a covariance matrix $Xi$"
+  description: _the normal distribution $cal(N)(mu,Xi)$_ -- determined by a mean vector $mu$ and a covariance matrix $Xi$
 - key: calp
+  group: Symbols
   short: $cal(P)$
-  description: "a set of displays for properties"
+  description: '_a set of symbols for properties_ '
 - key: calu
+  group: Symbols
   short: $cal(U)$
-  description: "_the uniform distribution $cal(U)(X)$_ -- over a random variable $X$"
+  description: _the uniform distribution $cal(U)(X)$_ -- over a random variable $X$
 - key: calx
+  group: Symbols
   short: $cal(X)$
-  description: "_the set of all possible worlds_ -- all possible complete variable assignments"
+  description: _the set of all possible worlds_ -- all possible complete variable assignments
+- key: vardom
+  group: Symbols
+  short: $italic("dom")$
+  description: _domain_ -- the domain of a random variable $X_i$ is denoted as $italic("dom")(X_i)$
+- key: varhup
+  group: Symbols
+  short: $H$
+  description: _entropy_ -- the entropy of a distribution over a symbolic random variable $X$ is $H(P(X))$
+- key: variup
+  group: Symbols
+  short: $I$
+  description: '_an impurity improvement over a dataset $D_i$ when split of data is performed on variable $X_i$: $I(cal(D),X_i)$_ -- in the context of JPTs'
+- key: varxup
+  group: Symbols
+  short: $X$
+  description: '_a vector of random variables $X_i$_ '
+- key: varxnum
+  group: Symbols
+  short: $X_("num")$
+  description: '_the set of numeric variables in $X$_ '
+- key: varxsym
+  group: Symbols
+  short: $X_("sym")$
+  description: '_the set of symbolic variables in $X$_ '
+- key: varpup
+  group: Symbols
+  short: $P$
+  description: _probability_ -- a posterior $P(Q|E)$ or prior $P(Q)$ probability
+- key: varpupdist
+  group: Symbols
+  short: $P_(cal(D),X_i)$
+  description: '_distribution over $X_j$_ -- induced by the data set $cal(D)$ when split at variable $X_i$: $P_(cal(D),X_i)(X_j)$'
+- key: vartup
+  group: Symbols
+  short: $T$
+  description: '_a tree structure_ '
+- key: varf
+  group: Symbols
+  short: $f$
+  description: _a Piecewise Linear Function (PLF)_ -- a function defined on a finite number of intervals, each of which has a linear function $f_i$ attached.
+- key: varfup
+  group: Symbols
+  short: $F$
+  description: '_the Cumulative Distribution Function (CDF) of the desired probability distribution_ '

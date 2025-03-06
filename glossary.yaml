@@ -1,15 +1,101 @@
-- key: api
-  short: API
-  long: Application Programming Interfaces
-  description: This is a long description what that is
 - key: owl
+  group: Glossary
   short: OWL
-  long: W3C Web Ontology Language
-  description: OWL forms the standard for a Semantic Web language which can be used to represent complex knowledge about things and relations between things #link(\https://www.w3.org/OWL/\) #text(9pt,[ (Accessed: Aug 1st, 2022)])
+  long: 'W3C #underline[W]eb #underline[O]ntology #underline[L]anguage'
+  description: 'OWL forms the standard for a Semantic Web language which can be used to represent complex knowledge about things and relations between things #link("https://www.w3.org/OWL/") #text(9pt,[ (Accessed: Aug 1st, 2022)])'
+- key: sherpa
+  group: Glossary
+  short: SHERPA
+  description: '#underline[S]mart collaboration between #underline[H]umans and ground-a#underline[E]rial #underline[R]obots for im#underline[P]roving rescuing activities in #underline[A]lpine environments. European Union Seventh Framework Programme FP7 Project (grant number 600958) #link("https://sherpa-project.eu/sherpa/") #text(9pt,[ (Accessed: Aug 1st, 2022)])'
+- key: robohow
+  group: Glossary
+  short: RoboHow
+  description: 'Web-enabled and Experience-based Cognitive Robots that Learn Complex Everyday Manipulation Tasks; European Union Seventh Framework Programme FP7 Project (grant number 288533) #link("http://robohow.eu/") #text(9pt,[(Accessed: Jan 20th, 2023)])'
+- key: knowrob
+  group: Glossary
+  short: '#smallcaps([KnowRob])'
+  description: 'Knowledge processing for robots.  functions as a knowledge processing system merging methods for knowledge representation and reasoning with approaches for acquiring and anchoring knowledge within a physical system. It serves as a unified semantic framework capable of integrating information from various sources. #link("https://knowrob.org/knowrob") #text(9pt,[(Accessed: Mar 19th, 2024)])'
+- key: sfb1232
+  group: Glossary
+  short: SFB1232
+  description: 'Von farbigen Zuständen zu evolutionären Konstruktionswerkstoffen (en: From colored states to evolutionary structural materials; Collaborative Research Center by the DFG (project number 276397488) #link("https://www.uni-bremen.de/farbige-zustaende") #text(9pt,[ (Accessed: Jan 20th, 2023)])'
+- key: pipe
+  group: Glossary
+  short: PIPE
+  description: '#underline[P]robabilistic Models of #underline[I]nstructions, #underline[P]erception and #underline[E]xperience - Representation, Learning and Reasoning; Research Grants DFG Programme (project number 322037152)'
+- key: fp7
+  group: Glossary
+  short: FP7
+  long: 'European Union #underline[7]#super[th] #underline[F]ramework #underline[P]rogramme'
+  description: 'The Seventh Framework Programme (FP7) encouraged the development of new concepts in space transportation and space technologies. It also aimed to reduce the vulnerability of space-based systems and services. #link("https://ec.europa.eu/growth/sectors/space/research/fp7_en") #text(9pt,[ (Accessed: Jan 20th, 2023)])'
 - key: crc
+  group: Glossary
   short: CRC
-  long: Collaborative Research Center
-  description: CRCs are long-term university-based research institutions, established for up to 12 years, in which researchers work together within a multidisciplinary research programme. #link(\https://www.dfg.de/en/research_funding/programmes/coordinated_\nprogrammes/collaborative_research_centres/index.html\) #text(9pt,[ (Jan 20th, 2023)])
-- key: thing
-  short: thing
-  description: this is some text to contentibe the thing.
+  long: '#underline[C]ollaborative #underline[R]esearch #underline[C]enter'
+  description: |-
+    CRCs are long-term university-based research institutions, established for up to 12 years, in which researchers work together within a multidisciplinary research programme. #link("https://www.dfg.de/en/research_funding/programmes/coordinated_programmes/collaborative_research_centres/index.html") #text(9pt,[ (Accessed: Jan 20th, 2023)])
+- key: descr
+  group: Glossary
+  short: descriptor
+  description: We use the term descriptors to denote any kind of measurement or feature obtained from short-time characterizations on micro samples. They correlate with material properties so that a short-time characterization of a micro sample facilitates the prediction of material properties in macro- scale materials.
+- key: dfg
+  group: Glossary
+  short: DFG
+  long: Deutsche Forschungsgemeinschaft
+  description: '(en: German Research Foundation) #link("https://www.dfg.de") #text(9pt,[ (Accessed: Jan 13th, 2023)])'
+- key: ease
+  group: Glossary
+  short: EASE
+  long: '#underline[E]veryday #underline[A]ctivity #underline[S]cience & #underline[E]ngineering'
+  description: 'an interdisciplinary research center to develop cognitive robots with the skills to execute everyday activities. The focus lies on conducting _open research_ and sharing knowledge and data. #link("https://ease-crc.org/") #text(9pt,[ (Accessed: Jan 13th, 2023)])'
+- key: sparc
+  group: Glossary
+  short: SPARC
+  description: 'The _SPARC Partnership for Robotics in Europe_ is a civilian-funded robotics innovation programme and a partnership between the European Commission and the European industry and academia.  #link("https://old.eu-robotics.net/sparc/") #text(9pt,[ (Accessed: Sept 5th, 2023)])'
+- key: sra
+  group: Glossary
+  short: SRA
+  long: '#underline[S]trategic #underline[R]esearch #underline[A]genda'
+  description: |-
+    The SRA (for Robotics in Europe) offers a comprehensive strategic perspective for the field of robotics. Additionally, it serves as a means to acquaint non-experts, policymakers, entrepreneurs, and industries interested in the robotics sector with the European robotics community. This document aims to provide insight into the current state and future prospects of robotics. #link("https://old.eu-robotics.net/sparc/upload/topic_groups/SRA2020_SPARC.pdf") #text(9pt,[ (Accessed: Sept 5th, 2023)])
+- key: mar
+  group: Glossary
+  short: MAR
+  long: '#underline[M]ulti #underline[A]nnual #underline[R]oadmap'
+  description: |-
+    The MAR (for Robotics in Europe) complements the Strategic Research Agenda (SRA) by offering more in-depth technical and market insights. It serves as a detailed technical guide, highlighting anticipated progress and medium-term research and innovation objectives within the robotics community. The MAR is updated annually to align with evolving priorities, technologies, and strategic developments in European research, development, and innovation. #link("https://old.eu-robotics.net/cms/upload/topic_groups/H2020_Robotics_Multi-Annual_Roadmap_ICT-2017B.pdf") #text(9pt,[ (Accessed: Sept 5th, 2023)])
+- key: ccc
+  group: Glossary
+  short: CCC
+  long: '#underline[C]omputing #underline[C]ommunity #underline[C]onsortium'
+  description: 'The CCC, affiliated with the CRA, is dedicated to advancing innovative and impactful computing research that addresses both national and global challenges. It operates as a responsive, visionary organization representing the computing research community, with a strong commitment to diversity, equity, and inclusivity. CCC serves as a catalyst, bringing together leaders from academia, industry, and government to articulate and promote compelling research visions.  #link("https://cra.org/ccc/") #text(9pt,[ (Accessed: Sept 11th, 2023)])'
+- key: cra
+  group: Glossary
+  short: CRA
+  long: '#underline[C]omputing #underline[R]esearch #underline[A]ssociation'
+  description: 'The CRA is a prominent organization with member organizations across North America, including academic departments, industry labs, government agencies, and professional societies like AAAI, ACM, and IEEE Computer Society. Its mission is to promote and advance computing research by collaborating with industry, government, and academia, representing the computing research community, informing policymakers, and advocating for diversity and social responsibility in computing research. CRA plays a vital role in supporting and uniting the computing community, advocating for research funding, mentoring aspiring researchers, and fostering innovation in the field. #link("https://cra.org/") #text(9pt,[ (Accessed: Sept 11th, 2023)])'
+- key: mgi
+  group: Glossary
+  short: MGI
+  long: '#underline[M]aterials #underline[G]enome #underline[I]nitiative'
+  description: 'The Materials Genome Initiative is a collaborative effort involving multiple federal agencies aimed at expediting the discovery, production, and utilization of advanced materials, achieving results in half the time and at a significantly reduced expense compared to conventional approaches. This initiative establishes guidelines, allocates resources, and builds the necessary infrastructure to assist American institutions in embracing approaches that accelerate the development of materials. #link("https://www.mgi.gov") #text(9pt,[ (Accessed: Sep 12th, 2023)])'
+- key: ac
+  group: Glossary
+  short: action core
+  description: action cores are symbols representing (higher-level) actions that can be decomposed into smaller subactions. In the context of this work, examples for action cores could be _move\u{a0}forward_ or _turn_
+- key: beliefstate
+  group: Glossary
+  short: belief state
+  description: a belief state in general can be viewed at as a set of statements about the robot itself as well as its environment (the _world_) at a certain point in time $t$ that the robot believes to be true. In the context of BayRoB such a belief state is represented by means of a joint probability distribution over variables representing the agent's and its environment's current condition.
+- key: bayrob
+  group: Glossary
+  short: #smallcaps("BayRoB")
+  description: is a fully operational system combining joint probability distributions to generate action models from a robot's experience data.
+- key: matcalo
+  group: Glossary
+  short: #smallcaps("MatCALO")
+  description:  is an implementation of an intelligent, assistive system that is capable of supporting materials scientists in their work by generating hypotheses on how to process certain materials to obtain desired properties.
+- key: sample
+  group: Glossary
+  short: sample
+  description: A _sample_ in the context of this work may either be _microscopic_ or _macroscopic_. A macroscopic (_macro_) sample can be used to obtain material properties directly because of its size. Macro samples can for example be created by using spray-forming or casting. A microscopic or _micro_ sample is a spherical droplet of a few hundred $mu m$ in diameter. These samples are either generated in large quantities in one go using the pneumatic high-temperature droplet generator as described by @1757-899X-117-1-012057 or they are formed in a larger-scale sample using Laser Deep Alloying."

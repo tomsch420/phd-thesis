@@ -1,12 +1,355 @@
-  - key: ard
-    short: ARD
-    long: Arbeitsgemeinschaft der öffentlich-rechtlichen Rundfunkanstalten der Bundesrepublik Deutschland
-  - key: pdf
-    short: PDF
-    plural: PDFs
-    long: Portable Document Format
-  - key: kb
-    short: KB
-    plural: KBs
-    long: Knowledge Base
-    longplural: Knowledge Bases
+- key: api
+  group: Acronyms
+  short: API
+  long: '#underline[A]pplication #underline[P]rogramming #underline[I]nterface'
+  description: '#underline[A]pplication #underline[P]rogramming #underline[I]nterface'
+- key: prac
+  group: Acronyms
+  short: PRAC
+  long: '#underline[Pr]obabilistic #underline[A]ction #underline[C]ores'
+  description: '#underline[Pr]obabilistic #underline[A]ction #underline[C]ores'
+- key: mln
+  group: Acronyms
+  short: MLN
+  plural: MLNs
+  long: '#underline[M]arkov #underline[L]ogic #underline[N]etwork'
+  description: '#underline[M]arkov #underline[L]ogic #underline[N]etwork'
+  longplural: '#underline[M]arkov #underline[L]ogic #underline[N]etworks'
+- key: ml
+  group: Acronyms
+  short: ML
+  long: '#underline[M]achine #underline[L]earning'
+  description: '#underline[M]achine #underline[L]earning'
+- key: ai
+  group: Acronyms
+  short: AI
+  long: '#underline[A]rtificial #underline[I]ntelligence'
+  description: '#underline[A]rtificial #underline[I]ntelligence'
+- key: kb
+  group: Acronyms
+  short: KB
+  plural: KBs
+  long: '#underline[K]nowledge #underline[B]ase'
+  description: '#underline[K]nowledge #underline[B]ase'
+  longplural: '#underline[K]nowledge #underline[B]ases'
+- key: fl
+  group: Acronyms
+  short: FL
+  long: '#underline[F]uzzy #underline[L]ogic'
+  description: '#underline[F]uzzy #underline[L]ogic'
+- key: pgm
+  group: Acronyms
+  short: PGM
+  plural: PGMs
+  long: '#underline[P]robabilistic #underline[G]raphical #underline[M]odel'
+  description: '#underline[P]robabilistic #underline[G]raphical #underline[M]odel'
+  longplural: '#underline[P]robabilistic #underline[G]raphical #underline[M]odels'
+- key: mrf
+  group: Acronyms
+  short: MRF
+  plural: MRFs
+  long: '#underline[M]arkov #underline[R]andom #underline[F]ield'
+  description: '#underline[M]arkov #underline[R]andom #underline[F]ield'
+  longplural: '#underline[M]arkov #underline[R]andom #underline[F]ields'
+- key: gmrf
+  group: Acronyms
+  short: ground MRF
+  plural: ground MRFs
+  long: 'ground #underline[M]arkov #underline[R]andom #underline[F]ield'
+  description: 'ground #underline[M]arkov #underline[R]andom #underline[F]ield'
+  longplural: 'ground #underline[M]arkov #underline[R]andom #underline[F]ields'
+- key: prm
+  group: Acronyms
+  short: PRM
+  plural: PRMs
+  long: '#underline[P]robabilistic #underline[R]elational #underline[M]odel'
+  description: '#underline[P]robabilistic #underline[R]elational #underline[M]odel'
+  longplural: '#underline[P]robabilistic #underline[R]elational #underline[M]odels'
+- key: srl
+  group: Acronyms
+  short: SRL
+  long: '#underline[S]tatistical #underline[R]elational #underline[L]earning'
+  description: '#underline[S]tatistical #underline[R]elational #underline[L]earning'
+- key: fol
+  group: Acronyms
+  short: FOL
+  long: '#underline[F]irst-#underline[O]rder #underline[L]ogic'
+  description: '#underline[F]irst-#underline[O]rder #underline[L]ogic'
+- key: bn
+  group: Acronyms
+  short: BN
+  plural: BNs
+  long: '#underline[B]ayesian #underline[N]etwork'
+  description: '#underline[B]ayesian #underline[N]etwork'
+  longplural: '#underline[B]ayesian #underline[N]etworks'
+- key: mn
+  group: Acronyms
+  short: MN
+  plural: MNs
+  long: '#underline[M]arkov #underline[N]etwork'
+  description: '#underline[M]arkov #underline[N]etwork'
+  longplural: '#underline[M]arkov #underline[N]etworks'
+- key: cdf
+  group: Acronyms
+  short: CDF
+  plural: CDFs
+  long: '#underline[C]umulative #underline[D]istribution #underline[F]unction'
+  description: '#underline[C]umulative #underline[D]istribution #underline[F]unction'
+  longplural: '#underline[C]umulative #underline[D]istribution #underline[F]unctions'
+- key: pdf
+  group: Acronyms
+  short: PDF
+  plural: PDFs
+  long: '#underline[P]robability #underline[D]ensity #underline[F]unction'
+  description: '#underline[P]robability #underline[D]ensity #underline[F]unction'
+  longplural: '#underline[P]robability #underline[D]ensity #underline[F]unctions'
+- key: pham
+  group: Acronyms
+  short: PHAMs
+  long: '#underline[P]robabilistic #underline[H]ybrid #underline[A]ction #underline[M]odels'
+  description: '#underline[P]robabilistic #underline[H]ybrid #underline[A]ction #underline[M]odels'
+- key: crp
+  group: Acronyms
+  short: CRPs
+  long: '#underline[C]oncurrent #underline[R]eactive #underline[P]lans'
+  description: '#underline[C]oncurrent #underline[R]eactive #underline[P]lans'
+- key: mdp
+  group: Acronyms
+  short: MDP
+  plural: MDPs
+  long: '#underline[M]arkov #underline[D]ecision #underline[P]rocess'
+  description: '#underline[M]arkov #underline[D]ecision #underline[P]rocess'
+  longplural: '#underline[M]arkov #underline[D]ecision #underline[P]rocesses'
+- key: jpt
+  group: Acronyms
+  short: JPT
+  plural: JPTs
+  long: '#underline[J]oint #underline[P]robability #underline[T]ree'
+  description: '#underline[J]oint #underline[P]robability #underline[T]ree'
+  longplural: '#underline[J]oint #underline[P]robability #underline[T]rees'
+- key: nell
+  group: Acronyms
+  short: NELL
+  long: '#underline[N]ever #underline[E]nding #underline[L]anguage #underline[L]earning'
+  description: '#underline[N]ever #underline[E]nding #underline[L]anguage #underline[L]earning'
+- key: nlp
+  group: Acronyms
+  short: NLP
+  long: '#underline[N]atural #underline[L]anguage #underline[P]rocessing'
+  description: '#underline[N]atural #underline[L]anguage #underline[P]rocessing'
+- key: neems
+  group: Acronyms
+  short: NEEM
+  plural: NEEMs
+  long: '#underline[N]arrative-#underline[e]nabled #underline[E]pisodic #underline[M]emory'
+  description: '#underline[N]arrative-#underline[e]nabled #underline[E]pisodic #underline[M]emory'
+  longplural: '#underline[N]arrative-#underline[e]nabled #underline[E]pisodic #underline[M]emories'
+- key: peams
+  group: Acronyms
+  short: PEAM
+  plural: PEAMs
+  long: '#underline[P]ragmatic #underline[E]veryday #underline[A]ctivity #underline[M]anifold'
+  description: '#underline[P]ragmatic #underline[E]veryday #underline[A]ctivity #underline[M]anifold'
+  longplural: '#underline[P]ragmatic #underline[E]veryday #underline[A]ctivity #underline[M]anifolds'
+- key: cart
+  group: Acronyms
+  short: CART
+  long: '#underline[C]lassification #underline[a]nd #underline[R]egression #underline[T]rees'
+  description: '#underline[C]lassification #underline[a]nd #underline[R]egression #underline[T]rees'
+- key: mse
+  group: Acronyms
+  short: MSE
+  long: '#underline[M]ean #underline[S]quared #underline[e]rror'
+  description: '#underline[M]ean #underline[S]quared #underline[e]rror'
+- key: em
+  group: Acronyms
+  short: EM
+  long: '#underline[E]xpectation #underline[M]aximization'
+  description: '#underline[E]xpectation #underline[M]aximization'
+- key: qpd
+  group: Acronyms
+  short: QPD
+  plural: QPDs
+  long: '#underline[q]uantile-#underline[P]arameterized #underline[D]istribution'
+  description: '#underline[q]uantile-#underline[P]arameterized #underline[D]istribution'
+  longplural: '#underline[q]uantile-#underline[P]arameterized #underline[D]istributions'
+- key: plf
+  group: Acronyms
+  short: PLF
+  plural: PLFs
+  long: '#underline[P]iecewise #underline[L]inear #underline[F]unction'
+  description: '#underline[P]iecewise #underline[L]inear #underline[F]unction'
+  longplural: '#underline[P]iecewise #underline[L]inear #underline[F]unctions'
+- key: ppf
+  group: Acronyms
+  short: PPF
+  long: '#underline[P]ercent #underline[P]oint #underline[F]unction'
+  description: '#underline[P]ercent #underline[P]oint #underline[F]unction'
+- key: rt
+  group: Acronyms
+  short: RT
+  plural: RTs
+  longplural: '#underline[R]egression #underline[T]rees'
+  long: '#underline[R]egression #underline[T]ree'
+  description: '#underline[R]egression #underline[T]ree'
+- key: ols
+  group: Acronyms
+  short: OLS
+  long: '#underline[O]rdinary #underline[L]east #underline[S]quares'
+  description: '#underline[O]rdinary #underline[L]east #underline[S]quares'
+- key: mae
+  group: Acronyms
+  short: MAE
+  long: '#underline[M]ean #underline[A]bsolute #underline[E]rror'
+  description: '#underline[M]ean #underline[A]bsolute #underline[E]rror'
+- key: pc
+  group: Acronyms
+  short: PC
+  plural: PCs
+  long: '#underline[P]robabilistic #underline[C]ircuit'
+  longplural: '#underline[P]robabilistic #underline[C]ircuits'
+  description: '#underline[P]robabilistic #underline[C]ircuits'
+- key: xpc
+  group: Acronyms
+  short: XPC
+  plural: XPCs
+  long: 'e#underline[x]tremely randomized #underline[P]robabilistic #underline[C]ircuit'
+  longplural: 'e#underline[x]tremely randomized #underline[P]robabilistic #underline[C]ircuits'
+  description: 'e#underline[x]tremely randomized #underline[P]robabilistic #underline[C]ircuits'
+- key: hme
+  group: Acronyms
+  short: HME
+  long: '#underline[H]ierarchical #underline[M]ixture of #underline[E]xperts'
+  description: '#underline[H]ierarchical #underline[M]ixture of #underline[E]xperts'
+- key: spn
+  group: Acronyms
+  short: SPN
+  plural: SPNs
+  long: '#underline[S]um-#underline[P]roduct #underline[N]etwork'
+  longplural: '#underline[S]um-#underline[P]roduct #underline[N]etworks'
+  description: '#underline[S]um-#underline[P]roduct #underline[N]etwork'
+- key: mdn
+  group: Acronyms
+  short: MDN
+  plural: MDNs
+  long: '#underline[M]ixture-#underline[D]ensity #underline[N]etwork'
+  description: '#underline[M]ixture-#underline[D]ensity #underline[N]etwork'
+  longplural: '#underline[M]ixture-#underline[D]ensity #underline[N]etworks'
+- key: mpe
+  group: Acronyms
+  short: MPE
+  long: '#underline[M]ost #underline[P]robable #underline[E]xplanation'
+  description: '#underline[M]ost #underline[P]robable #underline[E]xplanation'
+- key: map
+  group: Acronyms
+  short: MAP
+  long: '#underline[M]aximum #underline[A] #underline[P]osteriori'
+  description: '#underline[M]aximum #underline[A] #underline[P]osteriori'
+- key: mle
+  group: Acronyms
+  short: MLE
+  long: '#underline[M]aximum #underline[L]ikelihood #underline[E]stimate'
+  description: '#underline[M]aximum #underline[L]ikelihood #underline[E]stimate'
+- key: mars
+  group: Acronyms
+  short: MARS
+  long: '#underline[M]ultivariate #underline[A]daptive #underline[R]egression #underline[S]pline'
+  description: '#underline[M]ultivariate #underline[A]daptive #underline[R]egression #underline[S]pline'
+- key: gpt
+  group: Acronyms
+  short: ChatGPT
+  long: '#underline[G]enerative #underline[P]re-trained #underline[T]ransformer'
+  description: '#underline[G]enerative #underline[P]re-trained #underline[T]ransformer'
+- key: mrt
+  group: Acronyms
+  short: MRT
+  long: '#underline[M]ultiple #underline[R]everse #underline[T]ree'
+  description: '#underline[M]ultiple #underline[R]everse #underline[T]ree'
+- key: cram
+  group: Acronyms
+  short: CRAM
+  long: '#underline[C]ognitive #underline[R]obot #underline[A]bstract #underline[M]achine'
+  description: '#underline[C]ognitive #underline[R]obot #underline[A]bstract #underline[M]achine'
+- key: cpl
+  group: Acronyms
+  short: CPL
+  long: '#underline[C]RAM #underline[P]lan #underline[L]anguage'
+  description: '#underline[C]RAM #underline[P]lan #underline[L]anguage'
+- key: pomdp
+  group: Acronyms
+  short: POMDP
+  plural: POMDPs
+  long: '#underline[P]artially #underline[O]bservable #underline[MDP]'
+  description: '#underline[P]artially #underline[O]bservable #underline[MDP]'
+  longplural: '#underline[P]artially #underline[O]bservable #underline[MDP]s'
+- key: krr
+  group: Acronyms
+  short: KR&R
+  long: '#underline[K]nowledge #underline[R]epresentation and #underline[R]easoning'
+  description: '#underline[K]nowledge #underline[R]epresentation and #underline[R]easoning'
+- key: pl
+  group: Acronyms
+  short: PL
+  long: '#underline[P]ropositional #underline[L]ogic'
+  description: '#underline[P]ropositional #underline[L]ogic'
+- key: pmf
+  group: Acronyms
+  short: PMF
+  long: '#underline[P]robability #underline[M]ass #underline[F]unction'
+  description: '#underline[P]robability #underline[M]ass #underline[F]unction'
+- key: dag
+  group: Acronyms
+  short: DAG
+  plural: DAGs
+  longplural: '#underline[D]irected #underline[A]cyclic #underline[G]raphs'
+  long: '#underline[D]irected #underline[A]cyclic #underline[G]raph'
+  description: '#underline[D]irected #underline[A]cyclic #underline[G]raph'
+- key: cpd
+  group: Acronyms
+  short: CPD
+  plural: CPDs
+  longplural: '#underline[C]onditional #underline[P]robability #underline[D]istributions'
+  long: '#underline[C]onditional #underline[P]robability #underline[D]istribution'
+  description: '#underline[C]onditional #underline[P]robability #underline[D]istribution'
+- key: dt
+  group: Acronyms
+  short: DT
+  plural: DTs
+  longplural: '#underline[D]ecision #underline[T]rees'
+  long: '#underline[D]ecision #underline[T]ree'
+  description: '#underline[D]ecision #underline[T]ree'
+- key: id3
+  group: Acronyms
+  short: ID3
+  long: Iterative Dichotomiser 3
+  description: Iterative Dichotomiser 3
+- key: mb
+  group: Acronyms
+  short: MB
+  long: '#underline[M]arkov #underline[B]lanket'
+  description: '#underline[M]arkov #underline[B]lanket'
+- key: fg
+  group: Acronyms
+  short: FG
+  long: '#underline[F]actor #underline[G]raph'
+  description: '#underline[F]actor #underline[G]raph'
+- key: mcmc
+  group: Acronyms
+  short: MCMC
+  long: '#underline[M]arkov #underline[C]hain #underline[M]onte #underline[C]arlo'
+  description: '#underline[M]arkov #underline[C]hain #underline[M]onte #underline[C]arlo'
+- key: einets
+  group: Acronyms
+  short: EiNets
+  long: '#underline[Ei]nsum #underline[Net]works'
+  description: '#underline[Ei]nsum #underline[Net]works'
+- key: strips
+  group: Acronyms
+  short: STRIPS
+  long: '#underline[St]anford #underline[R]esearch #underline[I]nstitute #underline[P]roblem #underline[S]olver'
+  description: '#underline[St]anford #underline[R]esearch #underline[I]nstitute #underline[P]roblem #underline[S]olver'
+- key: arplaces
+  group: Acronyms
+  short: ARP LACEs
+  long: '#underline[A]ction-#underline[R]elated #underline[P]laces'
+  description: '#underline[A]ction-#underline[R]elated #underline[P]laces'

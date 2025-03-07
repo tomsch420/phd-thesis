@@ -13,7 +13,7 @@ This section on probability theory establishes a strong foundation for this thes
 
 - *Strong Foundation for Further Advancements* Probability theory serves as a cornerstone for many advanced techniques employed in cognitive robotics and artificial intelligence. These include planning under uncertainty, Bayesian filtering for sensor fusion, and reinforcement learning algorithms. 
 
-In probability theory, a sigma algebra (as described in #ref(<sec:sigma_algebra>)) is employed as it allows the specification of probabilities for all events of interest. This stems from the principle that if the probability of every elementary event (an event that cannot be further decomposed) within the sigma algebra is known, then the probability of any conceivable event constructed from these atomic events can be determined.
+In probability theory, a sigma algebra (as described in @sec:sigma_algebra) is employed as it allows the specification of probabilities for all possible events. This stems from the principle that if the probability of every elementary event (an event that cannot be further decomposed) within the sigma algebra is known, then the probability of any conceivable event constructed from these elementary events can be determined.
 
 In #ref(<sec:product-sigma-algebra>), the concept of a product sigma algebra was introduced. This construction allows to define a sigma algebra on the product space of multiple measurable spaces. 
 //Throughout the rest of this thesis, whenever a sigma-algebra is referred to, I will be specifically referring to this product sigma algebra unless states otherwise.
@@ -21,7 +21,8 @@ In #ref(<sec:product-sigma-algebra>), the concept of a product sigma algebra was
 == Probability Measure
 <sec:probability_measure>
 
-#definition([Probability Measure TODO CITE])[
+#definition([Probability Measure @resnick2013probability])[
+
 Let $(E, Im)$ be a measurable space (see #ref(<def:sigma_algebra>)).
 A non-negative, real function $P: Im -> RR_(0,+)$ is called a measure if it satisfies the following properties.
 
@@ -36,24 +37,25 @@ The triple $(E, Im, P)$ is called a probability space.
 ] <def:probability_measure>
 
 A probability measure assigns a numerical value between 0 and 1 to each event within a sigma algebra. This framework also proves useful when considering unions of events. For disjoint events (events with no overlap), sigma-additivity guarantees that the probability of the union is equivalent to the sum of the individual probabilities of each event. This property stems from the fact that disjoint events contribute non-overlapping elements to the union.
-Furthermore, sigma additivity is the whole reason for the focus of @sec:sigma_algebra on representing composite sets as disjoint unions of simple sets. 
+Furthermore, sigma additivity is one of the reason for the focus of @sec:sigma_algebra on representing composite sets as disjoint unions of simple sets. 
 
-However, for events that intersect (have some overlap), a straightforward summation of their probabilities would lead to overcounting. The elements constituting the intersection would be included in the probability calculations for both individual events. Sigma-additivity addresses this by ensuring that the probability of the intersection is subtracted from the sum of the individual probabilities, effectively compensating for the double counting.
+However, for events that intersect (have some overlap), a straightforward summation of their probabilities leads to overcounting. The elements constituting the intersection are included in the probability calculations for both individual events. Sigma-additivity addresses this by ensuring that the probability of the intersection is subtracted from the sum of the individual probabilities, effectively compensating for the double counting.
 
 This characteristic of sigma-additivity necessitates the construction of probability measures on sigma algebras. Sigma algebras, by definition, include all possible unions and intersections of measurable sets (events), allowing for the proper application of sigma-additivity when calculating probabilities of complex events.
 
-Intuitively, probabilities can be visualized as the "size" of sets within sigma algebra. This analogy draws parallels between probability theory and geometric measure theory, where the size of a shape corresponds to its area or volume. However, a key distinction exists: probabilities are inherently bounded by unity (Axiom 4). Unlike geometric measures, probabilities never exceed this limit.
+Intuitively, probabilities can be conceptualized as the "size" of sets within sigma algebra. This analogy draws parallels between probability theory and geometric measure theory, where the size of a shape corresponds to its area or volume. However, a key distinction exists: probabilities are inherently bounded by unity (Axiom 4). Unlike geometric measures, probabilities never exceed this limit.
 
 Stemming from the definition of a probability measure, a critical theorem can be established.
 
-#theorem([Sum Rule])[
+#theorem([Sum Rule @kolmogoroff1933grundbegriffe])[
+
 From $A + not A = E$ it follows
 $
 P(E) &= 1 \
 P(A) + P(not A) &= 1 \
 P(A) &= 1 - P(not A).
 $
-From $A = A sect (B union not B)$, using the notation $P(A, B) = P(A sect B)$ for the *joint probability* of $A$ and $B$ the sum rule is derived as 
+From $A = A inter (B union not B)$, using the notation $P(A, B) = P(A sect B)$ for the *joint probability* of $A$ and $B$ the sum rule is derived as 
 $
 P(A) = P(A, B) + P(A, not B).
 $]
@@ -64,7 +66,8 @@ Marginalization refers to the process of summing probabilities across different 
 
 == Conditional Probability
 
-#definition([Conditional Probability and Product Rule])[
+#definition([Conditional Probability and Product Rule @kolmogoroff1933grundbegriffe])[
+
 If $P(A) > 0$, the quotient
 $
 P(B | A ) = P(A,B) / P(A)
@@ -73,22 +76,25 @@ is called the *conditional probability* of an event $B$ given an event $A$.  It 
 $
 P(A,B) = P(A | B) dot P(B) = P(B | A) dot P(A).
 $
-Note that for a fixed $A,$ the triple $(E, Im, P)$ is a probability space as well.] <def:conditional_probability>
+Note that for a fixed $B,$ the triple $(E, Im, P(dot | B))$ is a probability space as well.] <def:conditional_probability>
 Instead of explaining this concept in my own words, I refer to Todd Kemps phrasing since there is nothing I could explain any better about it.
 
 #quote([#cite(<kemp2021youtube>, form: "prose")],[
 	We often think of conditional probability intuitively in terms of a two-stage experiment. In the first stage of the experiment, we see whether one particular event $A$ has occurred or not. If it has it may influence whether a second event $B$, which we’re going to measure in a second stage, will occur or not. Therefore, we may want to update our information on probabilities of the later events given information about whether the earlier event has occurred or not. In this language we’ll refer to the original probability measure $P(B)$ as the prior probability of an event $B$ and after we observe that event $A$ has occurred we refer to the new updated conditional probability as the posterior probability of that same event $B$. In more practical applications $A$ is referenced as the evidence since it is an event that evidently happened and $B$ is the query, since it is the event of interest. There are two very elementary but extraordinarily important results that come from that line of thinking the so-called law of total probability and most critically, Bayes theorem.]
 )
 
-#theorem([Law of Total Probability])[
-Let $A_1 + A_2 + ... + A_n = E$ and $A_i sect A_j = emptyset $ if $i != j$ , i. e. be a partioning of the elementary events. Then for any $X in Im$,
+#theorem([Law of Total Probability @kolmogoroff1933grundbegriffe])[
+
+Let $A_1 + A_2 + ... + A_n = E$ and $A_i inter A_j = emptyset $ if $i != j$ , i. e. be a partioning of the elementary events. Then for any $X in Im$,
 $
 P(X) = sum_(i=1)^n P(X | A_i) P(A_i).
 $
-*Proof:* 
+]<theo:law_of_total_probability>
+
+#proof([of @theo:law_of_total_probability])[
 Since 
 $
-X = E sect X = union.big_(i=1)^n (A_i sect X),
+X = E inter X = union.big_(i=1)^n (A_i inter X),
 $
 it is obtained that
 $
@@ -97,8 +103,8 @@ $
 ]
 
 Bayes' theorem provides a framework for updating prior probabilities in light of new evidence. It operates by reversing the conditioning process, allowing for the calculation of the posterior probability of an event (the probability of the event given new evidence) based on the prior probability of the event (the probability of the event before considering new evidence) and the likelihood of the evidence given the event. Notably, Bayes' theorem can be derived entirely from the axioms of probability theory, solidifying its foundation within the established theoretical framework.
-#theorem([Bayes Theorem])[
-Let $A_1 + A_2 + ... + A_n = E$ and $A_i sect A_j = emptyset $ if $i != j$ , i. e. be a partioning of the elementary events. Then for any $X in Im$,
+#theorem([Bayes Theorem @kolmogoroff1933grundbegriffe])[
+Let $A_1 + A_2 + ... + A_n = E$ and $A_i inter A_j = emptyset $ if $i != j$ , i. e. be a partioning of the elementary events. Then for any $X in Im$,
 $
 P(A_i | X) = (P(X | A_i) P(A_i)) / (sum_(j=1)^n P(X | A_j) P(A_j)).
 $]
@@ -109,7 +115,7 @@ Independence plays a critical role in understanding the relationships between ev
 
 The concept of independence simplifies calculations involving multiple events.  If events are independent, we can directly multiply their individual probabilities to determine the probability of their combined occurrence.  This concept finds numerous applications in various fields, including statistics, machine learning, and engineering and is one of the key tools to enable efficient, probabilistic reasoning.
 
-#definition([Independence])[
+#definition([Independence @kolmogoroff1933grundbegriffe])[
 The event $A$ is independent of the event $B$ if 
 $
 P(A | B) = P(A)
@@ -125,7 +131,7 @@ Efficiently representing probability distributions is one goal of probabilistic 
 
 The definition of independence can be expanded to conditional independence.
 
-#definition([Conditional Independence])[
+#definition([Conditional Independence @kolmogoroff1933grundbegriffe])[
 Two variables (events) $A$ and $B$ are conditionally independent given a variable (event) $C$ if and only if their conditional distribution factorizes,
 $
 P(A, B | C) = P(A | C) dot P(B | C).
@@ -135,7 +141,7 @@ Notation: $A tack.t.double B | C$.
 ]<def:conditional_independence>
 
 Conditional independence is the key tool for tractable probabilistic modelling. In //@sec:probabilistic_models
- this thesis discusses different approaches to represent complex probability distributions. In the entire chapter the thesis explains that every model has some form of conditional independence in it. 
+this thesis discusses different approaches to represent complex probability distributions. In the entire chapter the thesis explains that every model has some form of conditional independence in it. 
 
 == From Probability Measures to Representation
 
@@ -157,9 +163,10 @@ In #ref(<def:probability_measure>) the function $P$ was defined to map from the 
 
 As described in #ref(<sec:variables>) variables divide in two major categories, the continuous and the discrete. This thesis starts by introducing the most common representation of a discrete variable, the probability table.
 
-Consider a robotic experiment that has either a successful or unsuccessful outcome. The space of elementary event is hence described as _Status_ $ = {$_Failure_, _Success_$}$. We can now describe $P$ using the top left table in #ref(<tab:combinatoric_explosion>). 
-Furthermore, consider the variables _Object Type_ $ = {$_Bowl_, _Cup_, _Knife_, _Spoon_$}$ and _Robot Type_ $ = {$_HSR_, _PR2_ _Tiago_$}$. We can describe the distribution of all events from the Cartesian product _Object Type_ $times$ _Status_, in short 
-$P($_Object Type_, _Status_$)$ in the lower left table and $P($_Object Type_,  _Robot Type_, _Status_$)$ in the right table in @tab:combinatoric_explosion.
+Consider a robotic experiment that has either a successful or unsuccessful outcome. The space of elementary event is hence described as $"Status"  in \{"Failure", "Success" \}$. We can now describe $P$ using the top left table in #ref(<tab:combinatoric_explosion>). 
+Furthermore, consider the variables $ "Object Type" in \{ "Bowl", "Cup", "Knife", "Spoon" \}$ and $"Robot Type" in \{ "HSR", "PR2" "Tiago" \}$. We can describe the distribution of all events from the Cartesian product $"Object Type" times "Status"$, in short 
+$P("Object Type", "Status")$ in the lower left table and $P( "Object Type", "Robot Type", "Status")$ in the right table in @tab:combinatoric_explosion.
+Note that this construction follows the construction of the product algebra (@def:product_sigma_algebra).
 //TODO and the other variables?
 
 #figure(caption: [Example of a joint probability table over three variables, namely object type, robot type and task status, in a pick up task. This table demonstrates the exponential growth in the number of parameters that is needed to represent a full joint probability table. In the left table only two variables are involved and $4 dot 2 = 8$ probabilities are needed. In the right table a third variable is involved and the number of parameters increased to $4 dot 3 dot 2 = 24$ probabilities.])[
@@ -231,7 +238,8 @@ The PDF is a non-negative function that takes higher values in regions where the
 
 //Instead, it describes the relative likelihood of an outcome falling within a certain interval.
 
-#definition([Probability Density Function (PDF)])[
+#definition([Probability Density Function (PDF) @kolmogoroff1933grundbegriffe])[
+
 Let $Beta$ be the Borel $sigma$ algebra on $RR^d$. A probability measure $P$ on $(RR^d, Beta)$ has a density $p$ if $p$ is a non-negative (Borel) measurable function on $RR^d$ satisfying for all $B in Beta$
 $
 P(B) = integral_B p(x) d x =: integral_B p(x_1, ..., x_d) d x_1... d x_d .
@@ -239,7 +247,8 @@ $]<def:pdf>
 
 The integral of the PDF over a specific interval corresponds to the cumulative distribution function (CDF). The CDF serves as the primary tool for calculating the probability of an event occurring within that designated interval.
 
-#definition([Cumulative Distribution Function (CDF)])[
+#definition([Cumulative Distribution Function (CDF) @kolmogoroff1933grundbegriffe])[
+
 For probability measures $P$ on $(RR^d, Beta)$, the cumulative distribution function is the function
 $
 F(x) = P(product_(i=1)^d (X_i < x_i)).
@@ -262,8 +271,8 @@ These distributions offer versatile tools for modeling a wide range of real-worl
 
 The uniform distribution is the simplest distribution. It models scenarios where all outcomes within a specified range are equally probable. This simple characteristic enables extremely fast reasoning for this type of distribution. @sec:queries discusses this further.
 
-Furthermore, The uniform distribution can serve as a valuable baseline model when analyzing continuous data.  By comparing the actual data distribution to a uniform distribution, one can identify deviations and assess the presence of non-uniform patterns. This comparison can provide valuable insights into the underlying characteristics of the data. //@sec:nyga_distribution_learning 
-delves deeper into the intricacies of this benefit.
+Furthermore, The uniform distribution can serve as a valuable baseline model when analyzing continuous data.  By comparing the actual data distribution to a uniform distribution, one can identify deviations and assess the presence of non-uniform patterns. This comparison can provide valuable insights into the underlying characteristics of the data. //@sec:nyga_distribution_learning
+Section TODO delves deeper into the intricacies of this benefit.
 
 The uniform distribution is defined in @def:continuous-uniform-distribution. A graphical illustration of the uniform distribution is provided in @fig:uniform_pdf.
 
@@ -288,7 +297,7 @@ The term standard continuous uniform distribution refers to $U([0,1])$.]
 On a site note, the uniform distribution also exists for a discrete domain. In that context, it refers a probability table where all probabilities are equal. Generally speaking, uniform measures can be defined over finite sets.
 
 #definition([Uniform Measure on a Set])[
-Let $S$ be a set. The uniform measure on $S$ assigns a probability for every $s in S$ by 
+Let $S$ be finite a set. The uniform measure on $S$ assigns a probability for every $s in S$ by 
 $
 U(s) = 1 / (|S|).
 $
@@ -438,7 +447,7 @@ The abstract specification of a probabilistic model that supports these queries 
 === Running Example
 <sec:running_example>
 
-To illustrate the concepts presented in this section, this thesis considers a simplified scenario involving a robot interacting with objects in its environment.  
+Illustrating the concepts presented in this section, this thesis considers a simplified scenario involving a robot interacting with objects in its environment.  
 This scenario is modeled as a sample space defined by four random variables:
 - *Object Type*: This symbolic variable takes values from a set representing different object types that the robot can interact with, such as {Bowl, Cup, Spoon, Knife}. The Object Type is abbreviated as *O*. The measurable space on *O* is (*O*, $2^bold(O)$).  
 - *Robot Type:* This symbolic variable takes values from a set representing different robot types, such as {PR2, Tiago, HSR}.
@@ -457,7 +466,8 @@ A likelihood query evaluates the joint probability distribution at a specific po
 
 A possible query could look like
 $
-p("Object Type" = "Bowl", "Robot Type" = "PR2", "X Coordinate" = 0.7, "Y Coordinate" = -0.3)
+p(&"Object Type" = "Bowl", "Robot Type" = "PR2", \ 
+  &"X Coordinate" = 0.7, "Y Coordinate" = -0.3)
 $
 or as a shorter version that assumes a fix variable order
 $
@@ -479,7 +489,7 @@ The significant challenge associated with probability queries lies in constructi
 
 An example of such query is 
 $
-P_"Pick-Up" (bold(O)_{"Bowl", "Cup"} times bold(R)_{"P2R"} times bold(X)_[-1, 0.5] times bold(Y)_RR).
+P(bold(O) in \{"Bowl", "Cup" \}, bold(R) in \{"P2R"\}, bold(X) in [-1, 0.5], bold(Y) in RR).
 $
 
 // TODO P(E) = int_E p(x) dx
@@ -487,13 +497,12 @@ $
 The formal definition for this type of calculation is presented in @def:probability_query. This definition builds upon the work in @choi2020probabilistic, while being tailored to the specific context and notation employed within this thesis.
 
 #definition([Probability Queries (Adopted from #cite(<choi2020probabilistic>))])[
-Let $p(X)$ be a joint distribution over random variables $X$. The class of *probability queries* is the set of functions that compute
-$
-P(E = e, Z in I)
-$
-where $e$ is a partial state for variables in $E subset.eq X$ (just like in the likelihood query). $Z = X without E$ are the remaining $k$ variables. These variables are assigned to intervals (sets), such that the integration over the space $I = I_1 times ... times I_k$ is performed.
 
-Note: Intervals and sums are interchangeable.
+Let $p(X)$ be a joint distribution over random variables $bold(X)$. The class of *probability queries* is the set of functions that compute
+$
+P(E)
+$
+where $E$ is a simple event of the product sigma algebra. 
 ] <def:probability_query>
 
 Probability queries not only allow for that calculation of a probability, but also for the calculation of conditional probabilities as in #ref(<def:conditional_probability>). The intersection of two events is an algebraic operation and hence not a challenge of a probabilistic model.
@@ -512,6 +521,7 @@ Skewness measures the asymmetry of the distribution, indicating a lean towards p
 Moments are described formally in #ref(<def:moment>).
 
 #definition([Moment (Adopted from #cite(<choi2020probabilistic>))])[
+
 The moment describes the function
 $
 MM_c^n (x) = integral (x - c)^n p(x) d x
@@ -541,7 +551,7 @@ Real-world knowledge often goes beyond simple probabilities.  Facts, rules, and 
 #definition([Conditional Query])[
 Let $p(X)$ be a joint distribution over random variables $X$. The class of *conditional queries* is the set of functions that compute
 $
-p(X | E) =  P(X, E) / P(E).
+p(X | E).
 $
 The resulting distribution is a full distribution over $X$. 
 ] <def:conditional-query>
@@ -561,7 +571,7 @@ To illustrate these challenges, this section now goes into the specific case of 
 
 The calculation of the first two moments of a Gaussian distribution is particular easy due to them being the parameters of the distribution. However, as soon as part of the Gaussian gets cut off by a conditioning on an interval, this property is lost. 
 
-Consider a truncation of the normal on the general interval $["lower", "upper"]$. According to @ogasawara2021non, the numerical stable calculation of a moment on such a truncated normal is shown in @theorem:moment-truncated-normal. While a deep understanding of the theorem itself might not be crucial, it serves as a shining illustration. The theorem demonstrates the potential complexities that can arise when applying truncation to well-understood probability distributions, such as the normal distribution. This highlights the importance of careful consideration when employing truncation techniques in various contexts.
+Consider a truncation of the normal on the general interval $["lower", "upper"]$. According to @ogasawara2021non, the numerical stable calculation of a moment on such a truncated normal is shown in @theorem:moment-truncated-normal. While a deep understanding of the theorem itself is not crucial for this thesis, it serves as a shining illustration. The theorem demonstrates the potential complexities that can arise when applying truncation to well-understood probability distributions, such as the normal distribution. This highlights the importance of careful consideration when employing truncation techniques in various contexts.
 
 #theorem([Moment of a truncated Gaussian Distribution @ogasawara2021non])[
 The function
@@ -586,7 +596,8 @@ If the standard uniform distribution (see #ref(<fig:uniform_pdf>)) is conditione
 A marginal query seeks to obtain the probability distribution of a subset of variables within a joint distribution, effectively "marginalizing out" the influence of other variables. This can be motivated by a desire to focus on specific aspects of the system while acknowledging the presence of other, potentially irrelevant, variables. Mathematically, marginalization is achieved by integrating over (summing over in the discrete case) the unwanted variables within the joint PDF of the original distribution.
 
 #definition([Marginal Query])[
-Let $p(X)$ be a joint distribution over random variables $X$. The class of *marginal queries* is the set of functions that compute
+
+Let $p(X)$ be a joint distribution over random variables $bold(X)$. The class of *marginal queries* is the set of functions that compute
 $
 p(Y) = integral p(X) d Z_1 dots d Z_k
 $
@@ -608,6 +619,7 @@ The mode of a distribution is the value that appears most frequently. The mode h
 Unlike the mean, which emphasizes central tendency through averaging all possible values, the mode focuses on the distribution's peak.
 
 #definition([Mode Query])[
+
 Let $(E, Im, P)$ be a probability field. The class of *mode queries* is the set of functions that compute
 $
 arg max_(m in Im) p(x).
@@ -677,6 +689,7 @@ However, analytical integration, while elegant, has its limitations. When encoun
 Fortunately, sampling methods provide robust alternatives, offering reliable approximations for these integrals.
 
 #definition([Monte Carlo Estimator])[
+
 Consider $n$ independent samples $x_1,..., x_n$ from a multidimensional
 random variable with a certain PDF $p(x)$. Then a Monte Carlo (MC) estimate would be a way of approximating multidimensional integrals by using the previously drawn samples. 
 Formally, the approximation 
@@ -704,6 +717,7 @@ This class of queries is called *Pairwise Queries*.
 A very popular metric is the Kullback–Leibler Divergence as described in @def:kld.
 
 #definition(title: [Kullback–Leibler Divergence @deza2009encyclopedia])[
+
   Let $(E, Im)$ be a measurable space and $P, Q$ be two measures with density $p$ and $q$. The Kullback–Leibler Divergence (KLD) is given by
   $
   D_(K L)(P, Q) = integral p(x) log(p(x) / q(x)) d x.
@@ -719,6 +733,7 @@ In the scope of this thesis, comparing distributions is desired to be symmetric 
 A pairwise query that computes such a number is the $L_1$ metric between densities. The $L_1$ metric is an instance of the $L_p$ metric. As stated in @def:lp_metric, this family of metrics describes the analytical difference between densities where the difference is potentiated by $p$. 
 
 #definition(title: [$L_p$ Metric @deza2009encyclopedia])[
+
    Let $(E, Im)$ be a measurable space and $P_1, P_2$ be two measures with density $p_1$ and $p_2$.
    The $L_p$ metric is given by 
    $
@@ -726,7 +741,7 @@ A pairwise query that computes such a number is the $L_1$ metric between densiti
    $
 ]<def:lp_metric>
 
-Under my supervision a bachelor thesis investigated this metric in the context of probabilistic circuit (which are introduced later in //@sec:probabilistic-circuits). 
+Under my supervision a bachelor thesis investigated this metric in the context of probabilistic circuit (which are introduced later in TODO. //@sec:probabilistic-circuits). 
 First off, the $L_1$ metric is restated towards a form that works well with probabilistic semantics in @theo:alternate_l1. 
 
 @theo:mc_probability shows how to calculate the probability of an arbitrary event using the Monte Carlo method. Hence the approximation of the $L_1$ metric can be done with 

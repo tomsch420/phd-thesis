@@ -16,13 +16,15 @@ Information incompleteness can manifest in various forms. Sets provide a useful 
 Furthermore, one of the main objectives of probabilistic models, is to reason about sets. The system of sets that probabilistic models can deal with is formalized in a sigma algebra. A sigma algebra ensures that the probability-measure behaves consistently under operations like unions, intersections, and complements of these measurable sets.
 
 Research has shown that events that are described by independent constraints (rules) are the only events where probability estimation is tractable. @choi2020probabilistic
-Spaces that are constructed by independent constraints are called product spaces. Understanding theese events is a key competence to building tractable probabilistic models.
+Spaces that are constructed by independent constraints are called product spaces. Understanding these events is a key competence to building tractable probabilistic models.
 
-This chapter describes the development and application of a specific sigma algebra, the *product sigma algebra* tailored for the specific needs of probabilistic robot plans. The product sigma algebra is the sigma algebra constructed from investigating the set operations of product spaces.
+This chapter describes the development and application of a specific sigma algebra, the *product sigma algebra* tailored for the specific needs of probabilistic robot plans. The product sigma algebra is the sigma algebra constructed from applying set operations like union, intersection and complement to product spaces.
 
 The chapter begins by formally introducing the sigma algebra.
 Subsequently, the vocabulary and concepts used for this thesis is explained.
-Next, the product algebra is defined. Then, important operations that are, to the best of my knowledge, nowhere found in the literature are developed. After that, examples are explored.
+Next, the product algebra is defined. Then, important set operations and utility functions are
+//, to the best of my knowledge, nowhere found in the literature 
+are developed. After that, examples are explored.
 Then, the product sigma algebra is discussed from a viewpoint of computational geometry and it is shown, that
 the results of the theoretical part of this chapter enable efficient reasoning about the world.
 This chapter concludes with a discussion on the implementation and the limitations.
@@ -32,7 +34,7 @@ For those seeking a more practical, hands-on approach to the product sigma algeb
 
 == Sigma Algebra
 
-A sigma algebra ($sigma$-algebra) is a set of sets that contains all set-differences that can be constructed by combining arbitrary subsets of said set. Furthermore, it contains all countable unions of sets and all infinite intersection of the set.
+A sigma algebra ($sigma$-algebra) is a set of sets containing all set-differences constructed by combining arbitrary subsets of said set. Furthermore, it contains all countable unions of sets and all infinite intersection of the set.
 
 #definition([Sigma Algebra @kolmogoroff1933grundbegriffe])[
 
@@ -51,7 +53,7 @@ $
 E &= {a, b, c}, \
 Im = 2^E &= {emptyset, {a}, {b}, {c}, {a, b}, {a, c}, {b, c}, {a,b,c}}, \
 &"and" (E, 2^E) "as measurable space."
-$
+$<example:powerset>
 
 It is easy to see, that $(E, 2^E)$ is always a trivial choice for the measurable space and in most applications, it is the chosen measurable space. However, the direct manipulation of power sets for large sample spaces becomes computationally intractable due to the exponential growth in size with respect to the cardinality of the underlying set. To address the limitations of power sets, I introduce the concept of product sigma algebras.
 
@@ -84,7 +86,7 @@ In this thesis I use the taxonomy of variables described in #ref(<fig:variables_
 
 Variables, in the context of this thesis, consist of a name and a domain. The name is a unique identifier and the domain is the set of elementary events. The measurable space constructed for a variable is always $("domain", 2^"domain")$.
 Variables are either continuous or discrete. Continuous variables have the real line $RR$ as domain. For this thesis, it is sufficient to say that random Events on $RR$ are half open intervals.
-Discrete variables further split up into integer and symbolic variables. Integer variables have the integer numbers $ZZ$ as domain. Symbols have a finite set as domain, as in the example above.
+Discrete variables further split up into integer and symbolic variables. Integer variables have the integer numbers $ZZ$ as domain. Symbols have a finite set as domain, as in @example:powerset.
 
 == Product Sigma Algebra
 <sec:product-sigma-algebra>
@@ -100,7 +102,7 @@ A times.circle B = sigma({A times B : A in A, B in B}).
 $
 The product of $(X, A)$ and $(Y, B)$ is the measurable space $(X times Y, A  times.circle B)$.
 ] <def:product_sigma_algebra>
-An example of this product algebra is the combination of the following.
+An example of the product algebra is the combination of the following.
 
 $
 E_1 = &{a, b, c} \
@@ -108,17 +110,16 @@ E_2 = &{1, 2, 3} \
 E_1 times E_2 = &{(a, 1), (a, 2), (a, 3), \ 
 & (b, 1), (b, 2), (b, 3), \
 & (c, 1), (c, 2), (c, 3)}
-$
+$<example:product_algebra>
 
-However, for even a small product set of $3 dot 3 = 9$ elementary events, the powerset would contain a massive $2^9 = 512$ elements. This exponential growth in size with respect to the number of variables renders the powerset computationally intractable for practical applications. Therefore, a more manageable representation of relevant subsets within the powerset is crucial.
+@example:product_algebra exemplifies one key advantage of representing events using the product algebra. 
+Writing the explicit set calculated by $E_1 times E_2 $ needs  $18$ symbols. $E_1 times E_2$ only needs $6$ symbols. 
 
-This is where the concept of independent constraints becomes essential. Independent constraints are random events that are defined per variable, allowing us to define meaningful subsets of the powerset. 
-
-The example above exemplifies the key advantage of representing events using the Cartesian product within a product sigma-algebra. Compared to the exhaustive enumeration of all possible combinations in the powerset, this approach offers a significantly more compact representation.
+However, for even a small product set of $3 dot 3 = 9$ elementary events, the trivial sigma algebra $(E, 2^E)$ would contain a massive $2^9 = 512$ elements if represented explicitly. This exponential growth in size with respect to the number of variables renders the powerset computationally intractable for practical applications. Therefore, a more manageable, non explicit, representation of relevant subsets within the powerset is crucial. The representation of more general elements of the product sigma algebra is exemplified in @example:union_product_algebra. 
 
 === Operations 
 
-While the Cartesian product provides a compact representation for atomic events involving single variable assignments, it is often necessary to combine these atomic events to describe more complex random events within the product sigma-algebra. To achieve this, I introduce two fundamental operations: union and complement. Before describing these operations, it is necessary to introduce a more compact vocabulary and notation.
+While the Cartesian product provides a compact representation for simple events involving single variable assignments, it is often necessary to combine these simple events to describe more complex random events within the product sigma-algebra. To achieve this, I introduce two fundamental operations: union and complement. Before describing these operations, it is necessary to introduce a more compact vocabulary and notation.
 
 *Vocabulary:*
 
@@ -143,8 +144,8 @@ $
 Forming the union of two simple sets results in a composite sets containing both simple sets. Consider the following variable definitions.
 
 $
-"Utensil" in {"Bowl", "Cup", "Spoon"} \
-"Color" in {"Blue", "Green", "Red"}
+"Color" in {"Blue", "Green", "Red"} \
+"Utensil" in {"Bowl", "Cup", "Spoon"}
 $
 Now the union of the events
 + $
@@ -169,7 +170,7 @@ $
     &"Color" in {"Green"}, \
     &"Utensil" in {"Spoon"} \
 \}
-$
+$<example:union_product_algebra>
 which is a composite set containing two simple sets.
 
 #theorem([Intersection of Product Sets @hunter2011notes])[
@@ -188,11 +189,11 @@ which is a composite set containing two simple sets.
   $
 ]<theo:complement_product_algebra>
 
-Unfortunately, the complement presented in @theo:complement_product_algebra is exponential big in the number of variables. Bluntly speaking, the complement is created by treating the variable assignments in the original complement as boolean variables, constructing the entire truth table about it (with $2 ^ (|"variables"|)$) and removing the column that corresponds to the original event. This is exponential hard to do.
+Unfortunately, the complement presented in @theo:complement_product_algebra is exponential big in the number of variables. Bluntly speaking, the complement is created by treating the variable assignments in the original complement as boolean variables, constructing the entire truth table about it (with $2 ^ (|"variables"|)$) and removing the column that corresponds to the original event.
 
-Hence, a complement of linear size (in the number of variables) is introduced as contribution of this thesis in @theo:complement_product_algebra. This theorem enables a faster reasoning than originally assumed by the literature.
+Hence, a complement of linear size (in the number of variables) is introduced as contribution of this thesis in @theo:complement_product_algebra. This theorem enables a faster reasoning than originally assumed by the literature. @kemp2017product proofed the induction assumption in a StackExchange post.
 
-#theorem([Complement of a Product Set @hunter2011notes])[
+#theorem([Efficient Complement of a Product Set])[
     Let
   $
   AA = A union A^c \
@@ -252,7 +253,7 @@ Hence, a complement of linear size (in the number of variables) is introduced as
 ]<proof:efficient_complement_product_algebra>
 
 Finally, for probabilistic reasoning it is very important that the union contained in a composite set is disjoint. 
-@alg:make_disjoint and @alg:split_into_disjoint_and_non_disjoint, as another contribution of this thesis, show how to create a disjoint union of simple sets from a union of simple sets. This pair of algorithms is not limited to the product sigma algebra. It works for any sigma algebra as long as the difference of a composite set and a simple set is a disjoint union of simple set.
+@alg:make_disjoint and @alg:split_into_disjoint_and_non_disjoint, as another contribution of this thesis, show how to create a disjoint union of simple sets from a union of simple sets. This pair of algorithms is not limited to the product sigma algebra. It works for any sigma algebra as long as the difference of a composite set and a simple set is a disjoint union of simple set. @hopcroft1971npartition introduced a similar algorithm and showed that the runtime of such an algorithm is $n log n$ which also applies for @alg:make_disjoint and @alg:split_into_disjoint_and_non_disjoint. 
 
 #figure(
 
@@ -384,16 +385,36 @@ $
 $
 Since an infinite event can not be visualized, the complement of the unit rectangle intersected with $x in [-1,2] times y in [-1,2]$ is depicted in #ref(<fig:complement_2d>).
 
+#figure_(
+  grid(
+    columns: 3,
+    gutter: 1em,
+    [
+      #subfigure(
+        [#image("../images/complement_3d.png")],
+        caption: [Rectangle event described by #linebreak() $(x in [0,1] times y in [0,1] times z in [0,1])^C inter ( x in [-1,2] times y in [-1,2] times z in [-1,2] ) $.]
+        )
+<fig:complement_3d>
+    ],
+        [
+      #subfigure(
+        [#image("../images/cut_complement_3d.png")],
+        caption: [Cut open rectangle event described by #linebreak() $(x in ([0,1]) times y in ([0,1]) times z in ([0, 1]))^C inter (x in [-1,2] times y in [-1, 0.75] times z in [-1,2]) $ (described in #ref(<fig:complement_3d>)).]
+        )
+        <fig:cut_complement_3d>
+
+    ],
+  ),
+  <fig:unit_cube_complement>,
+  caption: [Different visualization of the complement of a unit cube.],
+  kind: image,
+  supplement: [Figure#sym.zws]
+)
+
 #figure(image("../images/complement_2d.png"),
 caption: [Rectangle event described by #linebreak() $(x in [0,1] times y in [0,1])^C inter (x in [-1,2] times y in [-1,2])$.]) <fig:complement_2d>
 
 Consider the complement of the unit cube $x in [0,1] times y in [0,1] times z in [0,1]$ intersected with $x in [-1,2] times y in [-1,2] times z in [-1,2]$. This event can be visualized as a solid object resembling a cube on the exterior, with the interior corresponding to the removed unit cube. While figures (e.g., #ref(<fig:complement_3d>) and #ref(<fig:cut_complement_3d>)) can aid in visualizing such events in lower dimensions, the mathematical description remains paramount for generalizability to higher dimensions.
-
-#figure(image("../images/complement_3d.png"),
-caption: [Rectangle event described by #linebreak() $(x in [0,1] times y in [0,1] times z in [0,1])^C inter ( x in [-1,2] times y in [-1,2] times z in [-1,2] ) $.]) <fig:complement_3d>
-
-#figure(image("../images/cut_complement_3d.png"),
-caption: [Cut open rectangle event described by #linebreak() $(x in ([0,1]) times y in ([0,1]) times z in ([0, 1]))^C inter (x in [-1,2] times y in [-1, 0.75] times z in [-1,2]) $ (described in #ref(<fig:complement_3d>)).]) <fig:cut_complement_3d>
 
 === Applications
 
@@ -401,6 +422,7 @@ Hybrid cognitive architectures like PyCRAM have to reason about symbolic and con
 
 Consider the laboratory apartment designed for the research of everyday activities in the Institute of Artificial Intelligence at the university of Bremen as shown in @fig:costmap_kitchen (hereinafter referred to as the "apartment lab"). The objective is to define the set of permissible locations within this environment where a robot can safely stand. Naturally, these permissible locations exclude areas occupied by obstacles such as cabinets, tables, and other furniture. By employing product sigma-algebras, one can formally represent the set of possible standing locations as a random event.
 
+// TODO make this nicer
 #figure([
  #grid(columns: 2,
       gutter: 2mm,

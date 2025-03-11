@@ -7,13 +7,13 @@
 
 This section on probability theory establishes a strong foundation for this thesis by highlighting its significance in enabling cognitive robots to reason, make decisions, and operate effectively in the real world. Convincing arguments for the study of probability theory in robotics are:
 
-- *Core Principle for Reasoning Under Uncertainty* A fundamental principle of cognitive robotics is the ability for robots to reason and act effectively even in situations with uncertainty. The real world is inherently stochastic, meaning that outcomes are not always guaranteed and can vary depending on various factors. Probability theory provides a robust mathematical framework for reasoning about these uncertainties.
+- *Core Principle for Reasoning Under Uncertainty* A fundamental principle of cognitive robotics is the ability for robots to reason and act effectively even in situations with uncertainty. The real world is inherently stochastic, meaning outcomes are not always guaranteed and can vary depending on various factors. Probability theory provides a robust mathematical framework for reasoning about these uncertainties.
 
-- *Enabling Informed Decisions in Complex Environments* By incorporating probability distributions, cognitive robots can quantify the likelihood of different outcomes arising from their actions or belief state. This enables them to make informed decisions in complex and unpredictable environments. For instance, a robot picking up an object can leverage probability distributions to account for uncertainties and in inaccuracies or potential variations in the environment itself. By reasoning about these probabilities, the robot can choose the safest and most efficient way of picking the object.
+- *Enabling Informed Decisions in Complex Environments* By incorporating probability distributions, cognitive robots can quantify the likelihood of different outcomes arising from their actions or belief state, enabling them to make informed decisions in complex and unpredictable environments. For instance, a robot picking up an object can leverage probability distributions to account for uncertainties and in inaccuracies or potential variations in the environment itself. By reasoning about these probabilities, the robot can choose the safest and most efficient way of picking the object.
 
-- *Strong Foundation for Further Advancements* Probability theory serves as a cornerstone for many advanced techniques employed in cognitive robotics and artificial intelligence. These include planning under uncertainty, Bayesian filtering for sensor fusion, and reinforcement learning algorithms. 
+- *Strong Foundation for Further Advancements* Probability theory serves as a cornerstone for many advanced techniques employed in cognitive robotics and artificial intelligence, including planning under uncertainty, Bayesian filtering for sensor fusion, and reinforcement learning algorithms. 
 
-In probability theory, a sigma algebra (as described in @sec:sigma_algebra) is employed as it allows the specification of probabilities for all possible events. This stems from the principle that if the probability of every elementary event (an event that cannot be further decomposed) within the sigma algebra is known, then the probability of any conceivable event constructed from these elementary events can be determined.
+In probability theory, a sigma algebra (as described in @sec:sigma_algebra) allows the specification of probabilities for all possible events. If the probability of every elementary event (an event that cannot be further decomposed) within the sigma algebra is known, the probability of any conceivable event constructed from these elementary events can be determined.
 
 In #ref(<sec:product-sigma-algebra>), the concept of a product sigma algebra was introduced. This construction allows to define a sigma algebra on the product space of multiple measurable spaces. 
 //Throughout the rest of this thesis, whenever a sigma-algebra is referred to, I will be specifically referring to this product sigma algebra unless states otherwise.
@@ -27,7 +27,7 @@ Let $(E, Im)$ be a measurable space (see #ref(<def:sigma_algebra>)).
 A non-negative, real function $P: Im -> RR_(0,+)$ is called a measure if it satisfies the following properties.
 
 + $P(emptyset) = 0$
-+ For any countable sequence ${A_i in Im }_(i=1,...,)$ of pairwise disjoint sets $A_i sect A_j = emptyset$ if $i!=j, P$ satisfies countable additivity ($sigma$-additivity):
++ For any countable sequence ${A_i in Im }_(i=1,...,)$ of pairwise disjoint sets $A_i inter A_j = emptyset$ if $i!=j, P$ satisfies countable additivity ($sigma$-additivity):
   $
   P(union.big^infinity_(i=1) A_i) = sum^infinity_(i=1) P(A_i)
   $
@@ -36,7 +36,7 @@ A non-negative, real function $P: Im -> RR_(0,+)$ is called a measure if it sati
 The triple $(E, Im, P)$ is called a probability space.
 ] <def:probability_measure>
 
-A probability measure assigns a numerical value between 0 and 1 to each event within a sigma algebra. This framework also proves useful when considering unions of events. For disjoint events (events with no overlap), sigma-additivity guarantees that the probability of the union is equivalent to the sum of the individual probabilities of each event. This property stems from the fact that disjoint events contribute non-overlapping elements to the union.
+A probability measure assigns a numerical value between 0 and 1 to each event within a sigma algebra. This framework also proves useful when considering unions of events. For disjoint events, sigma additivity guarantees that the probability of the union is equivalent to the sum of the individual probabilities of each event. This property stems from the fact that disjoint events contribute non-overlapping elements to the union.
 Furthermore, sigma additivity is one of the reason for the focus of @sec:sigma_algebra on representing composite sets as disjoint unions of simple sets. 
 
 However, for events that intersect (have some overlap), a straightforward summation of their probabilities leads to overcounting. The elements constituting the intersection are included in the probability calculations for both individual events. Sigma-additivity addresses this by ensuring that the probability of the intersection is subtracted from the sum of the individual probabilities, effectively compensating for the double counting.
@@ -77,11 +77,13 @@ $
 P(A,B) = P(A | B) dot P(B) = P(B | A) dot P(A).
 $
 Note that for a fixed $B,$ the triple $(E, Im, P(dot | B))$ is a probability space as well.] <def:conditional_probability>
-Instead of explaining this concept in my own words, I refer to Todd Kemps phrasing since there is nothing I could explain any better about it.
+
+Todd Kemp wonderfully explained the concept of conditional probability in his lecture about probability theory. @kemp2021youtube
+// Instead of explaining this concept in my own words, I refer to Todd Kemps phrasing since there is nothing I could explain any better about it.
 
 #quote([#cite(<kemp2021youtube>, form: "prose")],[
 	We often think of conditional probability intuitively in terms of a two-stage experiment. In the first stage of the experiment, we see whether one particular event $A$ has occurred or not. If it has it may influence whether a second event $B$, which we’re going to measure in a second stage, will occur or not. Therefore, we may want to update our information on probabilities of the later events given information about whether the earlier event has occurred or not. In this language we’ll refer to the original probability measure $P(B)$ as the prior probability of an event $B$ and after we observe that event $A$ has occurred we refer to the new updated conditional probability as the posterior probability of that same event $B$. In more practical applications $A$ is referenced as the evidence since it is an event that evidently happened and $B$ is the query, since it is the event of interest. There are two very elementary but extraordinarily important results that come from that line of thinking the so-called law of total probability and most critically, Bayes theorem.]
-)
+)<qoute:conditional_probability_kemp>
 
 #theorem([Law of Total Probability @kolmogoroff1933grundbegriffe])[
 
@@ -127,7 +129,7 @@ $
 Notation: $A tack.t.double B$. Information about $B$ does not give information about $A$ and vice versa.
 ]<def:independence>
 
-Efficiently representing probability distributions is one goal of probabilistic machine learning. It's often assumed that distributions over single (univariate) random variables can be represented more effectively compared to complex relationships between multiple variables. Therefore, the independence operator in this context is primarily applied to entire variables. By assuming independence between certain variables, machine learning algorithms can make simplifying assumptions that allow for more efficient calculations and model training.
+One goal of probabilistic machine learning is efficiently representing probability distributions. It's often assumed that distributions over single (univariate) random variables can be represented more effectively compared to complex relationships between multiple variables. Therefore, the independence operator in this context is primarily applied to entire variables. By assuming independence between certain variables, machine learning algorithms can make simplifying assumptions that allow for more efficient calculations and model training.
 
 The definition of independence can be expanded to conditional independence.
 
@@ -161,7 +163,7 @@ In #ref(<def:probability_measure>) the function $P$ was defined to map from the 
 
 === Discrete Distributions
 
-As described in #ref(<sec:variables>) variables divide in two major categories, the continuous and the discrete. This thesis starts by introducing the most common representation of a discrete variable, the probability table.
+As described in #ref(<sec:variables>) variables divide in two major categories, the continuous and the discrete. The following section starts by introducing the most common representation of a discrete variable, the probability table.
 
 Consider a robotic experiment that has either a successful or unsuccessful outcome. The space of elementary event is hence described as $"Status"  in \{"Failure", "Success" \}$. We can now describe $P$ using the top left table in #ref(<tab:combinatoric_explosion>). 
 Furthermore, consider the variables $ "Object Type" in \{ "Bowl", "Cup", "Knife", "Spoon" \}$ and $"Robot Type" in \{ "HSR", "PR2" "Tiago" \}$. We can describe the distribution of all events from the Cartesian product $"Object Type" times "Status"$, in short 
@@ -260,7 +262,7 @@ $
 ] <def:cdf>
 
 The CDF allows to determine the probability that multiple random variables, denoted by the vector $bold(x) = (x_1, ..., x_d)$ will simultaneously satisfy a set of conditions. Specifically, the CDF, denoted by $F(bold(x))$, calculates the probability that each variable $x_i$ within the vector $bold(x)$ is less than its corresponding threshold value.
-For instance, evaluating $F(1,3)$ corresponds to calculating the probability that $x_1 < 1 and x_2 < 3$. In simpler terms, it represents the probability that both variable $x_1$ is less than one and variable $x_2$ is less than three.
+For instance, evaluating $F(1,3)$ corresponds to calculating the probability that $x_1 < 1 and x_2 < 3$.
 
 From @def:cdf it is already visible that integration is the most important tool for probabilistic inference. 
 
@@ -489,7 +491,7 @@ The significant challenge associated with probability queries lies in constructi
 
 An example of such query is 
 $
-P(bold(O) in \{"Bowl", "Cup" \}, bold(R) in \{"P2R"\}, bold(X) in [-1, 0.5], bold(Y) in RR).
+P(bold(O) in \{"Bowl", "Cup" \}, bold(R) in \{"PR2"\}, bold(X) in [-1, 0.5], bold(Y) in RR).
 $
 
 // TODO P(E) = int_E p(x) dx
@@ -505,7 +507,7 @@ $
 where $E$ is a simple event of the product sigma algebra. 
 ] <def:probability_query>
 
-Probability queries not only allow for that calculation of a probability, but also for the calculation of conditional probabilities as in #ref(<def:conditional_probability>). The intersection of two events is an algebraic operation and hence not a challenge of a probabilistic model.
+Probability queries not only allow for that calculation of a probability, but also for the calculation of conditional probabilities as in #ref(<def:conditional_probability>). The intersection of two events is an algebraic operation and hence not something a probabilistic model deals with.
 
 Effectively calculating the exact probability of complex events often necessitates employing techniques from multivariate calculus, particularly the concept of integration. A discussion on this topic is provided in //#ref(<sec:probabilistic-circuits>) 
 and the details are found in #cite(<choi2020probabilistic>).
@@ -608,9 +610,9 @@ Consider a situation where the robot is only interested in the distribution over
 
 // TODO correct syntax
 $
-p(bold(O)) = integral_RR integral_RR integral_R p(bold("O, R, X, Y")) d R d X d Y
+p(bold(O)) = integral_RR integral_RR integral_R p(bold("O, R, X, Y")) d bold(R) d bold(X) d bold(Y)
 $
-achieves this.
+achieves this. The resulting distribution $p(bold(O))$ describes the frequency in which objects occur in a pick up scenario.
 
 === Modes
 <sec:mode-query>
@@ -727,10 +729,8 @@ A very popular metric is the Kullback–Leibler Divergence as described in @def:
 While the KLD is a popular way of expressing the difference of two distributions it comes with numerous problem attached.
 For instance, it is neither symmetric, nor bounded to any maximum value and does not work well for distributions with finite support.
 
-TODO EXAMPLE
-
 In the scope of this thesis, comparing distributions is desired to be symmetric and at least 0, indicating two distributions are completely equal or 1, indicating they agree nowhere.
-A pairwise query that computes such a number is the $L_1$ metric between densities. The $L_1$ metric is an instance of the $L_p$ metric. As stated in @def:lp_metric, this family of metrics describes the analytical difference between densities where the difference is potentiated by $p$. 
+A pairwise query that computes such a number is the $L_1$ metric between densities. The $L_1$ metric is an instance of the $L_p$ metric. As stated in @def:lp_metric, this family of metrics describes the analytical difference between densities where the difference is potentiated by $p$. An example of the $L_1$ metric is shown in @fig:l1_metric.
 
 #definition(title: [$L_p$ Metric @deza2009encyclopedia])[
 
@@ -741,25 +741,15 @@ A pairwise query that computes such a number is the $L_1$ metric between densiti
    $
 ]<def:lp_metric>
 
+#figure(caption: [Visualization of the $L_1$ metric between to Gaussian PDFs (blue and green). The red area in between is the area calculated by the $L_1$.])[
+  #image("../images/l1_metric.png")
+]<fig:l1_metric>
+
+
 Under my supervision a bachelor thesis investigated this metric in the context of probabilistic circuit (which are introduced later in TODO. //@sec:probabilistic-circuits). 
 First off, the $L_1$ metric is restated towards a form that works well with probabilistic semantics in @theo:alternate_l1. 
 
 @theo:mc_probability shows how to calculate the probability of an arbitrary event using the Monte Carlo method. Hence the approximation of the $L_1$ metric can be done with 
-
-#theorem([Approximation of a Probability])[
-  Let $(E, Im, P )$ be a measure.
-  The probability of an arbitrary event $A subset.eq Im$  can be approximated using the Monte Carlo method and indicator functions as
-  $
-  P(A) &= integral_A p(x) d x\
-  &= integral_E bb(1)_A (x) p(x) \
-  &approx EE_p [bb(1)_A (x)] \ 
-  &= 1/n sum_i^n bb(1)_A (x_i).
-  $
-]<theo:mc_probability>
-TODO FORMAL DEFINITION 
-
-Due to the complexity of calculating the exact value of the $L_1$ metric a Monte-Carlo estimator was proven among other things. The proof is shown in @theo:mc_l1. A great property of this estimator is its bounded variance TODO INCLUDE
-
 
 #definition([Indicator Function])[
   The indicator function of a subset $E$ of a set $Im$ is the function indicating 1 if an element if contained in $E$ and 0 otherwise.
@@ -768,12 +758,39 @@ Due to the complexity of calculating the exact value of the $L_1$ metric a Monte
   $
 ]
 
+#theorem([Approximation of a Probability])[
+  Let $(E, Im, P )$ be a measure.
+  The probability of an arbitrary event $A subset.eq Im$  can be approximated using the Monte Carlo method and indicator functions as
+  $
+  P(A) approx 1/n sum_i^n bb(1)_A (x_i).
+  $
+]<theo:mc_probability>
+TODO FORMAL DEFINITION 
+
+#proof[of @theo:mc_probability][
+  $
+    P(A) &= integral_A p(x) d x\
+  &= integral_E bb(1)_A (x) p(x) \
+  &approx EE_p [bb(1)_A (x)] \ 
+  &= 1/n sum_i^n bb(1)_A (x_i).
+$
+]
+
+Due to the complexity of calculating the exact value of the $L_1$ metric a Monte-Carlo estimator was proven among other things. The proof is shown in @theo:mc_l1. A great property of this estimator is its bounded variance TODO INCLUDE
+
+
 #theorem([Alternate form of the $L_1$ Metric. TODO CITE])[
   Let $(E, Im, P)$ and $(E, Im, Q)$ be two probability spaces with density $p$ and $q$.\
   Let $E_p = \{ x | p(x) > q(x)\}$ \
   Let $E_q = E_p^c$ \
-  
-  $L_1(p,q) &= integral|p(x)-q(x)|d x \
+  $
+  L_1(p,q) = 2(P(E_p) - Q(E_p))
+  $
+]<theo:alternate_l1>
+
+#proof([of @theo:alternate_l1])[  
+  $
+  L_1(p,q) &= integral|p(x)-q(x)|d x \
   
   & = integral  bb(1)_(E_p)(p(x)-q(x)) +  bb(1)_(E_q) (q(x)-p(x)) d x | "split into disjoint parts"\
   
@@ -788,15 +805,15 @@ Due to the complexity of calculating the exact value of the $L_1$ metric a Monte
   &= P(E_p) - 1 + P(E_p) + 1  - Q(E_p) - Q(E_p)\
   &= 2P(E_p) - 2Q(E_p) \
   &= 2(P(E_p) - Q(E_p)) \
-  $\
-]<theo:alternate_l1>
+  $
+]
 
 #theorem([Approximation of the $L_1$ Metric. TODO CITE])[
 The $L_1$ metric can be approximated as 
 $
 L_1(p,q) &= 2(P(E_p) - Q(E_p)) \
 &= 2 ( integral_E bb(1)_E_p (x) p(x) d x - integral_E bb(1)_E_p (x) q(x) d x )\
-&approx 2 (underbrace(1/n sum_i^n bb(1)_E_p (x_i), "Samples from P") - underbrace(1/n sum_i^n bb(1)_E_p (x_i), "Samples from Q").). 
+&approx 2 (underbrace(1/n sum_i^n bb(1)_E_p (x_i), "Samples from P") - underbrace(1/n sum_i^n bb(1)_E_p (x_i), "Samples from Q")). 
 $
 ]<theo:mc_l1>
 

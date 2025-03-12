@@ -737,24 +737,26 @@ A pairwise query that computes such a number is the $L_1$ metric between densiti
    Let $(E, Im)$ be a measurable space and $P_1, P_2$ be two measures with density $p_1$ and $p_2$.
    The $L_p$ metric is given by 
    $
-   L_p (p_1, p_2) = (integral_Im |p_1(x) - p_2(x)|^p d x)^(1/p)
+   L_p (p_1, p_2) = 1/2(integral_Im |p_1(x) - p_2(x)|^p d x)^(1/p)
    $
 ]<def:lp_metric>
 
-#figure(caption: [Visualization of the $L_1$ metric between to Gaussian PDFs (blue and green). The red area in between is the area calculated by the $L_1$.])[
+#figure(caption: [Visualization of the $L_1$ metric between to Gaussian PDFs (blue and green). The red area in between is the area calculated by the $L_1$. The $L_1$ metric between the two distributions is $approx 0.39$])[
   #image("../images/l1_metric.png")
 ]<fig:l1_metric>
 
 
 Under my supervision a bachelor thesis investigated this metric in the context of probabilistic circuit (which are introduced later in TODO. //@sec:probabilistic-circuits). 
-First off, the $L_1$ metric is restated towards a form that works well with probabilistic semantics in @theo:alternate_l1. 
 
-@theo:mc_probability shows how to calculate the probability of an arbitrary event using the Monte Carlo method. Hence the approximation of the $L_1$ metric can be done with 
+@theo:mc_probability shows how to calculate the probability of an arbitrary event using the Monte Carlo method.
+The $L_1$ metric is then restated towards a form that works well with probabilistic semantics in @theo:alternate_l1. 
+
+
 
 #definition([Indicator Function])[
   The indicator function of a subset $E$ of a set $Im$ is the function indicating 1 if an element if contained in $E$ and 0 otherwise.
   $
-  bb(1_E (x)) = cases(1 "if" x in E, 0 "if" x in.not E)
+  bb(1)_E (x) = cases(1 "if" x in E, 0 "if" x in.not E)
   $
 ]
 
@@ -765,7 +767,6 @@ First off, the $L_1$ metric is restated towards a form that works well with prob
   P(A) approx 1/n sum_i^n bb(1)_A (x_i).
   $
 ]<theo:mc_probability>
-TODO FORMAL DEFINITION 
 
 #proof[of @theo:mc_probability][
   $
@@ -776,52 +777,73 @@ TODO FORMAL DEFINITION
 $
 ]
 
-Due to the complexity of calculating the exact value of the $L_1$ metric a Monte-Carlo estimator was proven among other things. The proof is shown in @theo:mc_l1. A great property of this estimator is its bounded variance TODO INCLUDE
+Due to the complexity of calculating the exact value of the $L_1$ metric a Monte-Carlo estimator  (@theo:mc_l1) was proven among other things. 
 
+#theorem([Alternate form of the $L_1$ Metric. @neumann2025l1])[
 
-#theorem([Alternate form of the $L_1$ Metric. TODO CITE])[
   Let $(E, Im, P)$ and $(E, Im, Q)$ be two probability spaces with density $p$ and $q$.\
   Let $E_p = \{ x | p(x) > q(x)\}$ \
   Let $E_q = E_p^c$ \
   $
-  L_1(p,q) = 2(P(E_p) - Q(E_p))
+  L_1(p,q) = P(E_p) - Q(E_p)
   $
 ]<theo:alternate_l1>
 
-#proof([of @theo:alternate_l1])[  
+#proof([of @theo:alternate_l1 @neumann2025l1])[  
   $
-  L_1(p,q) &= integral|p(x)-q(x)|d x \
+  L_1(p,q) &= 1/2 integral|p(x)-q(x)|d x \
   
-  & = integral  bb(1)_(E_p)(p(x)-q(x)) +  bb(1)_(E_q) (q(x)-p(x)) d x | "split into disjoint parts"\
+  & = 1/2 integral  bb(1)_(E_p)(p(x)-q(x)) +  bb(1)_(E_q) (q(x)-p(x)) d x | "split into disjoint parts"\
   
-  &= integral bb(1)_(E_p)(p(x)-q(x)) d x + integral bb(1)_(E_q)(q(x)-p(x)) d x \
+  &= 1/2 (integral bb(1)_(E_p)(p(x)-q(x)) d x + integral bb(1)_(E_q)(q(x)-p(x)) d x) \
   
-  &= integral bb(1)_(E_p)p(x)- bb(1)_(E_p)q(x) d x + integral  bb(1)_(E_q)q(x)- bb(1)_(E_q)p(x) d x  \
+  &= 1/2 (integral bb(1)_(E_p)p(x)- bb(1)_(E_p)q(x) d x + integral  bb(1)_(E_q)q(x)- bb(1)_(E_q)p(x) d x)  \
 
-  &= integral bb(1)_(E_p)p(x) d x - integral bb(1)_(E_p)q(x) d x + integral  bb(1)_(E_q)q(x) d x - integral bb(1)_(E_q)p(x) d x  \
-  &=  P(E_p) - Q(E_p) + Q(E_q) - P(E_q) \
-  &= P(E_p) - P(E_q) + Q(E_q) - Q(E_p) \
-  &= P(E_p) - (1 - P(E_p)) + (1 - Q(E_p)) - Q(E_p)\
-  &= P(E_p) - 1 + P(E_p) + 1  - Q(E_p) - Q(E_p)\
-  &= 2P(E_p) - 2Q(E_p) \
-  &= 2(P(E_p) - Q(E_p)) \
+  &= 1/2 (integral bb(1)_(E_p)p(x) d x - integral bb(1)_(E_p)q(x) d x\
+  & + integral  bb(1)_(E_q)q(x) d x - integral bb(1)_(E_q)p(x) d x  )\
+  &= 1/2 (P(E_p) - Q(E_p) + Q(E_q) - P(E_q)) \
+  &= 1/2 (P(E_p) - P(E_q) + Q(E_q) - Q(E_p)) \
+  &= 1/2 (P(E_p) - (1 - P(E_p)) + (1 - Q(E_p)) - Q(E_p))\
+  &= 1/2 (P(E_p) - 1 + P(E_p) + 1  - Q(E_p) - Q(E_p))\
+  &= 1/2 (2P(E_p) - 2Q(E_p)) \
+  &= P(E_p) - Q(E_p)
   $
 ]
 
-#theorem([Approximation of the $L_1$ Metric. TODO CITE])[
+#theorem([Approximation of the $L_1$ Metric. @neumann2025l1])[
 The $L_1$ metric can be approximated as 
 $
-L_1(p,q) &= 2(P(E_p) - Q(E_p)) \
-&= 2 ( integral_E bb(1)_E_p (x) p(x) d x - integral_E bb(1)_E_p (x) q(x) d x )\
-&approx 2 (underbrace(1/n sum_i^n bb(1)_E_p (x_i), "Samples from P") - underbrace(1/n sum_i^n bb(1)_E_p (x_i), "Samples from Q")). 
+L_1(p,q) approx underbrace(1/n sum_i^n bb(1)_E_p (x_i), "Samples from P") - underbrace(1/n sum_i^n bb(1)_E_p (x_i), "Samples from Q"). 
 $
 ]<theo:mc_l1>
 
+#proof[of @theo:mc_l1][
+  $
+L_1(p,q) &= P(E_p) - Q(E_p) \
+&= integral_E bb(1)_E_p (x) p(x) d x - integral_E bb(1)_E_p (x) q(x) d x \
+&approx 1/n sum_i^n bb(1)_E_p (x_i) - 1/n sum_i^n bb(1)_E_p (x_i). 
+$
+]<proof:mc_l1>
 
+A pleasant characteristic of this estimator is its finite variance. 
+The variance of an indicator function (@theo:variance_of_indicator) can be used to calculate the variance of @theo:mc_l1. @theo:variance_of_l1_mc shows that the variance of the indicator is at most $0.5$ and hence the standard deviation of the result of a Monte Carlo estimation of the $L_1$ metric is very small at manageable samples sizes. For instance, at $n = 100000$ samples the expected deviation is at most $sqrt(0.5)/sqrt(100000) approx 0.0022$. Hence, even for maximally varying results of the approximation, the estimate is fairly accurate.
 
-// TODO cite max result
-- Approximation of every pairwise query for finite supps
-- Show that l1 metric of conditional model and model is always P(E)
+#theorem([Variance of Indicator Function])[
+  The variance of an indicator function is given by 
+  $
+    "Var"(bb(1)_E) &= P(bb(1)_E) (1-P(bb(1)_E)) \
+    &<= 0.25.
+  $
+]<theo:variance_of_indicator>
+
+#theorem([Variance of Monte Carlo Approximation of the $L_1$ metric. @neumann2025l1])[
+  $
+  "Var"(L_1(p, q)) &= "Var"(P(E_p) - Q(E_p)) \
+  &= underbrace(P(E_p)(1 - P(E_p)) - Q(E_p)(1 - Q(E_p)), "Max if " P(E_p) = 0.5" and" Q(E_p) = 0) \
+  &<= 0.5
+  $
+]<theo:variance_of_l1_mc>
+
 
 For an extensive discussion of various distances the Encyclopedia of Distances serves as a valuable resource. @deza2009encyclopedia
 

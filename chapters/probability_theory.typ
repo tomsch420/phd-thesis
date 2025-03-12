@@ -846,5 +846,3 @@ The variance of an indicator function (@theo:variance_of_indicator) can be used 
 
 
 For an extensive discussion of various distances the Encyclopedia of Distances serves as a valuable resource. @deza2009encyclopedia
-
-// TODO steckbriefe von uivariaten verteilungen

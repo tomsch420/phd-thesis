@@ -105,7 +105,8 @@ The joint probability distribution allows us to conceptualize what we seek in th
 ]
 
 A further common characteristic of cognitive architectures is to have extensive learning capabilities. As part of this thesis contributions a joint probability distribution learning component is delivered that is highly modular, efficient and integrated well into the PyCRAM architecture. This contribution splits up in the creation of a memory component that enables quick and extensive retrieval of relevant information (@sec:moment-query).
-The second part is a machine learning framework for the creation of tractable joint probability distributions that enable the efficient parametrization of actions while taking information from the belief state into account (@sec:probabilistic_models). Lastly, these components are integrated into PyCRAM to close the loop between action execution and performance improvements. Section TODO)
+The second part is a machine learning framework for the creation of tractable joint probability distributions that enable the efficient parametrization of actions while taking information from the belief state into account (//@sec:probabilistic_models). 
+Lastly, these components are integrated into PyCRAM to close the loop between action execution and performance improvements. Section TODO)
 
 
 

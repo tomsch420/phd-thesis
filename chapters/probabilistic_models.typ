@@ -1,6 +1,4 @@
 #import "../thesis-imports.typ": *
-#import "@preview/fletcher:0.5.1" as fletcher: diagram, node, edge
-
 
 = Probabilistic Models
 <sec:probabilistic_models>
@@ -1005,9 +1003,11 @@ The authors provide a workaround for this. Unfortunately, I was unable to get th
 
 SPFlow is written using a functional programming paradigm.@martin2023functional  states that functional programming is programming without assignment statements and that functional programming and object oriented programming are compatible and mutually beneficial styles.
 
-#quote(block:true, attribution: [@martin2023functional])[First of all, functional programs and OO programs are different. Functional programs tend to be constructions of plumbing that regulate data flow transformations, while mutable OO programs tend to iterate step by step over objects. However, from an architectural point of view, the two styles are quite compatible. It turns out that we can partition the functions of a functional program into the same kinds of architecturally significant elements as an OO program. From an architectural point of view, there’s very little difference.
+#quote([#cite(<martin2023functional>, form: "prose")],[
+First of all, functional programs and OO programs are different. Functional programs tend to be constructions of plumbing that regulate data flow transformations, while mutable OO programs tend to iterate step by step over objects. However, from an architectural point of view, the two styles are quite compatible. It turns out that we can partition the functions of a functional program into the same kinds of architecturally significant elements as an OO program. From an architectural point of view, there’s very little difference.
 
 Functional programs may not be composed of syntactically enforced classes that enclose methods and define objects. Yet, objects still exist in functional programs. Those objects are less tightly bound to the functions that operate upon them than they would be in an OO language.]
+)
 
 The problem that SPFlow introduces is in the unintended use of the python class system. In @Molina2019SPFlow an example is shown on how to extend the package which is repeated below.
 While the likelihood may be a functional method, it is advised to implement method belonging to a class as a method of the class.

@@ -51,7 +51,7 @@ Dies ist meine Zusammenfassung...
 ]
 
 // generate titlepage that will be passed to thesis template
-#let titlepage = iai-titlepage.with(
+#let titlepage = aicor-titlepage.with(
 		// the title of the thesis
 		title: docdata.document.title,
 
@@ -86,7 +86,7 @@ Dies ist meine Zusammenfassung...
 	)
 
 // pass document info to thesis template
-#show: iai-diss.with(
+#show: aicor-diss.with(
 	// can be none or content
 	titlepage: titlepage,
 

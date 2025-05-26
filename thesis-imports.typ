@@ -3,9 +3,9 @@
 #set quote(block: true) 
 
 
-#import "@iai-templates/ubcd:0.0.0": ubdefs
+#import "@aicor-templates/ubcd:0.0.0": ubdefs
 
-#import "@iai-templates/iai-thesis:0.0.2": blockquote, sectext, pnum, iai-diss, iai-titlepage, dissts, dissfonts, disscolors, numbername, chapterformat, subfigure, imgwrapper, quote, appendices, figure_, lorem, s_usedkeys, usedkeys, parse-bib, cite, preprocess_listings
+#import "@aicor-templates/aicor-thesis:0.0.2": blockquote, sectext, pnum, aicor-diss, aicor-titlepage, dissts, dissfonts, disscolors, numbername, chapterformat, subfigure, imgwrapper, quote, appendices, figure_, lorem, s_usedkeys, usedkeys, parse-bib, cite, preprocess_listings
 
 
 // import local packages
